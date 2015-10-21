@@ -1,0 +1,21 @@
+body
+{
+    margin: 0;
+}
+.c_DragAndDrop
+{
+  cursor: move;
+}
+.c_blacktext
+{
+    display: inline-block;
+    width: 100px;
+    border-bottom: 1px solid #333;
+    height: 40px;
+    vertical-align: middle;
+}
+.c_palabra_arrastrable
+{
+    background-color: #333;
+    color: #fff;
+}

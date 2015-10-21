@@ -1,0 +1,24 @@
+.c_sopadeletras_letra
+{
+    background-color: #AAA;
+    cursor: pointer;
+}
+.c_sopadeletras_letra.c_selected
+{
+    background-color: #CCC;
+}
+.c_sopadeletras_palabra
+{
+    line-height: 30px;
+    padding-left: 10px;
+}
+.c_sopadeletras_palabra_ok
+{
+    line-height: 30px;
+    padding-left: 10px;
+    text-decoration: line-through;
+}
+.c_wordfind {
+  background-color: #00AD99;
+  color: #FFF;
+}

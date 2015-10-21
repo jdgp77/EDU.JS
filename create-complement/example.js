@@ -1,3 +1,4 @@
+/*
 ei_static.arFunctPerz[ei_static.getNumPerz()]=function(key){
 	switch(key)
 	{
@@ -18,3 +19,4 @@ ei_static.arFunctPerz[ei_static.getNumPerz()]=function(key){
 			break;
 	}
 }
+*/

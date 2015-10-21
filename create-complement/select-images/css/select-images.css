@@ -1,0 +1,62 @@
+#id_board_vistas
+{
+	position: fixed;
+	bottom: 0px;
+	left: 50%;
+	width: 640px;
+	display: table;
+	margin-left: -350px;
+}
+	#id_board_vistas_ei_left
+	{
+		display: table-cell;
+		vertical-align: top;
+		width: 60px;
+		cursor: pointer;
+	}#id_board_vistas_ei_left:hover
+	{
+		background-color: rgba(0,0,0,0.03);
+	}
+		#id_board_vistas_ei_left_flecha
+		{
+			height: 0px;
+			left: 0px;
+			border-width: 20px;
+			border-style: solid;
+			border-color: transparent rgb(108, 108, 108) transparent transparent;
+			width: 0px;
+			margin: 24px auto 24px 0;
+
+		}
+	#id_board_vistas_ei
+	{
+		display: table-cell;
+		vertical-align: top;
+		width: 500px;
+	}
+	#id_board_vistas_ei_right
+	{
+		display: table-cell;
+		vertical-align: top;
+		width: 60px;
+	}#id_board_vistas_ei_right:hover
+	{
+		background-color: rgba(0,0,0,0.03);
+		cursor: pointer;
+	}
+		#id_board_vistas_ei_right_flecha
+		{
+			height: 0px;
+			left: 0px;
+			border-width: 20px;
+			border-style: solid;
+			border-color: transparent transparent transparent rgb(108, 108, 108);
+			width: 0px;
+			margin: 24px 0 24px auto;
+		}
+.c_select_image
+{
+	box-shadow: 0px 4px 2px #AAA;
+	background-size: cover;
+	cursor: pointer;
+}

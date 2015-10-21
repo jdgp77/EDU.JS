@@ -1,0 +1,61 @@
+#id_board_evangelio
+{
+	font-family: Raleway,Arial;
+}
+#id_board_evangelio .ei_board
+{
+	background-image: url(images/fondo.png);
+	margin: 0 auto;
+}
+#id_board_evangelio .title
+	{
+		font-size: 30px;
+		color: #1E1E1E;
+	}
+#id_board_evangelio .title .subtitle
+		{
+			font-size: 25px;
+			color: #282828;
+		}
+#id_board_evangelio .text
+	{
+		font-size: 17px;
+		line-height: 26px;
+		color: #333;
+	}
+#id_board_evangelio .image
+	{
+		background-image: url(images/julian-david-guerrero-saludando.png);
+	}
+#id_board_evangelio .bottons a
+	{
+		display: inline-block;
+		line-height: 40px;
+		padding: 0 30px;
+		border-radius: 20px;
+		border: 2px solid #008000;
+		text-decoration: inherit;
+		color: #008000;
+		font-size: 19px;
+		margin-right: 15px;
+		cursor: pointer;
+	}
+#id_board_evangelio .bottons a.predefined:hover
+		{
+			border-color: #00A000;
+			color: #00A000;
+		}
+#id_board_evangelio .bottons a.predefined
+		{
+			background-color: #008000;
+			border-radius: 20px;
+			color: #FFF;
+			font-size: 19px;
+		}
+#id_board_evangelio .bottons a.predefined:hover
+		{
+			background-color: #00A000;
+			border-radius: 20px;
+			color: #FFF;
+			font-size: 19px;
+		}

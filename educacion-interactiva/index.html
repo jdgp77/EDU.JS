@@ -2,13 +2,13 @@
 <html lang="es">
 <head>
 	<meta charset="UTF-8">
-	<title>Educación Interactiva V4</title>
+	<title>Educación Interactiva V4.5</title>
 	
 	<!-- JQuery -->
 	<script src="js/jquery-1.9.1.js"></script>
 	
 	<!-- Educación Interactiva V4 -->
-	<script src="js/educacion-interactiva-v4.js" charset="UTF-8" ></script>
+	<script src="js/educacion-interactiva-v4_5.js" charset="UTF-8" ></script>
 
 	<!-- Todos pueden hacer framework -->
 	<script src="../create-complement/example.js" charset="UTF-8" ></script>
@@ -17,16 +17,47 @@
 	<script type="text/javascript" charset="UTF-8" >
 		$(document).ready(function() {
 
-					boardUno = $('#iPlaceCanvas').eiCreateBoard(500,200)//.eiLoadBoard().setMeasures(500,200).
-					boardUno.createScene(function(){
-						ei.objName('auto').setPos(0,50).itIs('basicflaticon__carro');
-					}).createAnimation(function(){	
-						ei.objName('auto').accMoverEnX(.5);
-					}).start();
+				boardUno = $('#iPlaceCanvas').createBoard('miPrimerTablero',500,500);	//.eiLoadBoard().setMeasures(500,200).
+						/*
+							boardUno.createScene(function(){
+								ei.objName('auto').setPos(0,50).itIs('basicflaticon__carro');
+							}).createAnimation(function(){	
+								ei.objName('auto').accMoverEnX(.5);
+							}).start();
+						*/
+				boardUno.t('ThingA',250-5,250-5-10,10,10);
+				boardUno.t('ThingR',250-5+10,250-5,10,10);
+				boardUno.t('ThingB',250-5,250-5+10,10,10);
+				boardUno.t('ThingL',250-5-10,250-5,10,10);
+
+				boardUno.createAnimation(function(){
+					boardUno.t('ThingA').accMoveInY(-0.1);
+					boardUno.t('ThingR').accMoveInX(0.1);
+					boardUno.t('ThingB').accMoveInY(0.1);
+					boardUno.t('ThingL').accMoveInX(-0.1);
+				}).startAnimation();
+
+				boardDos = $('#iPlaceCanvas2').createBoard('miSegundoTablero',500,200);	//.eiLoadBoard().setMeasures(500,200).
+						/*
+							boardUno.createScene(function(){
+								ei.objName('auto').setPos(0,50).itIs('basicflaticon__carro');
+							}).createAnimation(function(){	
+								ei.objName('auto').accMoverEnX(.5);
+							}).start();
+						*/
+				boardDos.t('Thing1',10,10,10,10);
+				boardDos.t('Thing2',20,20,10,10);
+				boardDos.t('Thing3',30,30,10,10);
+				boardDos.t('Thing4',40,40,10,10);
+
+				boardDos.createAnimation(function(){
+					boardDos.t('Thing2').accMoveInX(1);
+				}).startAnimation();
 			});
 	</script>
 </head>
 <body>
 	<div id="iPlaceCanvas"></div>
+	<div id="iPlaceCanvas2"></div>
 </body>
 </html>

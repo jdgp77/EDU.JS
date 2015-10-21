@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+
+	<!-- JQuery -->
+	<script src="educacion-interactiva/js/jquery-1.9.1.js"></script>
+	
+	<!-- Educación Interactiva V4 -->
+	<script src="educacion-interactiva/js/educacion-interactiva-v5_Beta.js" charset="UTF-8" ></script>
+
+	<!-- Framework de un selector de imagenes -->
+	<script src="create-complement/select-images/js/select-images.js" charset="UTF-8" ></script>
+	<link rel="stylesheet" href="create-complement/select-images/css/select-images.css" >
+
+	<script src="create-complement/360-object/js/360-object.js" charset="UTF-8" ></script>
+
+	<script src="create-complement/stand-out/stand-out.js" charset="UTF-8" ></script>
+	
+	<!-- Todos pueden hacer framework -->
+	<script src="create-complement/example.js" charset="UTF-8" ></script>
+
+	<script type="text/javascript" charset="UTF-8" >
+		$(document).ready(function() {
+
+			selectImages({
+				achoTablero: 500,
+				velocidadMaxima: 6,
+				espacioDeActivacionEnLados: 100,
+				anchoImagenes: 84,
+				altoImagenes: 40,
+				anchoYAltoExtraImagenesOnHover: 10,
+				distranciaEntreImagenes: 20,
+				arImagesViews: [
+					{
+						url: 'create-complement/select-images/images/foto1-mini.jpg',
+						js: function() { alert('casa1'); },
+					},{
+						url: 'create-complement/select-images/images/foto2-mini.jpg',
+						js: function() { alert('casa1'); },
+					},{
+						url: 'create-complement/select-images/images/foto1-mini.jpg',
+						js: function() { alert('casa1'); },
+					},{
+						url: 'create-complement/select-images/images/foto2-mini.jpg',
+						js: function() { alert('casa1'); },
+					},{
+						url: 'create-complement/select-images/images/foto1-mini.jpg',
+						js: function() { alert('casa1'); },
+					},{
+						url: 'create-complement/select-images/images/foto2-mini.jpg',
+						js: function() { alert('casa1'); },
+					},{
+						url: 'create-complement/select-images/images/foto2-mini.jpg',
+						js: function() { alert('casa1'); },
+					},{
+						url: 'create-complement/select-images/images/foto1-mini.jpg',
+						js: function() { alert('casa1'); },
+					},{
+						url: 'create-complement/select-images/images/foto2-mini.jpg',
+						js: function() { alert('casa1'); },
+					},{
+						url: 'create-complement/select-images/images/foto1-mini.jpg',
+						js: function() { alert('casa1'); },
+					},{
+						url: 'create-complement/select-images/images/foto2-mini.jpg',
+						js: function() { alert('casa1'); },
+					}
+				],
+			});
+			
+			object360({
+				arSecuencia: ['left','stop','right','stop'],
+				arTiempos: [20,225,15,225],
+				numFramesParaRotar: 2,
+				imageUrl: 'create-complement/360-object/images/img360.png',
+			});
+
+			var standOutCharacteristics = {
+				color: {
+					red: 116,
+					blue: 205,
+					green: 255,
+				},
+				radius_px: 40,
+				alpha: {
+					min: 0,
+					max: 30,
+				},
+				onHover: 'disappear',
+			}
+			var standOutPosition = {
+				top: 20,
+				left: 20,
+			}
+
+			ei_standOut.create(standOutPosition,standOutCharacteristics);
+		});
+	</script>
+</head>
+<body>
+
+	<div id="id_board_vistas" >
+		<div id="id_board_vistas_ei_left" onclick="moveLeft()" >
+			<div id="id_board_vistas_ei_left_flecha"></div>
+		</div>
+		<div id="id_board_vistas_ei" >
+			
+		</div>
+		<div id="id_board_vistas_ei_right" onclick="moveRight()" >
+			<div id="id_board_vistas_ei_right_flecha"></div>
+		</div>
+	</div>
+
+	<div id="id_board_360"></div>
+
+	<div id="id_board_mathematicproblem">
+		
+	</div>
+</body>
+</html>

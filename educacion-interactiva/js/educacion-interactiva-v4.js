@@ -87,7 +87,19 @@ var ei_static = {
 	boards: new Array(),
 	//	Cuando el cursor esta oprimido
 	bnCursorOprimido: false,
-
+	//	Retorna la posicion en X y Y de un objeto
+	posEnX: function(object)
+	{
+		var curleft = 0; if(object.offsetParent) while(1) { curleft += object.offsetLeft;
+		if(!object.offsetParent) break; object = object.offsetParent; } else if(object.x) curleft += object.x;
+		return curleft;
+	}
+	posEnY: function(object)
+	{
+		var curtop = 0; if(object.offsetParent) while(1) { curtop += object.offsetTop;
+		if(!object.offsetParent) break; object = object.offsetParent; } else if(object.y) curtop += object.y;
+		return curtop; 
+	}
 	//	Cuando se mantiene oprimido el cursor
 	onMouseDown: function(evento){
 			//	Solo se activa si no estaba oprimido
