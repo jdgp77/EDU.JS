@@ -200,8 +200,10 @@ var BasicEI = {
 			}
 			else
 			{
-				var posMouseInX = BasicEI.getPosInXCursorForEvent(event);
-				var posMouseInY = BasicEI.getPosInYCursorForEvent(event);
+				var boardPosInX = this.Board.getPosInX();
+				var boardPosInY = this.Board.getPosInY();
+				var posMouseInX = BasicEI.getPosInXCursorForEvent(event)-boardPosInX;
+				var posMouseInY = BasicEI.getPosInYCursorForEvent(event)-boardPosInY;
 			}
 			var posInX = this.getPosInX();
 			var posInY = this.getPosInY();
