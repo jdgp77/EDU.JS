@@ -1,5 +1,39 @@
 ﻿//	Todas las funciones basicas de Educación Interactiva estan aca
 var BasicEI = {
+	getPosInXCursorForEvent: function(event)
+	{
+		//	En caso de ser touch
+		if(event.targetTouches)
+		{
+			//	Habilitado para touch
+			var t=event.targetTouches;
+			//	Posicion en x y y del mouse, con respecto al 0,0 del canvas
+			return t[0].pageX;//-findPosX_ESt(_arOCanvas_ESt[noLienso].id);
+		}
+		//	En caso de ser mouse
+		else
+		{
+			//	Posicion en x y y del mouse, con respecto al 0,0 del canvas
+			return event.pageX;
+		}
+	},
+	getPosInYCursorForEvent: function(event)
+	{
+		//	En caso de ser touch
+		if(event.targetTouches)
+		{
+			//	Habilitado para touch
+			var t=event.targetTouches;
+			//	Posicion en x y y del mouse, con respecto al 0,0 del canvas
+			return t[0].pageY;//-findPosY_ESt(_arOCanvas_ESt[noLienso].id);
+		}
+		//	En caso de ser mouse
+		else
+		{
+			//	Posicion en x y y del mouse, con respecto al 0,0 del canvas
+			return event.pageY;
+		}
+	},
 	posEnX: function(object)
 	{
 		var curleft = 0;
@@ -132,25 +166,45 @@ var BasicEI = {
 		{
 			this.thing.event.onmouseover=false;
 		}
-		thing.element.onmousedown = function()
+		thing.element.ontouchstart = function(event)
+		{ this.thing.oncursordown(event); }
+		thing.element.onmousedown = function(event)
+		{ this.thing.oncursordown(event); }
+		thing.oncursordown = function(event)
 		{
-			this.thing.event.onmousedown=true;
+			this.event.bnCursorDown=true;
 			//	Carga la posición relativa del mouse con el thing
-			this.thing.loadPosDelta();
+			this.loadPosDelta(event);
+
+			console.info('oncursordown');
 		}
-		thing.qstnIsMouseDown = function()
-		{ return this.event.onmousedown; }
+		thing.qstnIsCursorDown = function()
+		{ return this.event.bnCursorDown; }
+		//	Cuando el cursor deja de estar oprimido
+		//	---------------------------------------
+		thing.element.ontouchend = function()
+		{ this.thing.oncursorup(); }
 		thing.element.onmouseup = function()
+		{ this.thing.oncursorup(); }
+		thing.oncursorup = function()
 		{
-			this.thing.event.onmousedown=false;
-			console.info('onmouseup');
+			this.event.bnCursorDown=false;
+			console.info('oncursorup');
 		}
-		thing.loadPosDelta = function()
+		thing.loadPosDelta = function(event)
 		{
+			if(event===undefined)
+			{
+				var posMouseInX = this.Board.getMousePosInX();
+				var posMouseInY = this.Board.getMousePosInY();
+			}
+			else
+			{
+				var posMouseInX = BasicEI.getPosInXCursorForEvent(event);
+				var posMouseInY = BasicEI.getPosInYCursorForEvent(event);
+			}
 			var posInX = this.getPosInX();
 			var posInY = this.getPosInY();
-			var posMouseInX = this.Board.getMousePosInX();
-			var posMouseInY = this.Board.getMousePosInY();
 			this.posDeltaInX = posInX-posMouseInX;
 			this.posDeltaInY = posInY-posMouseInY;
 		}
@@ -160,7 +214,7 @@ var BasicEI = {
 			this.bnDragAndDrop = true;
 			this.addClass('c_DragAndDrop');
 			this.Board.addFunctionAnimatedInShadowSimple(function(mioptions){
-				if(this.qstnIsMouseDown())
+				if(this.qstnIsCursorDown())
 				{
 					if(this.Board.qstnIsMouseHover())
 					{
@@ -592,28 +646,19 @@ var EduInt = {
 	bnCreatedMouseMovement: false,
 	createMouseMovementDetect: function(){
 		if(!this.bnCreatedMouseMovement)
-		{ document.addEventListener('mousemove',this.oncursormove,false); }
+		{
+			document.addEventListener('mousemove',this.oncursormove,false);
+			document.addEventListener('touchmove',this.oncursormove,false);
+		}
 	},
 	posCursorInX: 0,
 	posCursorInY: 0,
 	oncursormove: function(evento){
 		//	En caso de ser touch
-		if(evento.targetTouches)
-		{
-			//	Habilitado para touch
-			var t=evento.targetTouches;
-
-			//	Posicion en x y y del mouse, con respecto al 0,0 del canvas
-			this.posCursorInX=t[0].pageX-findPosX_ESt(_arOCanvas_ESt[noLienso].id);
-			this.posCursorInY=t[0].pageY-findPosY_ESt(_arOCanvas_ESt[noLienso].id);
-		}
-		//	En caso de ser mouse
-		else
-		{
-			//	Posicion en x y y del mouse, con respecto al 0,0 del canvas
-			this.posCursorInX=evento.pageX;
-			this.posCursorInY=evento.pageY;
-		}
+		this.posCursorInX=BasicEI.getPosInXCursorForEvent(event);
+		this.posCursorInY=BasicEI.getPosInYCursorForEvent(event);
+		//	console.info('this.posCursorInX: '+this.posCursorInX);
+		//	console.info('this.posCursorInY: '+this.posCursorInY);
 		//	Pasa por cada uno de los tableros
 		for(var contBoards=0;contBoards<EduInt.arBoards.length;contBoards++){
 
@@ -623,8 +668,10 @@ var EduInt = {
 			var boardPosInX = board.getPosInX();
 			var boardPosInY = board.getPosInY();
 			//	Posicion del cursor, con relación a la esquina superior-izquierda
-			var boardMousePosInX = this.posCursorInX-board.getPosInX();
-			var boardMousePosInY = this.posCursorInY-board.getPosInY();
+			var boardMousePosInX = this.posCursorInX-boardPosInX;
+			var boardMousePosInY = this.posCursorInY-boardPosInY;
+			//	console.info('boardMousePosInX: '+boardMousePosInX);
+			//	console.info('boardMousePosInY: '+boardMousePosInY);
 			//	Registra la posicion del cursor, con relación a la esquina superior-izquierda
 			board.setMousePosInX(boardMousePosInX);
 			board.setMousePosInY(boardMousePosInY);
@@ -635,7 +682,10 @@ var EduInt = {
 			else if(board.getWidth()<=boardMousePosInX || board.getHeight()<=boardMousePosInY)
 			{ board.setIsMouseHover(false); }
 			else
-			{ board.setIsMouseHover(true); }
+			{
+				board.setIsMouseHover(true);
+				evento.preventDefault();
+			}
 		}
 	},
 	//	Esta clase contiene todos las funciones y variables de Educación Interactiva V4, como la cantidad de tableros(Boards) su número, sus nombres, la versión de este objeto.
@@ -1051,7 +1101,7 @@ var EduInt = {
 		this.qstnIsMouseHover = function() { return this.bnIsMouseHover; }
 		this.positionMouseInX = 0;
 		this.positionMouseInY = 0;
-		this.setMousePosInX =	 function(posInX){ this.positionMouseInX = posInX; }
+		this.setMousePosInX = function(posInX){ this.positionMouseInX = posInX; }
 		this.getMousePosInX = function(){ return this.positionMouseInX; }
 		this.setMousePosInY = function(posInY){ this.positionMouseInY = posInY; }
 		this.getMousePosInY = function(){ return this.positionMouseInY; }
@@ -1303,7 +1353,7 @@ var EduInt = {
 		this.event = { };
 		this.event.onclick=false;
 		this.event.onmouseover=false;
-		this.event.onmousedown=false;
+		this.event.bnCursorDown=false;
 
 		//	Variables de movimiento
 		this.moveInX=0;

@@ -109,7 +109,7 @@ var EI_ArrastarPalabras = function()
             for(var contPalabras = 0;contPalabras < this.my.ei_arrastrar_palabras.palabras.length;contPalabras++)
             {
 
-                if(this.t('ap_palabras_'+contPalabras).qstnIsMouseDown())
+                if(this.t('ap_palabras_'+contPalabras).qstnIsCursorDown())
                 {
                     this.t('ap_palabras_'+contPalabras).enAboveAll();
                     var bnEnColocarSobreElBlack = false;
@@ -123,7 +123,7 @@ var EI_ArrastarPalabras = function()
                 for(var countBlacks = 1;countBlacks <= this.my.numEspaciosEnBlanco; countBlacks++)
                 {
                     //  Si se levanta un objeto que antes estaba quieto
-                    if(this.t('ap_palabras_'+contPalabras).qstnIsMouseDown())
+                    if(this.t('ap_palabras_'+contPalabras).qstnIsCursorDown())
                     {
                         if(this.my.arInBlack['ap_black_texto_'+countBlacks]=='ap_palabras_'+contPalabras)
                         {
