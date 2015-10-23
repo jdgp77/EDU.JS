@@ -6,7 +6,7 @@ var EI_ArrastarPalabras = function()
 {
     this.create=function()
     {
-        this.boardArrastrarPalabras = $('#'+this.ei_arrastrar_palabras.id).createBoard('arrastrarpalabras'+(EI_BasicArrastarPalabras.numAP++),400,300);
+        this.boardArrastrarPalabras = $('#'+this.ei_arrastrar_palabras.id).createBoard('arrastrarpalabras'+(EI_BasicArrastarPalabras.numAP++),400,200);
 
         this.boardArrastrarPalabras.my.ei_arrastrar_palabras = this.ei_arrastrar_palabras;
         this.boardArrastrarPalabras.start(
