@@ -1,5 +1,20 @@
-﻿//	Todas las funciones basicas de Educación Interactiva estan aca
+//	Todas las funciones basicas de Educación Interactiva estan aca
 var BasicEI = {
+	setDefaultOptions: function(newJson,defaultJson)
+	{
+		//	Si no existen nuevos datos retorna el defaultJson
+		if(newJson===undefined) { return defaultJson; }
+
+		for(keyDefaultJson in defaultJson)
+		{
+			if(newJson[keyDefaultJson]===undefined)
+			{
+				newJson[keyDefaultJson] = defaultJson[keyDefaultJson];
+			}
+		}
+
+		return newJson;
+	},
 	getPosInXCursorForEvent: function(event)
 	{
 		//	En caso de ser touch
@@ -237,6 +252,8 @@ var BasicEI = {
 		{ this.element.style.backgroundImage = "url('"+urlImage+"')"; return this; }
 		thing.setBackgroundColor = function(backgroundColor)
 		{ this.element.style.backgroundColor = backgroundColor; return this; }
+		thing.setBackgroundPosition = function(backgroundPosition)
+		{ this.element.style.backgroundPosition = backgroundPosition; return this; }
 
 		//	ID
 		thing.setId = function(id)
@@ -407,6 +424,49 @@ var BasicEI = {
 //  Esta clase contiene todos las funciones y variables de Educación Interactiva V4, como la cantidad de tableros(Boards) su número, sus nombres, la versión de este objeto.
 var EduInt = {
 //ALERT - Comentar
+	//	Carga el tablero de una base de datos de algun servidor, esto para pegarlo en cualquier pagina web
+	//	Ejemplo:
+	//		loadBoardIn(object,'http://mipagina.com/juego3','casa=2&paso=3','casa=2&paso=3&hola=mundo')
+	loadBoardIn: function(object,path,paramGet,paramPost,onFinish)
+	{
+		if(paramGet===undefined) { paramGet=''; }
+		if(paramPost===undefined) { paramPost=''; }
+
+		var xhttp = new XMLHttpRequest();
+		xhttp.object=object;
+		xhttp.onFinish=onFinish;
+		xhttp.onreadystatechange = function()
+		{
+			if(xhttp.readyState == 4 && xhttp.status == 200)
+			{
+				var info=JSON.parse(xhttp.responseText);
+				board = EduInt.createBoardIn(xhttp.object, info.title, info.width, info.height, info.start, info.animate);
+				board.my.functionToStart=window.atob(info.start);
+				board.my.functionToAnimate=window.atob(info.animate);
+				board.start(function(info){
+                	eval(this.my.functionToStart);
+            	});
+            	board.createAnimation(function(info){
+                	eval(this.my.functionToAnimate);
+            	}).startAnimation();
+
+            	xhttp.onFinish(board,info);
+			}
+		};
+
+		if(paramPost!='')
+		{
+			xhttp.open("POST", path+(paramGet!==''?'?'+paramGet:''), true);
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhttp.send(paramPost);
+		}
+		else
+		{
+			xhttp.open("GET", path+(paramGet!==''?'?'+paramGet:''), true);
+			xhttp.send();
+		}
+	},
+//ALERT - Comentar
 	//	Arreglo de las animaciónes
 	arAnimations: [],
 //ALERT - Comentar
@@ -442,97 +502,154 @@ var EduInt = {
 		//	Retorna la animación creada
 		return animation;
 	},
-	predefineFunctions: function(name,value){
-		switch(name){
-			case 'drawBoard':
-				EduInt.arBoards[EduInt.arBoardsNames[value]].drawChanges();
-				break;
-		}
-	},
 //ALERT - Comentar
 	//	Objeto para animaciónes
 	newAnimation: function(stepsPerSecond){
+		//	(Animation)
 		//	numero de la animacoión
 		this.numAnimacion=EduInt.arAnimations.length;
+		//	(Animation)
 		//	Si y esta corriendo la animación
 		this.bnRunAnimation=false;
+		//	(Animation)
 //	ALERT - Comentar
 		//	Arreglo con los ultimos movimientos
  		this.arUltimosMovimientos=[];
+ 		//	(Animation)
 //	ALERT - Comentar
+//	Alerta paree ser este el mismo stepsPerSecond
 		this.numRegistroUltimosMovimientos = 25;
+		//	(Animation)
+//	ALERT - Comentar
+		//	Numero de pasos
+		this.stepsPerSecond=stepsPerSecond;
+		//	(Animation)
+		//	Retorna el numero de pasos por Segundo
+		this.getStepsPerSecond=function()
+		{
+			return this.stepsPerSecond;
+		}
+		//	(Animation)
 		//	Inicia la animación
 		this.start=function()
 		{
 			//	Si y esta corriendo la animación
 			this.bnRunAnimation=true;
-			//	Pasos caminados
-			this.numPasos=0;
+			//	Inicia el numero de pasos
+			if(this.numPasos==undefined) { this.numPasos=0; }
 			//	Cuando incio este
 			this.milisegundosInicio=this.milisegundosAhora();
 			//	Inicia la animación
 			this.animate();
 		}
-		//	TOdas las funciones para animar
-		this.arFunctionsAnimated = [];
-//	ALERT - Comentar
-		//	Los datos que ingresan a esa funcion a animar
-		this.arFunctionsAnimated_json = [];
-		//	El padre de esa funcion a animar
-		this.arFunctionsAnimated_father = [];
-//	ALERT - Comentar
-		//	TOdas las funciones para animar
-		this.arBnPredefineFunctionsAnimated = [];
-//	ALERT - Comentar
-		//	Arreglo, retorna el numero de la llave del nombre y el valor con el numero de la llave de la funcion
-		this.arNumNameAndValue = [];
-//	ALERT - Comentar
-		//	Valor de la función predefinida
-		this.arPredefineNameFunctionsAnimated = [];
-//	ALERT - Comentar
-		//	Valor de la función predefinida
-		this.arValueOfFunctionsAnimated = [];
-		//	Añade una funcion al animar
-		this.addFunction=function(functionOnAnimation,jsonOnFunctionAnimated,father)
-		{
-			//	numero de la funcion
-			var numFunctionAnimated = this.arFunctionsAnimated.length;
-			//	Cargamos la función
-			this.arFunctionsAnimated[numFunctionAnimated]=functionOnAnimation;
-			//	Los datos que ingresan a esa funcion a animar
-			if(jsonOnFunctionAnimated !== undefined) { this.arFunctionsAnimated_json[numFunctionAnimated]=jsonOnFunctionAnimated; }
-			//	El padre de esa funcion a animar
-			if(father !== undefined) { this.arFunctionsAnimated_father[numFunctionAnimated]=father; }
-			//	Guardamos si es una funcion predefinida
-			this.arBnPredefineFunctionsAnimated[numFunctionAnimated]=false;
-
-			return this;
-		};
-//	ALERT - Comentar
-		this.addPredefineFunction=function(namePredefineFunctionInAnimation,value)
-		{
-			//	Arreglo, retorna el numero de la llave del nombre y el valor con el numero de la llave de la funcion
-			this.arNumNameAndValue[this.arFunctionsAnimated.length]=this.arPredefineNameFunctionsAnimated.length;
-			//	Carga la funcion preefinida
-			this.arFunctionsAnimated[this.arFunctionsAnimated.length] = EduInt.predefineFunctions;
-			//	Guardamos la animación predefinida
-			this.arPredefineNameFunctionsAnimated[this.arPredefineNameFunctionsAnimated.length] = namePredefineFunctionInAnimation;
-			//	Guardamos el valor de la funcion predefinida
-			this.arValueOfFunctionsAnimated[this.arValueOfFunctionsAnimated.length] = value;
-			//	Guardamos si es una funcion predefinida
-			this.arBnPredefineFunctionsAnimated[this.arBnPredefineFunctionsAnimated.length]=true;
-		};
+		//	(Animation)
+		//	Pausa la animación
+		this.pause=function()
+		{ this.bnRunAnimation=false; }
+		//	(Animation)
 		//	Finaliza la animación
 		this.stop=function()
-		{ this.bnRunAnimation=false; }
+		{
+			this.pause();
+			//	Pasos caminados
+			this.numPasos=0;
+		}
+		//	(Animation)
+		this.deleteFunction=function(numFunction)
+		{
+			this.arFunctionsAnimated[numFunction]=undefined;
+			this.arFunctionsAnimated_json[numFunction]=undefined;
+			this.arFunctionsAnimated_father[numFunction]=undefined;
+		}
+		//	(Animation)
+		this.deleteFunctions=function(numFunction)
+		{
+			for(var countFunctionsAnimated=0;countFunctionsAnimated<this.arFunctionsAnimated.length;countFunctionsAnimated++)
+			{
+				this.deleteFunction(countFunctionsAnimated);
+			}
+			//	TOdas las funciones para animar
+			this.arFunctionsAnimated = [];
+			//	Los datos que ingresan a esa funcion a animar
+			this.arFunctionsAnimated_json = [];
+			//	El padre de esa funcion a animar
+			this.arFunctionsAnimated_father = [];
+		}
+		//	(Animation)
 //	ALERT - Comentar
 		//	Finaliza la animación
 		this.restart=function()
 		{ this.stop(); this.start(); }
+		//	TOdas las funciones para animar
+		this.arFunctionsAnimated = [];
+		//	(Animation)
+//	ALERT - Comentar
+		//	Los datos que ingresan a esa funcion a animar
+		this.arFunctionsAnimated_json = [];
+		//	(Animation)
+		//	El padre de esa funcion a animar
+		this.arFunctionsAnimated_father = [];
+//	ALERT - Comentar
+		//	Valor de la función predefinida
+		this.arBnEnFunctionsAnimated = [];
+//	ALERT - Comentar
+		//	Numero de pasos por esa función
+		this.arNumPasosFunctionsAnimated = [];
+		//	(Animation)
+//	ALERT - Comentar
+		//	TOdas las funciones para animar
+		this.arBnPredefineFunctionsAnimated = [];
+		//	(Animation)
+//	ALERT - Comentar
+		//	Arreglo, retorna el numero de la llave del nombre y el valor con el numero de la llave de la funcion
+		this.arNumNameAndValue = [];
+		//	(Animation)
+//	ALERT - Comentar
+		//	Valor de la función predefinida
+		this.arPredefineNameFunctionsAnimated = [];
+		//	(Animation)
+//	ALERT - Comentar
+		//	Valor de la función predefinida
+		this.arValueOfFunctionsAnimated = [];
+		//	(Animation)
+		//	Añade una funcion al animar
+		this.addFunction=function(functionOnAnimation,jsonOnFunctionAnimated,father,bnEnAnimation)
+		{
+			if(bnEnAnimation===undefined) { bnEnAnimation=true; }
+			//	numero de la funcion
+			var numFunctionAnimated = this.arFunctionsAnimated.length;
+			//	Cargamos la función
+			this.arFunctionsAnimated[numFunctionAnimated]=functionOnAnimation;
+			//	Habilita la animación de esta función
+			this.arBnEnFunctionsAnimated[numFunctionAnimated]=bnEnAnimation;
+			//	Los datos que ingresan a esa funcion a animar
+			if(jsonOnFunctionAnimated !== undefined) { this.arFunctionsAnimated_json[numFunctionAnimated]=jsonOnFunctionAnimated; }
+			//	El padre de esa funcion a animar
+			if(father !== undefined) { this.arFunctionsAnimated_father[numFunctionAnimated]=father; }
+			//	Retorna el numero de la animación
+			return numFunctionAnimated;
+		};
+		//	(Animation)
+		//	Habilita o desabilita las funciónes a animar, normalmente ya vienen habilitadas
+		this.enFunction=function(numFunctionAnimated)
+		{ this.arBnEnFunctionsAnimated[numFunctionAnimated]=true; };
+		this.unFunction=function(numFunctionAnimated)
+		{ this.arBnEnFunctionsAnimated[numFunctionAnimated]=false; };
+		//	(Animation)
+		this.addPredefineFunction=function(namePredefineFunctionInAnimation,jsonOnFunctionAnimated,father,bnEnAnimation)
+		{
+			var numFunctionInAnimation = this.addFunction(namePredefineFunctionInAnimation,jsonOnFunctionAnimated,father,bnEnAnimation);
+			//	Informa que esta es una función predefinida
+			this.arBnPredefineFunctionsAnimated[numFunctionInAnimation]=true;
+
+			return numFunctionInAnimation;
+		};
+		//	(Animation)
 		//	Cada cuanto realizar el paso
-		this.pasosPorUnSegundo = 1000/stepsPerSecond;
+		this.pasosPorUnSegundo = 1000/this.stepsPerSecond;
+		//	(Animation)
 		//	Ejecuta la animacipón
-		this.animate=function(noPasosCaminados,milisegundosInicio)
+		this.animate=function()
 		{
 			//	Si puede continuar con la animación
 			if(this.bnRunAnimation)
@@ -544,40 +661,51 @@ var EduInt = {
 					//	Funcion a ejecutar
 					for(contarFunctionsAnimated=0;contarFunctionsAnimated<this.arFunctionsAnimated.length;contarFunctionsAnimated++)
 					{
-						//	Si son funciones sencillas
-						if(!this.arBnPredefineFunctionsAnimated[contarFunctionsAnimated])
+						var functionAnimated = this.arFunctionsAnimated[contarFunctionsAnimated];
+						//	Si estan habilitadas
+						if(this.arBnEnFunctionsAnimated[contarFunctionsAnimated])
 						{
-							var functionAnimated = this.arFunctionsAnimated[contarFunctionsAnimated];
-							//	Los datos a enviar con ellos
-							var datosAEnviar_;
-							if(this.arFunctionsAnimated_json[contarFunctionsAnimated] !== undefined)
-							{ datosAEnviar_ = this.arFunctionsAnimated_json[contarFunctionsAnimated]; }
 							var father_;
 							if(this.arFunctionsAnimated_father[contarFunctionsAnimated] !== undefined)
 							{ father_ = this.arFunctionsAnimated_father[contarFunctionsAnimated]; }
+							//	Si son funciones sencillas
+							if(!this.arBnPredefineFunctionsAnimated[contarFunctionsAnimated])
+							{
+									//	Añade el numero de pasos
+									if(this.arNumPasosFunctionsAnimated[contarFunctionsAnimated]!==undefined)
+									{ this.arNumPasosFunctionsAnimated[contarFunctionsAnimated]++; }
+									else
+									{ this.arNumPasosFunctionsAnimated[contarFunctionsAnimated]=1; }
+									//	Añade el numero de pasos que veria el usuario
+									var numPasosFuntion = this.arNumPasosFunctionsAnimated[contarFunctionsAnimated];
+									//	Los datos a enviar con ellos
+									var datosAEnviar_;
+									if(this.arFunctionsAnimated_json[contarFunctionsAnimated] !== undefined)
+									{ datosAEnviar_ = this.arFunctionsAnimated_json[contarFunctionsAnimated]; }
 
-							//	El padre de esa funcion a animar
-							this.arFunctionsAnimated_father
-							var info_ = {
-								numFramePerSecond: this.pasosPorUnSegundo,
-								numFrames: this.numPasos,
-								timeInSeconds: (this.numPasos/25),
-								data: datosAEnviar_,
-							};
-							if(father_!==undefined)
-							{ father_.functionAnimated = functionAnimated; father_.functionAnimated(info_); }
+									//	El padre de esa funcion a animar
+									this.arFunctionsAnimated_father
+									var info_ = {
+										numFramePerSecond: this.stepsPerSecond,
+										numFrame: numPasosFuntion,
+										timeInSeconds: (numPasosFuntion/this.stepsPerSecond),
+										data: datosAEnviar_,
+									};
+									if(father_!==undefined)
+									{ father_.functionAnimated = functionAnimated; father_.functionAnimated(info_); }
+									else
+									{ functionAnimated(info_); }
+							}
+							//	Si son funciones predefinidas
 							else
-							{ functionAnimated(info_); }
-						}
-						//	Si son funciones predefinidas
-						else
-						{
-							var functionAnimated = this.arFunctionsAnimated[contarFunctionsAnimated];
-							functionAnimated(this.arPredefineNameFunctionsAnimated[this.arNumNameAndValue[contarFunctionsAnimated]],this.arValueOfFunctionsAnimated[this.arNumNameAndValue[contarFunctionsAnimated]]);
+							{
+								father_[functionAnimated]();
+							}
 						}
 					}
 					//	Mira en cuanto tiempo ejecutar esta misma funcion
 					var tiempoEjecucion = this.controlSegundos(this.milisegundosInicio,this.numPasos,this.pasosPorUnSegundo);
+					//	if(this.numPasos<50) { console.info(tiempoEjecucion+' = this.controlSegundos('+this.milisegundosInicio+','+this.numPasos+','+this.pasosPorUnSegundo+')'); }
 					//	Registra los ultimos this.numRegistroUltimosMovimientos(25 PorDef) en los tiempos
 					for(var contRegistroUltimosMovimientos=0;contRegistroUltimosMovimientos<this.numRegistroUltimosMovimientos-1;contRegistroUltimosMovimientos++)
 					{ this.arUltimosMovimientos[contRegistroUltimosMovimientos] = this.arUltimosMovimientos[contRegistroUltimosMovimientos+1]; }
@@ -597,6 +725,7 @@ var EduInt = {
 			//	{ this.bnRunAnimation=false; console.err('Error en la funcion de la animación: '+err);}
 			}
 		}
+		//	(Animation)
 		//	Retorna en cuanto tiempo tiene que ejecutar el siguiente
 		this.controlSegundos=function(milisegundosInicio,numPasosCaminados,pasoMilisegMinimo)
 		{
@@ -611,6 +740,7 @@ var EduInt = {
 			//	console.info("Diferencia:  "+valReturn_EI);
 			return valReturn;
 		}
+		//	(Animation)
 		//	Retorna los milisegundos del momento
 		//	  cuando se ejecuto
 		this.milisegundosAhora=function()
@@ -631,7 +761,7 @@ var EduInt = {
 			console.log(message);
 		},
 		error: function(message){
-			console.log(message);
+			console.err(message);
 		},
 	},
 //ALERT - Comentar
@@ -899,7 +1029,7 @@ var EduInt = {
 			//	---
 
 			//	Crea el div que ira dentro
-			this.oDiv=document.getElementsByTagName('body')[0];
+			this.oDiv=document.body;
 			this.oDiv.Board=this;
 			//	Añadimos la clase al tablero
 			this.oDiv.className=this.oDiv.className + ' ' + 'ei_board';
@@ -1145,7 +1275,16 @@ var EduInt = {
 		this.t = function(nameThing,posInX,posInY,width,height) {
 			//	Si existe el objeto lo retorna
 			if(this.prThingForName(nameThing)) {
-				return this.getThingForName(nameThing,posInX,posInY,width,height);
+				var thing = this.getThingForName(nameThing,posInX,posInY,width,height);
+				//	Cuando uno llama a un this.t('nombre').accAlgo(9).inSeconds(5), el almacena un arreglo con las acciones a realizar,
+				//	Estas acciones se tienen que borrar cuando se vuelve a llamar al nombre,permitiendo que lo siguoente funcione
+				//	Ejemplo:
+				//		this.t('nombre').accMoveInX(9).inSeconds(5)
+				//		Cuando vuelva a ser llamado el borrara las acciones anteriores, permitiendo colocar a las nuevas un tiempo
+				//		Si el no limpoara las acciones anteriores el colocaria en 2 segundos el Mover en X (accMoveInX(9))
+				//		this.t('nombre').accMoveInY(9).inSeconds(2)
+				thing.clearActionsInTime();
+				return thing;
 			}
 			//	Si NO existe lo retorna
 			else {
@@ -1176,7 +1315,7 @@ var EduInt = {
 			return this.createThing_only(this,nameThing,posInX,posInY,width,height);
 		};
 		// (Board)
-//ALERT - Comentar
+//	ALERT - Comentar
 		//	Es como inicia una animación, este se puede omitir, pero si se usa se puede reinicar la animación
 		this.start = function(functionToStart)
 		{
@@ -1192,6 +1331,25 @@ var EduInt = {
 			//	Informa que salio de modo start
 			this.bnIsInStart=false;
 		};
+		//	(Board)
+//	ALERT - Comentar
+		this.stop = function()
+		{
+			//	Pasa por todos los things y los elimina
+			for(var countThings=0;countThings<this.arThings.length;countThings++)
+			{
+				this.arThings[countThings].delete();
+			}
+			this.arThings=[];
+			this.arThingsForName=[];
+		};
+		// (Board)
+//ALERT - Comentar
+		this.restart = function(functionToStart)
+		{
+			this.stop();
+			this.start(functionToStart);
+		};
 		// (Board)
 //ALERT - Comentar
 		//	Informa si se esta en el start
@@ -1205,6 +1363,10 @@ var EduInt = {
 		};
 		// (Board)
 //	ALERT - Comentar
+		//	Carga las funciónes que tienen que estar al cargar la animación
+		this.arNumOfFunctnToStatInAnimation=[]
+		// (Board)
+//	ALERT - Comentar
 		//	Crea la animación
 		this.createAnimation = function(functionAnimated,stepsPerSecond) {
 			//	Si no tiene pasos por segundo asume que son 25
@@ -1214,13 +1376,38 @@ var EduInt = {
 			//	La agrega al tablero
 			this.functionAnimated = functionAnimated;
 			//	Añadimos la funcion para ser animada
-			this.animation.addFunction(this.functionAnimated,{},this);
+			this.arNumOfFunctnToStatInAnimation[this.arNumOfFunctnToStatInAnimation.length]=this.animation.addFunction(this.functionAnimated,{},this,false);
 			//	Añadimos la funcion que manejara las animaciónes en segundo plano
-			this.animation.addFunction(this.functionAnimatedShadow,{},this);
+			this.arNumOfFunctnToStatInAnimation[this.arNumOfFunctnToStatInAnimation.length]=this.animation.addFunction(this.functionAnimatedShadow,{},this,false);
 			//	Añadmimos la funcion para dibujar cambios
-			this.animation.addPredefineFunction('drawBoard',this.nameBoard);
-			//	Retorna la animación
+			this.arNumOfFunctnToStatInAnimation[this.arNumOfFunctnToStatInAnimation.length]=this.animation.addPredefineFunction('drawChanges',{},this,false);
+			//	Retorna el tablero
 			return this;
+		}		// (Board)
+//	ALERT - Comentar
+		//	Elmina la animación
+		this.deleteAnimation = function() {
+			if(this.animation)
+			{
+				//	Detiene la animación y la deja en posicion de inicio
+				this.animation.stop();
+				//	Borra todas las funciones de animación si existen
+				this.animation.deleteFunctions();
+				//	Borra la animación
+				this.animation=undefined;
+			}
+			//	Retorna el tablero
+			return this;
+		}
+		//
+		this.delete = function()
+		{
+			//	Borra la animación
+			this.deleteAnimation();
+			//	Quita los objetos
+			this.stop();
+			//	Borra el contenido del tablero, mientras no sea un tablero en el body
+			if(document.body!=this.oDiv) { this.oDiv.remove(); }
 		}
 		// (Board)
 //	ALERT - COMMENT
@@ -1317,7 +1504,13 @@ var EduInt = {
 //	ALERT - Comentar
 		//	Inicia la animación
 		this.startAnimation = function(){
-			//	Inicia la animacion
+			//	Habilita las funciones a animar
+			for(var countFunctAnimated=0;countFunctAnimated<this.arNumOfFunctnToStatInAnimation.length;countFunctAnimated++)
+			{
+				var numFunctionAnimated=this.arNumOfFunctnToStatInAnimation[countFunctAnimated];
+				this.animation.enFunction(numFunctionAnimated);
+			}
+			//	Inicia la animacion,
 			this.animation.start();
 		}
 	},
@@ -1361,14 +1554,22 @@ var EduInt = {
 		this.moveInX=0;
 		this.moveInY=0;
 		this.rotate=0;
+		//	Función por dedecto de todas las aciones, el parametro es el nombre de la variable cambiada
+		this.accDefaultFunction = function(nameVariable)
+		{
+			//	Informa que existe un cambio para dibujar
+			this.bnActionToDraw[this.bnActionToDraw.length]=nameVariable;
+			//	true, si existen cambios sin dibujar
+			this.bnCambiosSinDraw=true;
+			//	Agrega la acción al arreglo  por si quieren colocarle un tiempo
+			this.addActionsInTime(nameVariable);
+		};
 		//	(thing)
 		this.accChangeWidth = function(width){
 			//	Cambia el ancho
 			this.width=width;
-			//	Informa que existe un cambio para dibujar
-			this.bnDontDraw[this.bnDontDraw.length]='width';
-			//	true, si existen cambios sin dibujar
-			this.bnCambiosSinDraw=true;
+			//	Función por dedecto de todas las aciones
+			this.accDefaultFunction('width');
 			//	Retorna el mismo objeto
 			return this;
 		}
@@ -1376,10 +1577,8 @@ var EduInt = {
 		this.accChangeHeight = function(height){
 			//	Cambia el alto
 			this.height=height;
-			//	Informa que existe un cambio para dibujar
-			this.bnDontDraw[this.bnDontDraw.length]='height';
-			//	true, si existen cambios sin dibujar
-			this.bnCambiosSinDraw=true;
+			//	Función por dedecto de todas las aciones
+			this.accDefaultFunction('height');
 			//	Retorna el mismo objeto
 			return this;
 		}
@@ -1388,10 +1587,8 @@ var EduInt = {
 		this.accMoveInX = function(moveInX){
 			//	Guara cuanto debe moverce en X
 			this.moveInX=this.moveInX+moveInX;
-			//	Mueve el objeto a la nueva posición
-			this.posInX=this.posInX+moveInX;
-			//	true, si existen cambios sin dibujar
-			this.bnCambiosSinDraw=true;
+			//	Función por dedecto de todas las aciones
+			this.accDefaultFunction('moveInX');
 			//	Retorna el mismo objeto
 			return this;
 		};
@@ -1399,66 +1596,70 @@ var EduInt = {
 		this.accMoveInY = function(moveInY){
 			//	Guara cuanto debe moverce en X
 			this.moveInY=this.moveInY+moveInY;
-			//	Mueve el objeto a la nueva posición
-			this.posInY=this.posInY+moveInY;
-			//	true, si existen cambios sin dibujar
-			this.bnCambiosSinDraw=true;
+			//	Función por dedecto de todas las aciones
+			this.accDefaultFunction('moveInY');
 			//	Retorna el mismo objeto
 			return this;
 		};
 		//	(thing)
-		this.accMoveRight = function(moveRight){
-			//	Guara cuanto debe moverce en X
-			this.moveInX=this.moveInX+moveRight;
-			//	Mueve el objeto a la nueva posición
-			this.posInX=this.posInX+moveRight;
-			//	true, si existen cambios sin dibujar
-			this.bnCambiosSinDraw=true;
-			//	Retorna el mismo objeto
-			return this;
-		};
+		this.accMoveRight = function(moveRight) { return this.accMoveInX(moveRight); };
 		//	(thing)
-		this.accMoveLeft = function(moveLeft){
-			//	Guara cuanto debe moverce en X
-			this.moveInX=this.moveInX-moveLeft;
-			//	Mueve el objeto a la nueva posición
-			this.posInX=this.posInX-moveLeft;
-			//	true, si existen cambios sin dibujar
-			this.bnCambiosSinDraw=true;
-			//	Retorna el mismo objeto
-			return this;
-		};
+		this.accMoveLeft = function(moveLeft) { return this.accMoveInX(moveLeft*(-1)); };
 		//	(thing)
-		this.accMoveTop = function(moveTop){
-			//	Guara cuanto debe moverce en X
-			this.moveInY=this.moveInY+moveTop;
-			//	Mueve el objeto a la nueva posición
-			this.posInY=this.posInY+moveTop;
-			//	true, si existen cambios sin dibujar
-			this.bnCambiosSinDraw=true;
-			//	Retorna el mismo objeto
-			return this;
-		};
+		this.accMoveTop = function(moveTop) { return this.accMoveInY(moveTop*(-1)); };
 		//	(thing)
-		this.accMoveButton = function(moveButton){
-			//	Guara cuanto debe moverce en X
-			this.moveInX=this.moveInX-moveButton;
-			//	Mueve el objeto a la nueva posición
-			this.posInX=this.posInX-moveButton;
-			//	true, si existen cambios sin dibujar
-			this.bnCambiosSinDraw=true;
-			//	Retorna el mismo objeto
-			return this;
-		};
+		this.accMoveButton = function(moveButton) { return this.accMoveInY(moveButton); };
 		//	(thing)
 		this.accRotate = function(rotate){
 			//	Guara cuanto debe moverce en X
 			this.rotate=this.rotate+rotate;
+
+//	Info: Borrar:
 			//	Mueve el objeto a la nueva posición
-			this.rotation=this.rotation+rotate;
-			//	true, si existen cambios sin dibujar
-			this.bnCambiosSinDraw=true;
+			//	this.rotation=this.rotation+rotate;
+
+			//	Función por dedecto de todas las aciones
+			this.accDefaultFunction('rotate');
 			//	Retorna el mismo objeto
+			return this;
+		};
+		//	Cuando uno llama a un this.t('nombre').accAlgo(9).inSeconds(5), el almacena un arreglo con las acciones a realizar,
+		//	Estas acciones se tienen que borrar cuando se vuelve a llamar al nombre,permitiendo que lo siguoente funcione
+		//	Ejemplo:
+		//		this.t('nombre').accMoveInX(9).inSeconds(5)
+		//		Cuando vuelva a ser llamado el borrara las acciones anteriores, permitiendo colocar a las nuevas un tiempo
+		//		Si el no limpoara las acciones anteriores el colocaria en 2 segundos el Mover en X (accMoveInX(9))
+		//		this.t('nombre').accMoveInY(9).inSeconds(2)
+		this.arActionsInTime=[];
+		this.addActionsInTime = function(nameFunction)
+		{ this.arActionsInTime[this.arActionsInTime.length]=nameFunction; return this; };
+		this.clearActionsInTime = function()
+		{ this.arActionsInTime=[]; return this; };
+		//	(thing)
+		this.inSeconds = function(seconds)
+		{
+			var constanteADividir=(this.Board.animation.getStepsPerSecond()*seconds);
+			//	Pasa por todas las acciones hasta ahora colocadas y les coloca el tiempo en que se ejecutaran
+			for(var countActionsInTime=0;countActionsInTime<this.arActionsInTime.length;countActionsInTime++)
+			{
+//	WARNING
+//	QUeda faltarlo al cambio de ancho y alto
+				switch(this.arActionsInTime[countActionsInTime])
+				{
+					case 'rotate':
+						this.rotate=this.rotate/constanteADividir;
+						break;
+					case 'moveInX':
+						this.moveInX=this.moveInX/constanteADividir;
+						break;
+					case 'moveInY':
+						this.moveInY=this.moveInY/constanteADividir;
+						break;
+				}
+			}
+			//	Borra todas las acciones para cambiern segun el tiempo
+			this.clearActionsInTime();
+
 			return this;
 		};
 		//	(thing)
@@ -1607,6 +1808,9 @@ var EduInt = {
 							break;
 					}
 					break;
+				case 'svg':
+
+					break;
 				case 'form':
 					//	Que tipo de forma es
 					switch(this.subType)
@@ -1724,6 +1928,15 @@ var EduInt = {
 //	ALERT - Comentar
 		//	Cambia las espesificaciónes anteriores
 		this.draw = function(){
+            //  Si tiene acciones las coloca para pintarlas
+            if(this.moveInX!=0) { this.posInX=this.posInX+this.moveInX; }
+            if(this.moveInY!=0) { this.posInY=this.posInY+this.moveInY; }
+            //  Camba la poscición del contenedor deacuerdo a las variables
+            this.Container.setPostion(this.posInX,this.posInY);
+            //  Limpia las variables de movimiento, por posición
+            this.moveInX=0;
+            this.moveInY=0;
+
 			this.Container.setPostion(this.posInX,this.posInY);
 			//	En caso de que el tipo no cambiara el permite dibujarlo
 			if(!this.prTypeChange())
@@ -1733,28 +1946,28 @@ var EduInt = {
 				{
 					case 'text':
 						//	Realiza solo los cambios asignados
-						for(var countChanges=0;countChanges<this.bnDontDraw.length;countChanges++)
+						for(var countChanges=0;countChanges<this.bnActionToDraw.length;countChanges++)
 						{
-							if(this.bnDontDraw[countChanges]=='width')
+							if(this.bnActionToDraw[countChanges]=='width')
 							{ this.element.style.width = this.width + 'px'; }
-							if(this.bnDontDraw[countChanges]=='height')
+							if(this.bnActionToDraw[countChanges]=='height')
 							{ this.element.style.height = this.height + 'px'; }
 						}
 						//	Reinicia los cambios asignados
-						this.bnDontDraw=[];
+						this.bnActionToDraw=[];
 						break;
 					case 'input':
 //	ALERT - Problema al crearlo queda de 20 por 20
 						//	Realiza solo los cambios asignados
-						for(var countChanges=0;countChanges<this.bnDontDraw.length;countChanges++)
+						for(var countChanges=0;countChanges<this.bnActionToDraw.length;countChanges++)
 						{
-							if(this.bnDontDraw[countChanges]=='width')
+							if(this.bnActionToDraw[countChanges]=='width')
 							{ this.element.style.width = this.width + 'px'; }
-							if(this.bnDontDraw[countChanges]=='height')
+							if(this.bnActionToDraw[countChanges]=='height')
 							{ this.element.style.height = this.height + 'px'; }
 						}
 						//	Reinicia los cambios asignados
-						this.bnDontDraw=[];
+						this.bnActionToDraw=[];
 						break;
 					//	Si se trata de una forma
 					case 'element':
@@ -1762,15 +1975,15 @@ var EduInt = {
 						{
 							case 'div':
 								//	Realiza solo los cambios asignados
-								for(var countChanges=0;countChanges<this.bnDontDraw.length;countChanges++)
+								for(var countChanges=0;countChanges<this.bnActionToDraw.length;countChanges++)
 								{
-									if(this.bnDontDraw[countChanges]=='width')
+									if(this.bnActionToDraw[countChanges]=='width')
 									{ this.element.style.width = this.width + 'px'; }
-									if(this.bnDontDraw[countChanges]=='height')
+									if(this.bnActionToDraw[countChanges]=='height')
 									{ this.element.style.height = this.height + 'px'; }
 								}
 								//	Reinicia los cambios asignados
-								this.bnDontDraw=[];
+								this.bnActionToDraw=[];
 								break;
 						}
 						break;
@@ -1782,31 +1995,31 @@ var EduInt = {
 							//	Si es un rectangulo (Por defecto)
 							case 'rectangle':
 								//	Realiza solo los cambios asignados
-								for(var countChanges=0;countChanges<this.bnDontDraw.length;countChanges++)
+								for(var countChanges=0;countChanges<this.bnActionToDraw.length;countChanges++)
 								{
-									if(this.bnDontDraw[countChanges]=='width')
+									if(this.bnActionToDraw[countChanges]=='width')
 									{
 										this.svgThingType.setAttribute("width", BasicEI.measure(this.width));
 										this.thingType.setAttribute("width", BasicEI.measure(this.width));
 									}
-									if(this.bnDontDraw[countChanges]=='height')
+									if(this.bnActionToDraw[countChanges]=='height')
 									{
 										this.svgThingType.setAttribute("height", BasicEI.measure(this.height));
 										this.thingType.setAttribute("height", BasicEI.measure(this.height));
 									}
 								}
 								//	Reinicia los cambios asignados
-								this.bnDontDraw=[];
+								this.bnActionToDraw=[];
 								break;
 							case 'circle':
 								//	Realiza solo los cambios asignados
-								for(var countChanges=0;countChanges<this.bnDontDraw.length;countChanges++)
+								for(var countChanges=0;countChanges<this.bnActionToDraw.length;countChanges++)
 								{
-									if(this.bnDontDraw[countChanges]=='width')
+									if(this.bnActionToDraw[countChanges]=='width')
 									{ this.svgThingType.setAttribute("width", BasicEI.measure(this.width)); }
-									if(this.bnDontDraw[countChanges]=='height')
+									if(this.bnActionToDraw[countChanges]=='height')
 									{ this.svgThingType.setAttribute("height", BasicEI.measure(this.height)); }
-									if(this.bnDontDraw[countChanges]=='radio')
+									if(this.bnActionToDraw[countChanges]=='radio')
 									{
 										this.thingType.setAttribute("cx",BasicEI.measure(this.radio));
 										this.thingType.setAttribute("cy",BasicEI.measure(this.radio));
@@ -1814,7 +2027,7 @@ var EduInt = {
 									}
 								}
 								//	Reinicia los cambios asignados
-								this.bnDontDraw=[];
+								this.bnActionToDraw=[];
 								break;
 						}
 						break;
@@ -1853,7 +2066,7 @@ var EduInt = {
 		//	(thing)
 		this.setPosInX = function(posInX,bnDraw){
 			this.posInX=posInX;
-			this.bnDontDraw[this.bnDontDraw.length]='posInX';
+			this.bnActionToDraw[this.bnActionToDraw.length]='posInX';
 			//	Dibuja el cambio
 			if(bnDraw===undefined) { bnDraw=true; } if(bnDraw) { this.draw(); }
 			return this;
@@ -1865,7 +2078,7 @@ var EduInt = {
 		//	(thing)
 		this.setPosInY = function(posInY,bnDraw){
 			this.posInY=posInY;
-			this.bnDontDraw[this.bnDontDraw.length]='posInY';
+			this.bnActionToDraw[this.bnActionToDraw.length]='posInY';
 			//	Dibuja el cambio
 			if(bnDraw===undefined) { bnDraw=true; } if(bnDraw) { this.draw(); }
 			return this;
@@ -1877,7 +2090,7 @@ var EduInt = {
 //	ALERT
 //	Sin documentar
 		//	Informa que cambios se han realizado y no se han dibujado
-		this.bnDontDraw = [];
+		this.bnActionToDraw = [];
 		//	(thing)
 		this.setDimensions = function(width,height){
 			this.setWidth(width,false);
@@ -1888,7 +2101,7 @@ var EduInt = {
 		//	(thing)
 		this.setWidth = function(width,bnDraw){
 			this.width=width;
-			this.bnDontDraw[this.bnDontDraw.length]='width';
+			this.bnActionToDraw[this.bnActionToDraw.length]='width';
 			//	Dibuja el cambio
 			if(bnDraw===undefined) { bnDraw=true; } if(bnDraw) { this.draw(); }
 			return this;
@@ -1896,7 +2109,7 @@ var EduInt = {
 		//	(thing)
 		this.setHeight = function(height,bnDraw){
 			this.height=height;
-			this.bnDontDraw[this.bnDontDraw.length]='height';
+			this.bnActionToDraw[this.bnActionToDraw.length]='height';
 			//	Dibuja el cambio
 			if(bnDraw===undefined) { bnDraw=true; } if(bnDraw) { this.draw(); }
 			return this;
@@ -1904,7 +2117,7 @@ var EduInt = {
 		//	(thing)
 		this.setRadio = function(radio,bnDraw){
 			this.radio=radio;
-			this.bnDontDraw[this.bnDontDraw.length]='radio';
+			this.bnActionToDraw[this.bnActionToDraw.length]='radio';
 			//	Dibuja el cambio
 			if(bnDraw===undefined) { bnDraw=true; } if(bnDraw) { this.draw(); }
 			return this;
@@ -2071,26 +2284,40 @@ var EduInt = {
 	createBoard: function(nameBoard,width,height){
 		return this.createBoard_only(nameBoard,width,height);
 	},
+	createBoardIn: function(object,nameBoard,width,height)
+	{
+		var board = this.createBoard(nameBoard,width,height);
+		object.appendChild(board.oDiv);
+		return board;
+	}
 };
 
-(function($)
+try
 {
-	//	Create de canvas
-	$.fn.createBoard=function(nameBoard,width,height)
+	(function($)
 	{
-		//	Create a new board
-		eiBoard=EduInt.createBoard(nameBoard,width,height);
-		//	Coloca el tablero en el objeto
-		eiBoard.setBoardJQueryIn(this);
-		//	Retorna el tablero
-		return eiBoard;
-	};
-	$.fn.createInThisABoardThings=function(nameBoard)
-	{
+		//	Create de canvas
+		$.fn.createBoard=function(nameBoard,width,height)
+		{
+			//	Create a new board
+			eiBoard=EduInt.createBoard(nameBoard,width,height);
+			//	Coloca el tablero en el objeto
+			eiBoard.setBoardJQueryIn(this);
+			//	Retorna el tablero
+			return eiBoard;
+		};
+		$.fn.createInThisABoardThings=function(nameBoard)
+		{
 
-		//	Create a new board
-		eiBoard=EduInt.createInThisABoardThings(nameBoard,this);
-		//	Retorna el tablero
-		return eiBoard;
-	}
-}( jQuery ));
+			//	Create a new board
+			eiBoard=EduInt.createInThisABoardThings(nameBoard,this);
+			//	Retorna el tablero
+			return eiBoard;
+		}
+	}( jQuery ));
+}
+catch(err)
+{
+	console.err(err.message);
+}
+

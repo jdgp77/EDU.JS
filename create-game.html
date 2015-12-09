@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crea un juego</title>
+    <script src="educacion-interactiva/js/jquery-1.9.1.js"></script>
+    <script src="educacion-interactiva/js/educacion-interactiva-v5_Beta.js"></script>
+    <script src="educacion-interactiva/js/create-game.js"></script>
+</head>
+<body>
+    Titulo:<br>
+    <span id="id_titulo"></span>
+    <br>
+    Description:<br>
+    <span id="id_descricion"></span>
+    <br>
+    Características:<br>
+    <span id="id_caracteristicas"></span>
+    <br>
+    Codigo Start:<br>
+    <div id="id_start" style="width: 200px; height: 200px;" ></div><br>
+    <button id="id_startbutton"></button>
+    Codigo Animate:<br>
+    <div id="id_animate" style="width: 200px; height: 200px;" ></div><br>
+    <button id="id_animatebutton"></button>
+    Resultado:<br>
+    <div id="id_resultado"></div>
+    Consola:<br>
+    <div id="id_consola"></div>
+    <script>
+        var DevEnvIDE = new IDE_Game.DevelopmentEnvironment({
+            general: {
+                idTitle: 'id_titulo',
+                idDescription: 'id_descricion',
+                idCharacteristics: 'id_caracteristicas',
+            },
+            start: {
+                txt: 'Crear contenido',
+                idCode: 'id_start',
+                idButton: 'id_startbutton',
+            },
+            animate: {
+                txt: 'Generar Animación',
+                idCode: 'id_animate',
+                idButton: 'id_animatebutton',
+            },
+            result:{
+                idResult: 'id_resultado',
+                idConsole: 'id_consola',
+            }
+        });
+        DevEnvIDE.create();
+    </script>
+    <style>
+        @font-face {
+            font-family: source-code-pro;
+            src: url(educacion-interactiva/fonts/source-code-pro/SourceCodePro-Light.otf);
+        }
+        /* funciones conocidas */
+        span[fnc=ESt]{ color: #0C916B; }
+        /* funciones conocidas */
+        span[palclv=ESt]{ color: #0C916B; }
+        /* parentesis */
+        span[prntesis=ESt]{ color: #FFA606; }
+        /* punto y coma */
+        span[pntoycom=ESt]{ color: #008052; }
+        /* comillas */
+        span[cml=ESt]{ color: #058FCF; }
+        /* comillas */
+        span[num=ESt]{ color: #84ADAA; }
+    </style>
+</body>
+</html>

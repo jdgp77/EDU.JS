@@ -1,5 +1,5 @@
 EduInt.createPersonalizedType('form','stand-out',function(){
-	
+
 	this.my.radius = 12;
 
 	this.svgThingType = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -10,7 +10,7 @@ EduInt.createPersonalizedType('form','stand-out',function(){
 
 	//	Ingresamos el nuevo objeto
 	this.putThisElementInDivOfBoard(this.svgThingType);
-	
+
 	this.my.widthCircle = 1;
 
 	this.my.circles = [];
@@ -33,14 +33,14 @@ EduInt.createPersonalizedType('form','stand-out',function(){
 		path = path + ' ' + 'A' + (radiusUp) + ' ' + (radiusUp) + ', 0, 0, 1, ' + (this.my.radius) + ' ' + (2*this.my.radius - countNumberOfCircles*this.my.widthCircle);
 		path = path + ' ' + 'A' + (radiusUp) + ' ' + (radiusUp) + ', 0, 0, 1, ' + (countNumberOfCircles*this.my.widthCircle) + ' ' + (this.my.radius);
 		path = path + ' ' + 'A' + (radiusUp) + ' ' + (radiusUp) + ', 0, 0, 1, ' + (this.my.radius) + ' ' + (countNumberOfCircles*this.my.widthCircle);
-		
+
 		path = path + ' ' + 'L' + (this.my.radius) + ' ' + ((countNumberOfCircles + 1) * this.my.widthCircle);
-		
+
 		//path = path + ' ' + 'L' + (2*radius - widthCircle) + ' ' + (radius);
 		//path = path + ' ' + 'L' + radius + ' ' + (2*radius - widthCircle);
 		//path = path + ' ' + 'L' + widthCircle + ' ' + (radius);
 		//path = path + ' ' + 'L' + radius + ' ' + widthCircle;
-		
+
 		if(this.my.radius < (2*this.my.radius - (countNumberOfCircles + 1)*this.my.widthCircle))
 		{
 			path = path + ' ' + 'A' + (radiusDown) + ' ' + (radiusDown) + ', 0, 0, 0, ' + ((countNumberOfCircles + 1)*this.my.widthCircle) + ' ' + (this.my.radius);
