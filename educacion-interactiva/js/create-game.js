@@ -314,7 +314,7 @@ var eiInputs = {
             if(infoInput.className!=='')
             { this.input.className=infoInput.className; }
 
-            if(this.input.value!='') { this.input.value = infoInput.value; }
+            if(infoInput.value!='') { this.input.value = infoInput.value; }
             else if(infoInput.value_base68!='') { this.input.value = window.atob(infoInput.value_base68); }
 
             this.input.colorText=this.colorText;
@@ -419,6 +419,8 @@ var IDE_Game = {
             this.elemStart = document.getElementById(this.info.start.id);
             this.elemStart.style.position = 'relative';
                 var inputOptions = { name: 'start', placeholder: 'codigo', className: 'c_eicreategame_start' }
+                if(this.info.start.value!==undefined)
+                { inputOptions.value=this.info.start.value; }
                 if(this.info.start.value_base68!==undefined)
                 { inputOptions.value_base68=this.info.start.value_base68; }
                 this.startInput = new eiInputs.InputCode(inputOptions,IDE_Game.words);
@@ -443,6 +445,8 @@ var IDE_Game = {
             this.elemAnimate = document.getElementById(this.info.animate.id);
             this.elemAnimate.style.position = 'relative';
                 var inputOptions = { name: 'animate', placeholder: 'codigo', className: 'c_eicreategame_animate' };
+                if(this.info.animate.value!==undefined)
+                { inputOptions.value=this.info.animate.value; }
                 if(this.info.animate.value_base68!==undefined)
                 { inputOptions.value_base68=this.info.animate.value_base68; }
                 this.animationInput = new eiInputs.InputCode(inputOptions,IDE_Game.words);
