@@ -488,7 +488,7 @@ boardColoniaHormigas.createAnimation(function(info){
             this.t(nombreHormiga).my.numMovHormigaAntDeComida=0;
             this.t(nombreHormiga).my.moviendoEnDireccion=0;
             this.t(nombreHormiga).my.arMisLugares=[];
-            this.t(nombreHormiga).setImageUrl('http://developers.myrtools.com/einteractiva/create-complement/colonia-hormigas/images/hormiga.png').setBackgroundColor('transparent');
+            this.t(nombreHormiga).setImageUrl('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/animales/hormiga.png').setBackgroundColor('transparent');
             this.my.numHormigas++;
         }
     }
