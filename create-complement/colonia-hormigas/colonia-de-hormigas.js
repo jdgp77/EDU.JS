@@ -232,7 +232,7 @@ boardColoniaHormigas.start(function(){
 
 
     this.my.addNumeroAPosibEnNuevasDir=5;
-    this.my.maxNumHormigas=50;
+    this.my.maxNumHormigas=5;
     this.my.numHormigas=0;
     this.my.addNumHormigasIn_seconds=1;
     this.my.segLlegarAOtroPunto=1;

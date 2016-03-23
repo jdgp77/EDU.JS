@@ -1,7 +1,7 @@
 function selectImages(selectViews)
 {
 	boardVistas = $('#id_board_vistas_ei').createBoard('miPrimerTablero',selectViews.achoTablero,90);	//.eiLoadBoard().setMeasures(500,200).
-	boardVistas.t('imagen360').element.style.backgroundColor='transparent';
+	boardVistas.t('imagen360').getElement().style.backgroundColor='transparent';
 /*
 	boardUno.createScene(function(){
 		ei.objName('auto').setPos(0,50).itIs('basicflaticon__carro');

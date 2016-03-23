@@ -1,5 +1,18 @@
 //	Todas las funciones basicas de Educación Interactiva estan aca
 var BasicEI = {
+	//	Genera un numero aleatorio
+	//	1,1.2,1.423
+	random: function(value1,value2) {
+		if(value2==undefined) { value2=0; }
+		parseInt(Math.random(lugaresEnX)*(value2)+value1);
+	},
+	//	1,2,3,4,5 <= BasicEI.randomInt(1,5)
+	//	1,2,3,4 <= BasicEI.randomInt(4)
+	randomInt: function(value1,value2) {
+		parseInt(Math.random()*(value2)+value1);
+	},
+	//	Une dos diferentes json para añadir las opciones por defecto
+	//	{ nombre: 'juan', instituto: 'ssa' } = setDefaultOptions({ nombre: 'juan' },{ nombre: '', instituto: 'ssa' })
 	setDefaultOptions: function(newJson,defaultJson)
 	{
 		//	Si no existen nuevos datos retorna el defaultJson
@@ -249,9 +262,15 @@ var BasicEI = {
 		}
 //	Cambiarle el nombre por setBackgroundImage
 		thing.setImageUrl = function(urlImage)
-		{ this.element.style.backgroundImage = "url('"+urlImage+"')"; return this; }
+		{ EduInt.log.deprecated('setImageUrl','setBackgroundImage'); this.element.style.backgroundImage = "url('"+urlImage+"')"; return this; }
+		thing.setBackgroundImage = function(urlImage)
+		{ this.element.style.backgroundImage = "url('"+this.Board.defaultPaths.images+urlImage+"')"; return this; }
+		thing.setBackgroundImageInAlpha = function(urlImage)
+		{ this.setBackgroundImage(urlImage); this.setBackgroundAplpha(); return this; }
 		thing.setBackgroundColor = function(backgroundColor)
 		{ this.element.style.backgroundColor = backgroundColor; return this; }
+		thing.setBackgroundAplpha = function()
+		{ this.setBackgroundColor('transparent'); }
 		thing.setBackgroundPosition = function(backgroundPosition)
 		{ this.element.style.backgroundPosition = backgroundPosition; return this; }
 
@@ -763,6 +782,18 @@ var EduInt = {
 		error: function(message){
 			console.err(message);
 		},
+		deprecated: function(value1,value2){
+			var message = '';
+			if(value2!=undefined)
+			{
+				var lastValue=value1;
+				var newValue=value2;
+				message='"'+lastValue+'" was Deprecated, please change for "'+value2+'"';
+			}
+			else
+			{ message=value1; }
+			this.warning(message);
+		}
 	},
 //ALERT - Comentar
 	//	tipos personalizados
@@ -1187,6 +1218,10 @@ var EduInt = {
 			this.setWidth_only(width);
 			return this;
 		}
+		this.defaultPaths={ images: '' };
+		this.setDefaultPaths = function(json){
+			this.defaultPaths = BasicEI.setDefaultOptions(json,this.defaultPaths);
+		}
 		// (Board)
 		this.getWidth = function() { return this.width; }
 		// (Board)
@@ -1383,7 +1418,8 @@ var EduInt = {
 			this.arNumOfFunctnToStatInAnimation[this.arNumOfFunctnToStatInAnimation.length]=this.animation.addPredefineFunction('drawChanges',{},this,false);
 			//	Retorna el tablero
 			return this;
-		}		// (Board)
+		}
+		// (Board)
 //	ALERT - Comentar
 		//	Elmina la animación
 		this.deleteAnimation = function() {
@@ -2201,6 +2237,21 @@ var EduInt = {
 		//	(thing)
 		//	Crea el objeto
 		this.create();
+		//	FUnncion para ejecutar desde este thing
+		this._myFunction=function(){ };
+		//	(thing)
+		//	Ejecuta un grupo de funciones custom para este thing
+		this.getCustom = function(name){
+			this._myFunction_ = EduInt.Thing._arCustoms[name];
+			this._myFunction_();
+		};
+	},
+	Thing: {
+		_arCustoms: [],
+		setCustom: function(name,myFunction){
+			this._arCustoms[name]=myFunction;
+		},
+
 	},
 	newContainer: function(posInX,posInY) {
 		this.divContainer=document.createElement('div');

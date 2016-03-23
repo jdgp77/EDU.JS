@@ -17,7 +17,7 @@ function object360(dataObject360)
 			{
 				case 'left':
 					if(contFramesInPosition<dataObject360.arTiempos[positionInArObject360])
-					{ numRotation++; boardImage360.t('imagen360').element.style.backgroundPosition=((numRotation*200)+'px 0'); }
+					{ numRotation++; boardImage360.t('imagen360').getElement().style.backgroundPosition=((numRotation*200)+'px 0'); }
 					else
 					{
 						if(positionInArObject360<dataObject360.arSecuencia.length-1)
@@ -27,7 +27,7 @@ function object360(dataObject360)
 					break;
 				case 'right':
 					if(contFramesInPosition<dataObject360.arTiempos[positionInArObject360])
-					{ numRotation--; boardImage360.t('imagen360').element.style.backgroundPosition=((numRotation*200)+'px 0'); }
+					{ numRotation--; boardImage360.t('imagen360').getElement().style.backgroundPosition=((numRotation*200)+'px 0'); }
 					else
 					{
 						if(positionInArObject360<dataObject360.arSecuencia.length-1)
@@ -38,7 +38,7 @@ function object360(dataObject360)
 				case 'stop':
 					if(contFramesInPosition<dataObject360.arTiempos[positionInArObject360])
 					{
-						
+
 					}
 					else
 					{
