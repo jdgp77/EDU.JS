@@ -263,12 +263,12 @@ ei.Comunication = {
                     this.myFunctionJsonInfo.status=xhttp.status;
                     if(xhttp.parent===undefined)
                     {
-                        this.myFunction(this.myFunctionJsonInfo);
+                        this.myFunction(xhttp.responseText, this.myFunctionJsonInfo);
                     }
                     else
                     {
                         xhttp.parent._miFunction_=this.myFunction;
-                        xhttp.parent._miFunction_(this.myFunctionJsonInfo);
+                        xhttp.parent._miFunction_(xhttp.responseText, this.myFunctionJsonInfo);
                     }
                 }
             };
@@ -291,6 +291,58 @@ ei.Inputs = {
     defaultInfoInput: { type: 'text', name: '', placeholder: '', className: '', id: '', value: '', value_base68: '', },
     defaultInfoInputCode: { name: '', placeholder: '', value: '', value_base68: '', },
     Events: {
+        WriteIdea: {
+            arWriteIdea: [],
+            create: function(element, miFunction, jsonInfo, timeVerify)
+            {
+                return new this.WriteIdea(element, miFunction, jsonInfo, timeVerify);
+            },
+            WriteIdea: function(element, miFunction, jsonInfo, timeVerify)
+            {
+                //  Tiempo en que verifica
+                if(jsonInfo===undefined) { jsonInfo={ }; }
+                if(timeVerify===undefined) { timeVerify=300; }
+                //  Variables para convertir el elemento en WriteIdea
+                this.element=element;
+                this.lastWriteIdea='';
+                this.lastWriteIdeaExecuted='';
+                this.numLastWriteIdea=[];
+                this.arLastWriteIdea=[];
+                this.miFunction=miFunction;
+                this.jsonInfo=jsonInfo;
+                this.timeVerify=timeVerify;
+                //  timeVerify: Tiempo en el cuerifica si esta o no la idea creada
+                this.planingExecute = function()
+                {
+                    setTimeout('ei.Inputs.Events.WriteIdea.arWriteIdea['+this.num+'].execute("'+(this.element.value)+'")', this.timeVerify);
+                };
+                this.execute = function(thisWriteIdea)
+                {
+                    //  Impide que se ejecute dos veces con la misma ultima idea
+                    var lastWriteIdea = this.element.value;
+                    if(this.lastWriteIdeaExecuted != lastWriteIdea)
+                    {
+                        //  Si contiene el ultimo texto ejecutado
+                        if(thisWriteIdea==lastWriteIdea && thisWriteIdea!='')
+                        {
+                            this.element._miFunctionWriteIdea_=this.miFunction;
+                            this.element._miFunctionWriteIdea_(this.jsonInfo);
+                            this.lastWriteIdeaExecuted=lastWriteIdea;
+                        }
+                    }
+                };
+                //  Añade los eventos
+                element.addEventListener('keyup',  function() { this.WriteIdea.planingExecute(this.WriteIdea); });
+                element.addEventListener('change', function() { this.WriteIdea.planingExecute(this.WriteIdea); });
+                element.addEventListener('focus',  function() { this.WriteIdea.planingExecute(this.WriteIdea); });
+                element.addEventListener('blur',   function() { this.WriteIdea.planingExecute(this.WriteIdea); });
+
+                this.num=ei.Inputs.Events.WriteIdea.arWriteIdea.length;
+                ei.Inputs.Events.WriteIdea.arWriteIdea[this.num]=this;
+                element.WriteIdea=this;
+            }
+        },
+        /*
         functionWritenIdea: function(element)
         {
             element.value;
@@ -314,43 +366,63 @@ ei.Inputs = {
             element.addEventListener('focus', ei.Inputs.Events.functionEventWritenIdea);
             element.addEventListener('blur', ei.Inputs.Events.functionEventWritenIdea);
         },
-        onWriteIdeaAjax: function(element,miFunction,jsonInfo) {
-            element._numEjecuciones_WriteIdea=0;
-            element._arFuncionesConNumeroAEjecutar_WriteIdea=0;
-            element._numEjecucionActual_WriteIdea=0;
-            element._jsonInfo=jsonInfo;
-            element._miFunction=miFunction;
-            element._method=jsonInfo.method;
-            element._path=jsonInfo.path;
-            element._sendInfo=jsonInfo.sendInfo;
-            element._eiMiFunction_WriteIdea=function(numEjecucion)
-            {
-                //  Numero unico por ejecución
-                this.numEjecucion=numEjecucion;
-                //  Ejecuta la funcion enviada por el usuario
-                ei.Comunication.Ajax.send({
-                    method: this._method,
-                    path: this._path,
-                    sendInfo: this._sendInfo,
-                    myFunction: function(jsonInfo)
-                    {
-                        var numEjecucion = jsonInfo.numEjecucion;
-
-                        if(this._numEjecucionActual_WriteIdea===jsonInfo.numEjecucion)
+        */
+        //  Necesita WriteIdea
+        WriteIdeaAjax: {
+            create: function(element,miFunction,jsonInfo) {
+                return new this.WriteIdeaAjax(element,miFunction,jsonInfo);
+            },
+            WriteIdeaAjax: function(element,miFunction,jsonInfo) {
+                this._method=jsonInfo.method;
+                this._path=jsonInfo.path;
+                this._sendInfo=jsonInfo.sendInfo;
+                this._numEjecucionActual_WriteIdea=0;
+                this._miFunction=miFunction;
+                this._jsonInfo=jsonInfo;
+                element._eiMiFunction_WriteIdea=function(numEjecucion)
+                {
+                    //  Numero unico por ejecución
+                    this.numEjecucion=numEjecucion;
+                    //  SI es una función la retorna como ta
+                    if((typeof this.WriteIdeaAjax._path) == 'function')
+                    { var path = this.WriteIdeaAjax._path(); }
+                    else
+                    { var path = this.WriteIdeaAjax._path; }
+                    //  Ejecuta la funcion enviada por el usuario
+                    ei.Comunication.Ajax.send({
+                        method: this.WriteIdeaAjax._method,
+                        path: path,
+                        sendInfo: this.WriteIdeaAjax._sendInfo,
+                        myFunction: function(responseText, jsonInfo)
                         {
-                            this._miFunction();
-                        }
-                    },
-                    myFunctionJsonInfo: {
-                        numEjecucion: numEjecucion,
-                    },
-                }, this);
-            };
-            element.addEventListener('keyup', function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
-            element.addEventListener('change', function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
-            element.addEventListener('focus', function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
-            element.addEventListener('blur', function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
+                            var numEjecucion = jsonInfo.numEjecucion;
+
+                            if(this.WriteIdeaAjax._numEjecucionActual_WriteIdea===jsonInfo.numEjecucion)
+                            {
+                                this.WriteIdeaAjax._miFunction(responseText, this.WriteIdeaAjax._jsonInfo);
+                            }
+                        },
+                        myFunctionJsonInfo: {
+                            numEjecucion: numEjecucion,
+                        },
+                    }, this);
+                };
+                ei.Inputs.Events.WriteIdea.create(document.getElementById('id_buscadorusuario'), function(numEjecucion){
+                    this.WriteIdeaAjax._numEjecucionActual_WriteIdea++;
+                    this._eiMiFunction_WriteIdea(this.WriteIdeaAjax._numEjecucionActual_WriteIdea);
+                });
+
+                element.WriteIdeaAjax=this;
+            },
         },
+        //  onWriteIdeaAjax: function(element,miFunction,jsonInfo) {
+            //  element._numEjecuciones_WriteIdea=0;
+            //  element._arFuncionesConNumeroAEjecutar_WriteIdea=0;
+            //  element.addEventListener('keyup',  function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
+            //  element.addEventListener('change', function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
+            //  element.addEventListener('focus',  function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
+            //  element.addEventListener('blur',   function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
+        //  },
     },
     Input: function(infoInput)
     {
