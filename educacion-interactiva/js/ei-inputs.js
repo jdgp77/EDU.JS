@@ -15,7 +15,7 @@ ei.FiltAndMask = {
     },
     //  Divizor de palabras, la idea es colocar uno antes y despues de cada cosa que divide una palabra,
     //  como un espacio o un parentesis
-    divisorDePalabras: '[||=-=||]',
+    divisorDePalabras: '~',
     //  Verifica cual de los valores del arreglo[arDeElementos_ESt] esta mas cercano al origen
     //  0 <- qstnCualEsElElementoMasCercano('abc',['a','b','c']);
     //  2 <- qstnCualEsElElementoMasCercano('abc',['b','c','a']);
@@ -426,7 +426,7 @@ ei.Inputs = {
     },
     Input: function(infoInput)
     {
-        infoInput = BasicEI.setDefaultOptions(infoInput,ei.Inputs.defaultInfoInput);
+        infoInput = _EduIntBasic._defaultJson(infoInput,ei.Inputs.defaultInfoInput);
 
         this.element = document.createElement('div');
 
@@ -442,10 +442,12 @@ ei.Inputs = {
             if(infoInput.value!='') { this.input.value = infoInput.value; }
             else if(infoInput.value_base68!='') { this.input.value = window.atob(infoInput.value_base68); }
             this.element.appendChild(this.input);
+
+        return this;
     },
     InputCode: function(infoInput,infoCode)
     {
-        infoInput = BasicEI.setDefaultOptions(infoInput,ei.Inputs.defaultInfoInputCode);
+        infoInput = _EduIntBasic._defaultJson(infoInput,ei.Inputs.defaultInfoInputCode);
 
         this.element = document.createElement('div');
 
@@ -514,5 +516,7 @@ ei.Inputs = {
 
             this.colorText.innerHTML=ei.FiltAndMask.code(this.input.value,infoCode);
             this.element.appendChild(this.input);
+
+        return this;
     }
 };

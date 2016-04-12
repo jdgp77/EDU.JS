@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Crea un juego</title>
     <script src="educacion-interactiva/js/jquery-1.9.1.js"></script>
-    <script src="educacion-interactiva/js/educacion-interactiva-v5_Beta.js"></script>
+    <script src="educacion-interactiva/js/educacion-interactiva-v1.js"></script>
+    <script src="educacion-interactiva/js/ei-inputs.js"></script>
     <script src="educacion-interactiva/js/create-game.js"></script>
 </head>
 <body>
@@ -15,7 +16,7 @@
     <span id="id_descricion"></span>
     <br>
     Características:<br>
-    <span id="id_caracteristicas"></span>
+    <div id="id_caracteristicas"><div id="id_ancho"></div><div id="id_alto"></div></div>
     <br>
     Codigo Start:<br>
     <div id="id_start" style="width: 200px; height: 200px;" ></div><br>
@@ -29,24 +30,48 @@
     <div id="id_consola"></div>
     <script>
         var DevEnvIDE = new IDE_Game.DevelopmentEnvironment({
-            general: {
-                idTitle: 'id_titulo',
-                idDescription: 'id_descricion',
-                idCharacteristics: 'id_caracteristicas',
+            title: {
+                id: 'id_titulo',
+                value: '',
+            },
+            description: {
+                id: 'id_descricion',
+                value: '',
+            },
+            characteristics: {
+                id: 'id_caracteristicas',
+                width: {
+                    id: 'id_ancho',
+                    value:  400,
+                },
+                height: {
+                    id: 'id_alto',
+                    value:  400,
+                },
             },
             start: {
-                txt: 'Crear contenido',
-                idCode: 'id_start',
-                idButton: 'id_startbutton',
+                id: 'id_start',
+                value: "this.t('cuadrado').setPosition(10,10);",
+                button: {
+                    id: 'id_startbutton',
+                    value: 'Crear Contenido',
+                }
             },
             animate: {
-                txt: 'Generar Animación',
-                idCode: 'id_animate',
-                idButton: 'id_animatebutton',
+                id: 'id_animate',
+                 value: "this.t('cuadrado').accMoveInX(1);",
+                button: {
+                    id: 'id_animatebutton',
+                    value: 'Generar Animación',
+                }
             },
-            result:{
-                idResult: 'id_resultado',
-                idConsole: 'id_consola',
+            result: {
+                id: 'id_resultado',
+                value: '',
+            },
+            console: {
+                id: 'id_consola',
+                value: '',
             }
         });
         DevEnvIDE.create();
