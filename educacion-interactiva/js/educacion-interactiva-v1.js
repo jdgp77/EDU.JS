@@ -20,6 +20,12 @@ _EduIntBasic = {
         return parseInt(Math.random()*(value2-value1+1)+value1);
     },
 
+    removeAccents: function(valor) { var acentos = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç"; var original = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc"; for (var i=0; i<acentos.length; i++) { valor = valor.replace(acentos.charAt(i), original.charAt(i)); }; return valor; },
+    //  Retorna un nombre de maquina, sin tildes ni espacios ni caracteres raros
+    machineName: function(valor) {
+        return this.removeAccents(valor.toLowerCase().replace(/\s/g,"_"));
+    },
+
     //  Une dos diferentes json para añadir las opciones por defecto
     //  { nombre: 'juan', instituto: 'ssa' } <= defaultOptions({ nombre: 'juan' },{ nombre: '', instituto: 'ssa' })
     defaultJson: function(newJson,defaultJson) { return this._defaultJson(newJson,defaultJson); },
@@ -89,7 +95,12 @@ _EduIntBasic = {
         return myArray.constructor.toString().indexOf("Array") > -1;
     },
 
+    filters: {
 
+    },
+    masks: {
+
+    },
 
     //  Deprecate
     //  =========
@@ -120,6 +131,446 @@ _EduInt = {
     //  ======
     //  Todas las funciones basicas
     _Basic: _EduIntBasic,
+    
+    //  Inputs
+    //  ======
+    //  Crea todos los inputs con estilos y caracteristicas especiales
+    _Input: {
+        defaultInfoInput: { type: 'text', name: '', placeholder: '', className: '', id: '', value: '', value_base68: '', },
+        defaultInfoInputCode: { name: '', placeholder: '', value: '', value_base68: '', },
+        Plugins: {
+            //  Select
+            //  ======
+            //  +------------+
+            //  | Opción 001 |
+            //  +------------+
+            //  | Opción 002 |
+            //  +------------+
+            //  | Opción 003 |
+            //  +------------+
+            Select: 
+            {
+                defaultInfoSelect: {
+                    //  Estos son los valores: ['Valor Real', 'Valor a mostrar']
+                    options: [['option1', 'Opción 1'], ['option2', 'Opción 2'], ['option3', 'Opción 3']],
+                    //  Esta funcion se ejecutaria cada vez que se selecciona una opcion siguiendo
+                    //  el ejemplo anterior, si seleccionaran 'Opción 1' el valor enviado a la 
+                    //  funcion seria valor = 'option1' ý valorAMostrar = 'Opción 1'
+                    /*
+                    //  Ejemplo de funcion
+                    functionOnSelect: function(valor,valorAMostrar) {
+                        alert('valor: '+valor+', valorAMostrar: '+valorAMostrar);
+                    }
+                    */
+                    //  Desaparecer al ejecutar la funcion
+                    deappearRunFunction: true,
+                },
+                ar: [],
+                Select: function(jsonOptions) {
+                    jsonOptions = _EduIntBasic._defaultJson(jsonOptions,_EduInt._Input.Plugins.Select.defaultInfoSelect);
+                    //  Funciones
+                    this.destroy = function() {
+                        try { setTimeout('_EduInt._Input.Plugins.Select.ar['+this.numEISelect+'].element.parentNode.removeChild(_EduInt._Input.Plugins.Select.ar['+this.numEISelect+'].element);', 0); } catch(err) {  }
+                    }
+
+                    this.element = document.createElement('div');
+                    this.element.className = 'c_ei_selection';
+                    
+                    this.numEISelect = _EduInt._Input.Plugins.Select.ar.length;
+                    _EduInt._Input.Plugins.Select.ar[this.numEISelect]=this;
+                    
+                    this.element._numEISelect = this.numEISelect;
+
+                    this.contenedorUl = document.createElement('ul');
+                    this.contenedorUl.className = 'c_ei_selection_ul';
+                    this.element.appendChild(this.contenedorUl);
+
+
+                    for(var countSection=0;countSection<jsonOptions.options.length;countSection++)
+                    {
+                        var option = jsonOptions.options[countSection];
+                        if(Array.isArray(option))
+                        {
+                            var valor = option[0];
+                            var valorAMostrar = option[1];
+                        }
+                        else
+                        {
+                            var valor = option;
+                            var valorAMostrar = valor;
+                        }
+
+                        this.contenedorElementoUlLi = document.createElement('li');
+                        this.contenedorElementoUlLi.className = 'c_ei_selection_ul_li';
+                        this.contenedorUl.appendChild(this.contenedorElementoUlLi);
+
+                        this.contenedorElementoUlLiA = document.createElement('span');
+                        this.contenedorElementoUlLiA.className = 'c_ei_selection_ul_li_span';
+                        this.contenedorElementoUlLiA.innerHTML=valorAMostrar;
+
+                        if(jsonOptions.functionOnSelect)
+                        {
+                            this.contenedorElementoUlLiA._functionOnSelect = jsonOptions.functionOnSelect;
+                            this.contenedorElementoUlLiA._valor = valor;
+                            this.contenedorElementoUlLiA._valorAMostrar = valorAMostrar;
+                            this.contenedorElementoUlLiA._deappearRunFunction = jsonOptions.deappearRunFunction;
+                            this.contenedorElementoUlLiA._numEISelect = this.numEISelect;
+                            this.contenedorElementoUlLiA.onclick=function() {
+                                _EduInt._Input.Plugins.Select.ar[this._numEISelect]._functionOnSelect=this._functionOnSelect;
+                                _EduInt._Input.Plugins.Select.ar[this._numEISelect]._functionOnSelect(this._valor, this._valorAMostrar);
+                                if(this._deappearRunFunction) { _EduInt._Input.Plugins.Select.ar[this._numEISelect].destroy(); }
+                            }
+                        }
+
+                        this.contenedorElementoUlLi.appendChild(this.contenedorElementoUlLiA);
+                    }
+                },
+            },
+        },
+        Events: {
+            WriteIdea: {
+                arWriteIdea: [],
+                create: function(element, miFunction, jsonInfo, timeVerify)
+                {
+                    return new this.WriteIdea(element, miFunction, jsonInfo, timeVerify);
+                },
+                WriteIdea: function(element, miFunction, jsonInfo, timeVerify)
+                {
+                    //  Tiempo en que verifica
+                    if(jsonInfo===undefined) { jsonInfo={ }; }
+                    if(timeVerify===undefined) { timeVerify=300; }
+                    //  Variables para convertir el elemento en WriteIdea
+                    this.element=element;
+                    this.lastWriteIdea='';
+                    this.lastWriteIdeaExecuted='';
+                    this.numLastWriteIdea=[];
+                    this.arLastWriteIdea=[];
+                    this.miFunction=miFunction;
+                    this.jsonInfo=jsonInfo;
+                    this.timeVerify=timeVerify;
+                    //  timeVerify: Tiempo en el cuerifica si esta o no la idea creada
+                    this.planingExecute = function()
+                    {
+                        setTimeout('_EduInt._Input.Events.WriteIdea.arWriteIdea['+this.num+'].execute("'+(this.element.value)+'")', this.timeVerify);
+                    };
+                    this.execute = function(thisWriteIdea)
+                    {
+                        //  Impide que se ejecute dos veces con la misma ultima idea
+                        var lastWriteIdea = this.element.value;
+                        if(this.lastWriteIdeaExecuted != lastWriteIdea)
+                        {
+                            //  Si contiene el ultimo texto ejecutado
+                            if(thisWriteIdea==lastWriteIdea && thisWriteIdea!='')
+                            {
+                                this.element._miFunctionWriteIdea_=this.miFunction;
+                                this.element._miFunctionWriteIdea_(this.jsonInfo);
+                                this.lastWriteIdeaExecuted=lastWriteIdea;
+                            }
+                        }
+                    };
+                    //  Añade los eventos
+                    element.addEventListener('keyup',  function() { this.WriteIdea.planingExecute(this.WriteIdea); });
+                    element.addEventListener('change', function() { this.WriteIdea.planingExecute(this.WriteIdea); });
+                    element.addEventListener('focus',  function() { this.WriteIdea.planingExecute(this.WriteIdea); });
+                    element.addEventListener('blur',   function() { this.WriteIdea.planingExecute(this.WriteIdea); });
+
+                    this.num=_EduInt._Input.Events.WriteIdea.arWriteIdea.length;
+                    _EduInt._Input.Events.WriteIdea.arWriteIdea[this.num]=this;
+                    element.WriteIdea=this;
+                }
+            },
+            /*
+            functionWritenIdea: function(element)
+            {
+                element.value;
+                if(element.value!==element._lastWriteText)
+                {
+                    //  Solo ingesa si el texto es nuevo
+                    element._miFunctionWritenIdea(this._jsonInfoWritenIdea);
+                }
+                element._lastWriteText=element.value;
+            },
+            functionEventWritenIdea: function(element)
+            {
+                _EduInt._Input.Events.functionWritenIdea(this);
+            },
+            onWriteIdea: function(element,miFunction,jsonInfo) {
+                element._lastWriteText='';
+                element._miFunctionWritenIdea=miFunction;
+                element._jsonInfoWritenIdea=jsonInfo;
+                element.addEventListener('keyup', _EduInt._Input.Events.functionEventWritenIdea);
+                element.addEventListener('change', _EduInt._Input.Events.functionEventWritenIdea);
+                element.addEventListener('focus', _EduInt._Input.Events.functionEventWritenIdea);
+                element.addEventListener('blur', _EduInt._Input.Events.functionEventWritenIdea);
+            },
+            */
+            //  Necesita WriteIdea
+            WriteIdeaAjax: {
+                create: function(element,miFunction,jsonInfo) {
+                    return new this.WriteIdeaAjax(element,miFunction,jsonInfo);
+                },
+                WriteIdeaAjax: function(element,miFunction,jsonInfo) {
+                    this._method=jsonInfo.method;
+                    this._path=jsonInfo.path;
+                    this._sendInfo=jsonInfo.sendInfo;
+                    this._numEjecucionActual_WriteIdea=0;
+                    this._miFunction=miFunction;
+                    this._jsonInfo=jsonInfo;
+                    element._eiMiFunction_WriteIdea=function(numEjecucion)
+                    {
+                        //  Numero unico por ejecución
+                        this.numEjecucion=numEjecucion;
+                        //  SI es una función la retorna como ta
+                        if((typeof this.WriteIdeaAjax._path) == 'function')
+                        { var path = this.WriteIdeaAjax._path(); }
+                        else
+                        { var path = this.WriteIdeaAjax._path; }
+                        //  Ejecuta la funcion enviada por el usuario
+                        ei.Comunication.Ajax.send({
+                            method: this.WriteIdeaAjax._method,
+                            path: path,
+                            sendInfo: this.WriteIdeaAjax._sendInfo,
+                            myFunction: function(responseText, jsonInfo)
+                            {
+                                var numEjecucion = jsonInfo.numEjecucion;
+
+                                if(this.WriteIdeaAjax._numEjecucionActual_WriteIdea===jsonInfo.numEjecucion)
+                                {
+                                    this._miFunction=this.WriteIdeaAjax._miFunction;
+                                    this._miFunction(responseText, this.WriteIdeaAjax._jsonInfo);
+                                }
+                            },
+                            myFunctionJsonInfo: {
+                                numEjecucion: numEjecucion,
+                            },
+                        }, this);
+                    };
+                    _EduInt._Input.Events.WriteIdea.create(element, function(numEjecucion){
+                        this.WriteIdeaAjax._numEjecucionActual_WriteIdea++;
+                        this._eiMiFunction_WriteIdea(this.WriteIdeaAjax._numEjecucionActual_WriteIdea);
+                    });
+
+                    element.WriteIdeaAjax=this;
+                },
+            },
+            //  onWriteIdeaAjax: function(element,miFunction,jsonInfo) {
+                //  element._numEjecuciones_WriteIdea=0;
+                //  element._arFuncionesConNumeroAEjecutar_WriteIdea=0;
+                //  element.addEventListener('keyup',  function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
+                //  element.addEventListener('change', function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
+                //  element.addEventListener('focus',  function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
+                //  element.addEventListener('blur',   function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
+            //  },
+        },
+        create: function(infoInput){
+            return new _EduInt._Input.Input(infoInput);
+        },
+        Input: function(infoInput)
+        {
+            this.infoInput = _EduIntBasic._defaultJson(infoInput,_EduInt._Input.defaultInfoInput);
+            var infoInput;
+
+            this.element = document.createElement('div');
+            this.element._Input=this;
+            this.element._infoInput=infoInput;
+
+                this.label = document.createElement('label');
+                this.element.appendChild(this.label);
+
+                this.input = document.createElement('input');
+                this.input._Input=this;
+                this.input._infoInput=infoInput;
+                if(infoInput.type!='') { this.input.type = infoInput.type; }
+                if(infoInput.name!='') { this.input.name = infoInput.name; }
+                if(infoInput.placeholder!='') { this.input.placeholder = infoInput.placeholder; }
+                if(infoInput.className!='') { this.input.className = infoInput.className; }
+                if(infoInput.id!='') { this.input.id = infoInput.id; }
+                if(infoInput.value!='') { this.input.value = infoInput.value; }
+                else if(infoInput.value_base68!='') { this.input.value = window.atob(infoInput.value_base68); }
+                this.element.appendChild(this.input);
+
+                this.getValue=function() { return this._getValue(); }
+                this._getValue=function()
+                {
+                    return this.input.value;
+                }
+
+                if(infoInput.autocomplete)
+                {
+                    _EduInt._Input.Events.WriteIdea.create(this.input, function() {
+                        if(this._autocomplete !== undefined) { this._autocomplete.destroy(); }
+                        //  Valores por defecto
+                        if(infoInput.autocomplete.filterDiferentResults===undefined) { infoInput.autocomplete.filterDiferentResults=true; }
+                        if(infoInput.autocomplete.filterDiferentResults)
+                        {
+                            var opcionesFiltradas=[];
+                            if(Array.isArray(this._infoInput.autocomplete))
+                            { var opcionesAutocompletar = this._infoInput.autocomplete; }
+                            else
+                            { var opcionesAutocompletar = this._infoInput.autocomplete.options; }
+                            for(var countOpcionesAutocompletar=0; countOpcionesAutocompletar<opcionesAutocompletar.length; countOpcionesAutocompletar++)
+                            {
+                                var opcion = opcionesAutocompletar[countOpcionesAutocompletar];
+                                if(Array.isArray(opcion))
+                                {
+                                    if(_EduIntBasic.machineName(opcion[0]).indexOf(_EduIntBasic.machineName(this._Input._getValue()))!==-1)
+                                    {
+                                        opcionesFiltradas[opcionesFiltradas.length]=opcion[0];
+                                    }
+                                }
+                                else
+                                {
+                                    if(_EduIntBasic.machineName(opcion).indexOf(_EduIntBasic.machineName(this._Input._getValue()))!==-1)
+                                    {
+                                        opcionesFiltradas[opcionesFiltradas.length]=opcion;
+                                    }
+                                }
+                            }
+                            var opcionesMostar=opcionesFiltradas;
+                        }
+                        else
+                        {
+                            var opcionesMostar=opcionesAutocompletar;
+                        }
+                        this._autocomplete = new _EduInt._Input.Plugins.Select.Select({
+                            options: opcionesMostar,
+                            functionOnSelect: function(valor,valorAMostrar) {
+                                this.inputParent.value=valor;
+                            },
+                        });
+                        this._autocomplete.inputParent=this;
+                        this._Input._autocomplete.appendChild(this._autocomplete.element);
+                    });//, jsonInfo);
+
+                    this._autocomplete = document.createElement('div');
+                    this.element.appendChild(this._autocomplete);
+                }
+
+                if(infoInput.autocompleteAjax)
+                {
+                    _EduInt._Input.Events.WriteIdeaAjax.create(this.input, function(responseText, jsonInfo) {
+                        if(this._autocomplete !== undefined) { this._autocomplete.destroy(); }
+                        var jsonResponse = JSON.parse(responseText);
+                        //  var opcionesFiltradas= functionToSelectValues(jsonResponse);
+                        if(this._infoInput.autocompleteAjax.functionToSelectValues)
+                        {
+                            this._functionToSelectValues = this._infoInput.autocompleteAjax.functionToSelectValues;
+                            var opcionesFiltradas = this._functionToSelectValues(responseText, jsonInfo);
+                        }
+                        else
+                        {
+                            var opcionesFiltradas=[];
+                            for(var countOpcionesAutocompletar=0; countOpcionesAutocompletar<jsonResponse.length; countOpcionesAutocompletar++)
+                            {
+                                opcionesFiltradas[opcionesFiltradas.length] = jsonResponse[countOpcionesAutocompletar];
+                            }
+                        }
+
+                        if(this._infoInput.autocompleteAjax.functionOnSelect)
+                        {
+                            var functionOnSelect = this._infoInput.autocompleteAjax.functionOnSelect;
+                        }
+                        else
+                        {
+                            var functionOnSelect = function(valor,valorAMostrar) {
+                                this.inputParent.value=valor;
+                            };
+                        }
+                        this._autocomplete = new _EduInt._Input.Plugins.Select.Select({
+                            options: opcionesFiltradas,
+                            functionOnSelect: functionOnSelect,
+                        });
+                        this._autocomplete.inputParent=this;
+                        this._Input._autocomplete.appendChild(this._autocomplete.element);
+                    }, {
+                        method: infoInput.autocompleteAjax.method,
+                        path: infoInput.autocompleteAjax.path,
+                        sendInfo: {  }
+                    });
+
+                    this._autocomplete = document.createElement('div');
+                    this.element.appendChild(this._autocomplete);
+                }
+
+
+            return this;
+        },
+        InputCode: function(infoInput,infoCode)
+        {
+            infoInput = _EduIntBasic._defaultJson(infoInput,_EduInt._Input.defaultInfoInputCode);
+
+            this.element = document.createElement('div');
+
+                //  variables
+                //  ---------
+                var myPadding = '12px';
+                var myFontFamily = 'source-code-pro';
+                var myFontSize = '12px';
+                var myLineHeight = '20px';
+
+                this.colorText = document.createElement('div');
+                this.colorText.style.border = 0;
+                this.colorText.style.position = 'absolute';
+                this.colorText.style.top = 0;
+                this.colorText.style.left = 0;
+                this.colorText.style.width = '100%';
+                this.colorText.style.height = '100%';
+                this.colorText.style.fontFamily = myFontFamily;
+                this.colorText.style.padding = myPadding;
+                this.colorText.style.fontSize = myFontSize;
+                this.colorText.style.wordWrap = 'break-word';
+                this.colorText.style.boxSizing = "border-box";
+                this.colorText.style.MozBoxSizing = "border-box";
+                this.colorText.style.lineHeight = myLineHeight;
+
+                this.element.appendChild(this.colorText);
+
+
+                this.input = document.createElement('textarea');
+                this.input.style.border = 0;
+                this.input.style.position = 'absolute';
+                this.input.style.top = 0;
+                this.input.style.left = 0;
+                this.input.style.width = '100%';
+                this.input.style.height = '100%';
+                this.input.style.fontFamily = myFontFamily;
+                this.input.style.backgroundColor = 'transparent';
+                this.input.style.color = 'rgba(0,0,0,0.2)';
+                this.input.style.padding = myPadding;
+                this.input.style.fontSize = myFontSize;
+                this.input.style.boxSizing = "border-box";
+                this.input.style.MozBoxSizing = "border-box";
+                this.input.style.lineHeight = myLineHeight;
+
+                if(infoInput.name!=='')
+                { this.input.name=infoInput.name; }
+                if(infoInput.placeholder!=='')
+                { this.input.placeholder=infoInput.placeholder; }
+                if(infoInput.className!=='')
+                { this.input.className=infoInput.className; }
+
+                if(infoInput.value!='') { this.input.value = infoInput.value; }
+                else if(infoInput.value_base68!='') { this.input.value = window.atob(infoInput.value_base68); }
+
+                this.input.colorText=this.colorText;
+                this.input.infoCode=infoCode;
+
+                this.input.onkeyup = function(){
+                    this.colorText.innerHTML=ei.FiltAndMask.code(this.value,this.infoCode);
+                }
+
+                this.getValue=function()
+                { return this.input.value; }
+                this.setValue=function(value)
+                { this.input.value=value; return this; }
+
+                this.colorText.innerHTML=ei.FiltAndMask.code(this.input.value,infoCode);
+                this.element.appendChild(this.input);
+
+            return this;
+        }
+    },
+
     //  Cursor
     //  ======
     //  Maneja todas las variable y eventos del cursor, sea touch o sea mouse
@@ -2876,6 +3327,7 @@ _EduInt = {
 //  ==================
 _EduInt.Thing = _EduInt._Thing;
 _EduInt.Basic = _EduInt._Basic;
+_EduInt.Input = _EduInt._Input;
 
 //  Compatible con JQuery
 //  =====================

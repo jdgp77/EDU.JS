@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+
+	<!-- JQuery -->
+	<script src="educacion-interactiva/js/jquery-1.9.1.js"></script>
+
+	<!-- Educación Interactiva V4 -->
+	<!-- <script src="educacion-interactiva/js/educacion-interactiva-v5_Beta.js" charset="UTF-8" ></script> -->
+	<script src="educacion-interactiva/js/educacion-interactiva-v1.js" charset="UTF-8" ></script>
+	<script src="educacion-interactiva/js/educacion-interactiva-inputs-v1.js" charset="UTF-8" ></script>
+</head>
+<body>
+	<div class="input">
+		<label for="">Autocompletar</label>
+		<div id="id_content_autocompletar" class="c_content"></div>
+		<div class="description"></div>
+	</div>
+
+	<script type="text/javascript" charset="UTF-8" >
+
+		//	Autocompletar
+		//	=============
+
+		var autocompletar = EduInt.Input.create({
+			type: 'text',
+			name: 'autocompletar',
+			placeholder: 'Buscar',
+			className: 'c_autocompletar',
+			id: 'id_autompletar',
+			autocomplete: ['Julian David Guerrero Pinilla', 'Nelly Alexandra Medina Rojas', 'Jadelly Rojas Vargas', 'Gorety Medina Rojas'],
+			value: '',
+		});
+
+		document.getElementById('id_content_autocompletar').appendChild(autocompletar.element);
+
+	</script>
+
+	<div class="input">
+		<label for="">Autocompletar [Sin filtrar]:</label>
+		<div id="id_content_autocompletarsinfiltro" class="c_content"></div>
+		<div class="description"></div>
+	</div>
+
+	<script type="text/javascript" charset="UTF-8" >
+
+		//	Autocompletar
+		//	=============
+
+		var autocompletar = EduInt.Input.create({
+			type: 'text',
+			name: 'autocompletarsinfiltro',
+			placeholder: 'Buscar',
+			className: 'c_autocompletarsinfiltro',
+			id: 'id_autompletarsinfiltro',
+			autocomplete: {
+				options: ['Julian David Guerrero Pinilla', 'Nelly Alexandra Medina Rojas', 'Jadelly Rojas Vargas', 'Gorety Medina Rojas'],
+				filterDiferentResults: false,
+			},
+			value: '',
+		});
+
+		document.getElementById('id_content_autocompletarsinfiltro').appendChild(autocompletar.element);
+
+	</script>
+
+	<div class="input">
+		<label for="">Autocompletar Ajax - Con Filtro</label>
+		<div id="id_content_autocompletar_ajax_confiltro" class="c_content"></div>
+		<div class="description"></div>
+	</div>
+
+	<script type="text/javascript" charset="UTF-8" >
+
+		//	Autocompletar
+		//	=============
+
+		var autocompletar = EduInt.Input.create({
+			type: 'text',
+			name: 'autocompletar_ajax',
+			placeholder: 'Buscar',
+			className: 'c_autocompletar_ajax_confiltro',
+			id: 'id_autompletar_ajax_confiltro',
+			autocompleteAjax: {
+				method: 'GET',
+				path: 'ejemplo_json.json',
+				fields_filter: ['code', 'name'],
+				//	Funcion para devolver los objetos a buscar
+				functionToSelectValues: function(responseText, jsonInfo){
+					var arJsonCodigo = JSON.parse(responseText);
+
+					var arOpciones = [];
+					for(var count=0; count<arJsonCodigo.length; count++)
+					{
+						var json = arJsonCodigo[count];
+
+						if(_EduIntBasic.machineName(json.code).indexOf(_EduIntBasic.machineName(this._Input._getValue()))!==-1 || _EduIntBasic.machineName(json.name).indexOf(_EduIntBasic.machineName(this._Input._getValue()))!==-1)
+						{
+							arOpciones[arOpciones.length]=[json.code, json.code+' - '+json.name];
+						}
+					}
+
+					return arOpciones;
+				},
+			}, 
+			value: '',
+		});
+
+		document.getElementById('id_content_autocompletar_ajax_confiltro').appendChild(autocompletar.element);
+
+	</script>
+
+	<div class="input">
+		<label for="">Autocompletar Ajax - Path Function</label>
+		<div id="id_content_autocompletar_ajaxpathfunction" class="c_content"></div>
+		<div class="description">se coloco una drección ajax que cambia dependiendo del valor</div>
+	</div>
+
+	<script type="text/javascript" charset="UTF-8" >
+
+		//	Autocompletar
+		//	=============
+
+		var autocompletar = EduInt.Input.create({
+			type: 'text',
+			name: 'autocompletar_ajaxpathfunction',
+			placeholder: 'Buscar',
+			className: 'c_autocompletar_ajaxpathfunction',
+			id: 'id_autompletar_ajaxpathfunction',
+			autocompleteAjax: {
+				method: 'GET',
+				path: function() { return 'ejemplo_jsonsimple.json?'; },
+				fields_filter: ['code', 'name'],
+			}, 
+			value: '',
+		});
+
+		document.getElementById('id_content_autocompletar_ajaxpathfunction').appendChild(autocompletar.element);
+
+	</script>
+
+
+	<div class="input">
+		<label for="">Autocompletar Ajax - Función al seleccionar</label>
+		<div id="id_content_autocompletar_ajaxfunctiononselect" class="c_content"></div>
+		<div class="description">Cuando se selecciona ejecuta una funcion</div>
+	</div>
+
+	<script type="text/javascript" charset="UTF-8" >
+
+		//	Autocompletar
+		//	=============
+
+		var autocompletar = EduInt.Input.create({
+			type: 'text',
+			name: 'autocompletar_ajaxfunctiononselect',
+			placeholder: 'Buscar',
+			className: 'c_autocompletar_ajaxfunctiononselect',
+			id: 'id_autompletar_ajaxfunctiononselect',
+			autocompleteAjax: {
+				method: 'GET',
+				path: function() { return 'ejemplo_jsonsimple.json?'; },
+				functionOnSelect: function(valor,valorAMostrar) {
+					//	Al seleccionar el valor lo lleve al input
+					this.inputParent.value=valor;
+					//	Valores de usuario
+					alert('valor: '+valor)
+				},
+			}, 
+			value: '',
+		});
+
+		document.getElementById('id_content_autocompletar_ajaxfunctiononselect').appendChild(autocompletar.element);
+
+	</script>
+
+
+</body>
+</html>
