@@ -166,11 +166,15 @@ _EduInt = {
                     deappearRunFunction: true,
                 },
                 ar: [],
+                create: function(){
+                    return new _EduInt._Input.Plugins.Select.Select();
+                },
                 Select: function(jsonOptions) {
                     jsonOptions = _EduIntBasic._defaultJson(jsonOptions,_EduInt._Input.Plugins.Select.defaultInfoSelect);
                     //  Funciones
-                    this.destroy = function() {
-                        try { setTimeout('_EduInt._Input.Plugins.Select.ar['+this.numEISelect+'].element.parentNode.removeChild(_EduInt._Input.Plugins.Select.ar['+this.numEISelect+'].element);', 0); } catch(err) {  }
+                    this.destroy = function(numTime) {
+                        if(numTime===undefined) { numTime=0; }
+                        setTimeout('try {  _EduInt._Input.Plugins.Select.ar['+this.numEISelect+'].element.parentNode.removeChild(_EduInt._Input.Plugins.Select.ar['+this.numEISelect+'].element); } catch(err) {  }', numTime);
                     }
 
                     this.element = document.createElement('div');
@@ -395,6 +399,12 @@ _EduInt = {
                     return this.input.value;
                 }
 
+                if(infoInput.autocompleteAjax || infoInput.autocomplete)
+                {
+                    this.input.addEventListener("focusout", function(){
+                        this._autocomplete.destroy(300);
+                    });
+                }
                 if(infoInput.autocomplete)
                 {
                     _EduInt._Input.Events.WriteIdea.create(this.input, function() {
