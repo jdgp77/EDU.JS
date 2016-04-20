@@ -320,13 +320,17 @@ _EduInt = {
                     this._numEjecucionActual_WriteIdea=0;
                     this._miFunction=miFunction;
                     this._jsonInfo=jsonInfo;
+                    this._element=element;
                     element._eiMiFunction_WriteIdea=function(numEjecucion)
                     {
                         //  Numero unico por ejecución
                         this.numEjecucion=numEjecucion;
                         //  SI es una función la retorna como ta
                         if((typeof this.WriteIdeaAjax._path) == 'function')
-                        { var path = this.WriteIdeaAjax._path(); }
+                        {
+                            this._path = this.WriteIdeaAjax._path;
+                            var path = this._path();
+                        }
                         else
                         { var path = this.WriteIdeaAjax._path; }
                         //  Ejecuta la funcion enviada por el usuario
@@ -401,9 +405,13 @@ _EduInt = {
 
                 if(infoInput.autocompleteAjax || infoInput.autocomplete)
                 {
+                    this.input.autocomplete='off';
                     this.input.addEventListener("focusout", function(){
                         this._autocomplete.destroy(300);
                     });
+                    this.input.onkeydown=function(key){
+                        if(key.keyCode==13){ key.preventDefault(); }
+                    }
                 }
                 if(infoInput.autocomplete)
                 {
