@@ -3992,7 +3992,7 @@ try
 }
 catch(err)
 {
-    console.err(err.message);
+    console.error(err.message);
 }
 
 //  Establece la funcion de consutla
