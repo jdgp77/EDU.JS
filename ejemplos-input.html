@@ -176,6 +176,156 @@
 
 	</script>
 
+	<form action="" id="form-register">
+		<div class="conteiner-name">
+			<label for="input-name">Nombre:</label>
+			<input type="text" id="input-name">
+			<div id="error-input-name"></div>
+		</div>
+		<div class="conteiner-lastname">
+			<label for="input-lastname">Apellido:</label>
+			<input type="text" id="input-lastname">
+			<div id="error-input-lastname"></div>
+		</div>
+		<div class="conteiner-documenttype">
+			<label for="input-documenttype">Tipo de documento:</label>
+			<input type="text" id="input-documenttype" value="CC" readonly="true">
+			<div id="error-input-documenttype"></div>
+		</div>
+		<div class="conteiner-documentnumber">
+			<label for="input-documentnumber">Numero de documento:</label>
+			<input type="text" id="input-documentnumber">
+			<div id="error-input-documentnumber"></div>
+		</div>
+		<div class="conteiner-cantidaddinero">
+			<label for="input-cantidaddinero">Cantidad de Dinero:</label>
+			<input type="text" id="input-cantidaddinero">
+			<div id="error-input-cantidaddinero"></div>
+		</div>
+		<div class="conteiner-direccion">
+			<label for="input-direccion">Dirección:</label>
+			<input type="text" id="input-direccion">
+			<div id="error-input-direccion"></div>
+		</div>
+		<button id="button-submit">Submit</button>
+	</form>
+
+	<script type="text/javascript" charset="UTF-8" >
+		_EduIntBasic._addCharacteristicsInFields([
+			{
+				errorElement: document.getElementById('error-input-name'),
+				inputElement: document.getElementById('input-name'),
+				validaciones: [{
+					type: 'haveContent',
+					error_mesage: 'El nombre es obligatorio',
+				}],
+				filters: [{
+					type: 'name'
+				}],
+			},{
+				errorElement: document.getElementById('error-input-lastname'),
+				inputElement: document.getElementById('input-lastname'),
+				validaciones: [{
+						type: 'haveContent',
+						error_mesage: 'El apellido es obligatorio',
+					}
+				],
+				filters: [{
+					type: 'name'
+				}],
+			},{
+				errorElement: document.getElementById('error-input-documentnumber'),
+				inputElement: document.getElementById('input-documentnumber'),
+				validaciones: [{
+						type: 'isNumber',
+						num_max: 10,
+						error_mesage: 'Para cedula de ciudadania el valor debe ser menor o igual a 10 numeros',
+						condition: function(){
+							if(document.getElementById('input-documenttype').value=='CC')
+							{
+								return true;
+							}
+							return false;
+						},
+					},{
+						type: 'isNumber',
+						num_max: 6,
+						condition: function(){
+							if(document.getElementById('input-documenttype').value=='CE')
+							{
+								return true;
+							}
+							return false;
+						},
+					},{
+						type: 'isNumber',
+						num_max: 16,
+						condition: function(){
+							if(document.getElementById('input-documenttype').value=='PA')
+							{
+								return true;
+							}
+							return false;
+						},
+					},{
+						type: 'isNumber',
+						num_max: 11,
+						condition: function(){
+							if(document.getElementById('input-documenttype').value=='RC')
+							{
+								return true;
+							}
+							return false;
+						},
+					},{
+						type: 'isNumber',
+						num_max: 11,
+						condition: function(){
+							if(document.getElementById('input-documenttype').value=='TI')
+							{
+								return true;
+							}
+							return false;
+						},
+					},{
+						type: 'isNumber',
+						num_max: 10,
+						condition: function(){
+							if(document.getElementById('input-documenttype').value=='AS')
+							{
+								return true;
+							}
+							return false;
+						},
+					},{
+						type: 'isNumber',
+						num_max: 12,
+						condition: function(){
+							if(document.getElementById('input-documenttype').value=='MS')
+							{
+								return true;
+							}
+							return false;
+						},
+					}
+				],
+				masks: [
+					{ type: 'documento' },
+				],
+			},{
+				inputElement: document.getElementById('input-cantidaddinero'),
+				masks: [
+					{ type: 'colombianPeso' },
+				],
+			},{
+				inputElement: document.getElementById('input-direccion'),
+				filters: [
+					{ type: 'address' },
+				],
+			}]);
+	</script>
 
 </body>
 </html>
+
+

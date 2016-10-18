@@ -509,7 +509,7 @@ _EduInt = {
         },
         error: function(message){ _EduInt._Log._error(message); },
         _error: function(message){
-            console.err(message);
+            console.log(message);
         },
         deprecated: function(value1,value2){ _EduInt._Log._deprecated(value1,value2); },
         _deprecated: function(value1,value2){

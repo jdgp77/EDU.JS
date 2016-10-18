@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Ejemplo | Slider EduIntGD</title>
+	<script src="educacion-interactiva/js/jquery-1.9.1.js"></script>
+	<script src="educacion-interactiva/js/educacion-interactiva-slider-v1.js"></script>
+	<style>
+		.bloque
+		{
+			background-color: #333;
+			height: 200px;
+			border: 1px solid #AAA;
+			color: #fff;
+		}
+		#id_slider
+		{
+			width: 100%;
+			margin: 0 auto;
+			border: 5px solid #3F3;
+		}
+		#id_next
+		{
+			height: 100px;
+			width: 100px;
+		}
+		#id_prev
+		{
+			height: 100px;
+			width: 100px;
+		}
+		#id_slider_h
+		{
+			width: 100%;
+			height: 50px;
+		}
+		#id_content_h
+		{
+			width: 2000px;
+			display: block;
+			padding: 0;
+			margin: 0;
+		}
+		#id_content_h li
+		{
+			display: inline-block;
+			list-style: none;
+		}
+	</style>
+</head>
+<body>
+	<div id="segundo-div-cualquiera">
+		<script>
+			function crearSliderHorizontal()
+			{
+			    jQuery('#id_slider_h').sliderHorizontalEduIntGD({
+			        responsive: true,
+			        pxHorToMove: 10,
+			        contain: '#id_content_h',
+			        prev: '#id_prev_h',
+			        next: '#id_next_h',
+			    });
+			}
+			function removeSliderHorizontal()
+			{
+			    jQuery('#id_slider_h').sliderHorizontalRemoveEduIntGD();
+			}
+		</script>
+		<div onclick="crearSliderHorizontal()" >crear</div>
+		<div onclick="removeSliderHorizontal()" >remover</div>
+		<div id="id_prev_h">Prev</div>
+		<div id="id_slider_h">
+			<ul id="id_content_h">
+				<li>Contenido 1</li>
+				<li>Contenido 2</li>
+				<li>Contenido 3</li>
+				<li>Contenido 4</li>
+				<li>Contenido 5</li>
+				<li>Contenido 6</li>
+				<li>Contenido 7</li>
+				<li>Contenido 8</li>
+				<li>Contenido 9</li>
+				<li>Contenido 1</li>
+				<li>Contenido 2</li>
+				<li>Contenido 3</li>
+				<li>Contenido 4</li>
+				<li>Contenido 5</li>
+			</ul>
+		</div>
+		<div id="id_next_h">Next</div>
+	</div>
+	<div id="un-div-cualquiera">
+		<div id="id_prev">Prev</div>
+		<div id="id_slider">
+			<div class="bloque">Bloque 1</div>
+			<div class="bloque">Bloque 2</div>
+			<div class="bloque">Bloque 3</div>
+			<div class="bloque">Bloque 4</div>
+			<div class="bloque">Bloque 5</div>
+			<div class="bloque">Bloque 6</div>
+			<div class="bloque">Bloque 7</div>
+		</div>
+		<div id="id_next">Next</div>
+		<script>
+			function activarSlider()
+			{
+				$('#id_slider').sliderEduIntGD({
+					numBloques: 1,
+					next: '#id_next',
+					prev: '#id_prev',
+				});
+			}
+		</script>
+		<br>
+		<br>
+		<div onclick="jQuery('#id_slider').sliderRecoverEduIntGD();">Recuperar</div>
+		<br>
+		<br>
+		<div onclick="activarSlider();">Generar</div>
+	</div>
+</body>
+</html>

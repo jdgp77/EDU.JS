@@ -41,6 +41,10 @@ var IDE_Game = {
                 word: 'setBackgroundColor',
                 title: 'Cambia el color de <fondo></fondo>',
                 description: '',
+            },{
+                word: 'inSeconds',
+                title: 'Cambia el movimiento a un tiempo especifico',
+                description: '',
             }
         ],
         reservedFunctions: [
@@ -59,23 +63,23 @@ var IDE_Game = {
             //  Titulo
             //  ======
             this.elemTitle = document.getElementById(this.info.title.id);
-                this.titleInput = new ei.Inputs.Input({ name: 'title', className: 'c_eicreategame_title', value: this.info.title.value });
+                this.titleInput = new EduInt.Input.Input({ name: 'title', className: 'c_eicreategame_title', value: this.info.title.value });
                 this.elemTitle.appendChild(this.titleInput.element);
 
             //  Descrición
             //  ==========
             this.elemDescription = document.getElementById(this.info.description.id);
-                this.descriptionInput = new ei.Inputs.Input({ name: 'description', className: 'c_eicreategame_description', value: this.info.description.value });
+                this.descriptionInput = new EduInt.Input.Input({ name: 'description', className: 'c_eicreategame_description', value: this.info.description.value });
                 this.elemDescription.appendChild(this.descriptionInput.element);
 
             //  Caracteristicas
             //  ===============
             this.elemCaracteristics = document.getElementById(this.info.characteristics.id);
                 this.elemCaracteristicsWidth = document.getElementById(this.info.characteristics.width.id);
-                this.caracteristicsWidthInput = new ei.Inputs.Input({ name: 'width', className: 'c_eicreategame_width', value: this.info.characteristics.width.value });
+                this.caracteristicsWidthInput = new EduInt.Input.Input({ name: 'width', className: 'c_eicreategame_width', value: this.info.characteristics.width.value });
                 this.elemCaracteristicsWidth.appendChild(this.caracteristicsWidthInput.element);
                 this.elemCaracteristicsHeight = document.getElementById(this.info.characteristics.height.id);
-                this.caracteristicsHeightInput = new ei.Inputs.Input({ name: 'height', className: 'c_eicreategame_height', value: this.info.characteristics.height.value });
+                this.caracteristicsHeightInput = new EduInt.Input.Input({ name: 'height', className: 'c_eicreategame_height', value: this.info.characteristics.height.value });
                 this.elemCaracteristicsHeight.appendChild(this.caracteristicsHeightInput.element);
 
             //  Start
@@ -87,7 +91,7 @@ var IDE_Game = {
                 { inputOptions.value=this.info.start.value; }
                 if(this.info.start.value_base68!==undefined)
                 { inputOptions.value_base68=this.info.start.value_base68; }
-                this.startInput = new ei.Inputs.InputCode(inputOptions,IDE_Game.words);
+                this.startInput = new EduInt.Input.InputCode(inputOptions,IDE_Game.words);
                 this.elemStart.appendChild(this.startInput.element);
 
             this.elemStartButton = document.getElementById(this.info.start.button.id);
@@ -113,7 +117,7 @@ var IDE_Game = {
                 { inputOptions.value=this.info.animate.value; }
                 if(this.info.animate.value_base68!==undefined)
                 { inputOptions.value_base68=this.info.animate.value_base68; }
-                this.animationInput = new ei.Inputs.InputCode(inputOptions,IDE_Game.words);
+                this.animationInput = new EduInt.Input.InputCode(inputOptions,IDE_Game.words);
                 this.elemAnimate.appendChild(this.animationInput.element);
 
             this.elemAnimateButton = document.getElementById(this.info.animate.button.id);

@@ -71,14 +71,17 @@ ei.FiltAndMask = {
         var stDespsComillas_ESt='';
         //  Arreglos que contendran los valores iniciales y finales respectivamente
         var arIniDeLugaresDondeNoSeTendreEnCuenta=[];
+        var arConDeLugaresDondeNoSeTendreEnCuenta=[];
         var arFinDeLugaresDondeNoSeTendreEnCuenta=[];
         //  Crea un arreglo con los valores iniciale y finales
         for(var countValoresIntermedios=0;countValoresIntermedios<arSeparadoresDeValoresIntermedios.length;countValoresIntermedios++)
         {
             var valorInicial = arSeparadoresDeValoresIntermedios[countValoresIntermedios].ini;
             var valorFinal = arSeparadoresDeValoresIntermedios[countValoresIntermedios].end;
+            var valorContinuar = arSeparadoresDeValoresIntermedios[countValoresIntermedios].con;
             arIniDeLugaresDondeNoSeTendreEnCuenta[countValoresIntermedios] = valorInicial;
             arFinDeLugaresDondeNoSeTendreEnCuenta[countValoresIntermedios] = valorFinal;
+            arConDeLugaresDondeNoSeTendreEnCuenta[countValoresIntermedios] = valorContinuar;
         }
 
         //  Busca cual es el elemento mas cercano al origen para continuar
@@ -86,6 +89,7 @@ ei.FiltAndMask = {
         //  Valor inical del valor intermedio mas secano
         var valIniDelValorIntermedioMasCercano = arIniDeLugaresDondeNoSeTendreEnCuenta[noPosicionDelElementoMasCercano];
         var valFinDelValorIntermedioMasCercano = arFinDeLugaresDondeNoSeTendreEnCuenta[noPosicionDelElementoMasCercano];
+        var valConDelValorIntermedioMasCercano = arConDeLugaresDondeNoSeTendreEnCuenta[noPosicionDelElementoMasCercano];
         var posIniComilla_ESt = valor_ESt_.indexOf(valIniDelValorIntermedioMasCercano);
         //  Solo entra si encuentra algun tipo de dato intermedio
         for(var contValoresDentroDeComillas=0;posIniComilla_ESt!=-1;contValoresDentroDeComillas++)
@@ -98,17 +102,108 @@ ei.FiltAndMask = {
             //  Cambia lo que esta dentro de las comillas por un caracter unico
             var nuevoStEntreComillas_ESt=this.divisorDePalabras+this.textoParaRemplazarContenidoDeComillas_ESt+'__'+tipoDeValores+'__'+contValoresDentroDeComillas+this.divisorDePalabras;
 
-            //  Busca el final del valor Intermedio
-            var posFinComilla_ESt=stDesPrimComil_ESt.indexOf(valFinDelValorIntermedioMasCercano,valIniDelValorIntermedioMasCercano.length);
+            var bnEncontroFinArchivo=false;
+            var bnExisteCon=false;
+            if(valConDelValorIntermedioMasCercano!==undefined)
+            {
+                bnExisteCon=true;
+            }
+
+            var valorParaIniciarBusquedaFin = valIniDelValorIntermedioMasCercano.length;
+            //  Mira si existe un continuar
+            var bnConEsMasDeUno=false;
+            if(bnExisteCon)
+            {
+                //  Posición del fin del comilla y el continuar
+                var posFinComilla_ESt=stDesPrimComil_ESt.indexOf(valFinDelValorIntermedioMasCercano,valorParaIniciarBusquedaFin);
+                var posConComilla_ESt=stDesPrimComil_ESt.indexOf(valConDelValorIntermedioMasCercano,valIniDelValorIntermedioMasCercano.length);
+                
+                //  Si alguno no existe o tiene un error el informa que debe cerrar hasta el fin del archivo
+                if(posFinComilla_ESt==-1 || posConComilla_ESt==-1)
+                {
+                    bnEncontroFinArchivo=true;
+                }
+                else if(posFinComilla_ESt < posConComilla_ESt)
+                {
+                    //  Error
+                    bnEncontroFinArchivo=true;
+                }
+                //  Si esta en otden contunua
+                else
+                {
+                    //  Averigua cuantos con existen de aca hasta el final
+                    var numCon = stDesPrimComil_ESt.split(valConDelValorIntermedioMasCercano).length - 1;
+                    //   SI es uno solo busca el mas cierre mas cercano o el fin del archivo
+                    if(numCon==1)
+                    {
+                        var posFinComilla_ESt=stDesPrimComil_ESt.indexOf(valFinDelValorIntermedioMasCercano,valorParaIniciarBusquedaFin);
+                        if(posFinComilla_ESt!=-1)
+                        {
+                            bnExisteComillaFin=true;
+                        }
+                        break;
+                    }
+                    //  En caso de tener mas de un con busca cuandos tiene antes de cerrar
+                    else
+                    {
+                        var bnExisteComillaFin=false;
+                        var numCon=0;
+                        var numFin=1;
+                        var valCon = valConDelValorIntermedioMasCercano;
+                        var valFin = valFinDelValorIntermedioMasCercano;
+                        var buscarFinDesde=0;                       
+                        while(!bnExisteComillaFin)
+                        {
+                            if(1<numFin) { buscarFinDesde=buscarFinDesde+valFin.length; }
+                            var lengthStFinComilla_ESt = stDesPrimComil_ESt.indexOf(valFin,buscarFinDesde);
+                            // Encontro una comilla final
+                            if(lengthStFinComilla_ESt!=-1)
+                            {
+                                //  var lengthStConComilla_ESt = stDesPrimComil_ESt.indexOf(valFinDelValorIntermedioMasCercano);
+                                numCon = numCon + stDesPrimComil_ESt.substring(buscarFinDesde,lengthStFinComilla_ESt).split(valCon).length - 1;
+
+                                if(numCon==numFin)
+                                {
+                                    bnExisteComillaFin=true;
+                                    bnConEsMasDeUno = true;
+                                    posFinComilla_ESt=lengthStFinComilla_ESt;
+                                    break;
+                                }
+                                else
+                                {
+                                    numFin++;
+                                    buscarFinDesde = lengthStFinComilla_ESt;
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            //  Si no existe toma el valor al cierre de comilla o informe que no existe
+            else
+            {
+                var posFinComilla_ESt=stDesPrimComil_ESt.indexOf(valFinDelValorIntermedioMasCercano,valorParaIniciarBusquedaFin);
+                if(posFinComilla_ESt!=-1)
+                {
+                    bnExisteComillaFin=true;
+                }
+            }
             //  Si existe esta comilla que cierra la primera entra
-            if(posFinComilla_ESt!=-1)
+            if(bnExisteComillaFin)
             {
                 //  Coge el valor intermedio
                 stEntreComillas_ESt=stDesPrimComil_ESt.substr(0,posFinComilla_ESt+valFinDelValorIntermedioMasCercano.length);
                 //  Guarda el contenido dentro de las comillas
                 this.arValoresIntermedios[tipoDeValores][this.arValoresIntermedios[tipoDeValores].length]=stEntreComillas_ESt;
                 //  Coloca todo lo que existe despues de las comillas que cierran
-                stDespsComillas_ESt=stDesPrimComil_ESt.substr(posFinComilla_ESt+valIniDelValorIntermedioMasCercano.length,stDesPrimComil_ESt.length);
+                if(!bnConEsMasDeUno)
+                { stDespsComillas_ESt=stDesPrimComil_ESt.substring(stEntreComillas_ESt.length, stDesPrimComil_ESt.length); }
+                else
+                { stDespsComillas_ESt=stDesPrimComil_ESt.substring(stEntreComillas_ESt.length, posFinComilla_ESt+valIniDelValorIntermedioMasCercano.length); }
                 //  Guarda los caracteres iniciales y finales a no tener en cuenta
                 this.arIniContenidoANoTenerEnCuenta[contValoresDentroDeComillas]=valIniDelValorIntermedioMasCercano;
                 this.arFinContenidoANoTenerEnCuenta[contValoresDentroDeComillas]=valFinDelValorIntermedioMasCercano;
@@ -153,89 +248,6 @@ ei.FiltAndMask = {
             valor=valor.replace(this.textoParaRemplazarContenidoDeComillas_ESt+'__'+tipoDeValores+'__'+countValoresReservados,this.arValoresIntermedios[tipoDeValores][countValoresReservados]);
         }
         return valor;
-    },
-    code: function(valor_ESt,infoCode)
-    {
-        /** pasarDeCodigoAColor_ESt("o('pedro').setPosicionEnX(12);"); **/
-
-        //  Coloca un divizor al comienzo y al final
-        var valor_ESt_=valor_ESt;
-        //  Cambia los espacios por un caracter que entiende html, y se aplica para todo el valor
-        valor_ESt_=this.remplaceAll(' ','&nbsp',valor_ESt_);
-        valor_ESt_=this.remplaceAll('<','&#60',valor_ESt_);
-        valor_ESt_=this.remplaceAll('>','&#62',valor_ESt_);
-
-        //  Deja aparte los comentarios
-        valor_ESt_ = ei.FiltAndMask.cambiarValoresIntermediosPorReservado(valor_ESt_,'comentarios',infoCode.notIncluded);
-        //  Deja aparte los comentarios
-        valor_ESt_ = ei.FiltAndMask.cambiarValoresIntermediosPorReservado(valor_ESt_,'comillas',infoCode.quotes);
-
-        //  Colocamos un divizor al comienzo y final de las palabras
-        var valor_ESt_=this.divisorDePalabras+valor_ESt_+this.divisorDePalabras;
-        /** "%o(LasComillasSeRemplazanPorTextosUnicos).setPosicionEnX(12);%" **/
-
-        //  Estas son las palabras que tipicamente dividen una palabra de otra
-        var arPalabrasQueSimbolisanElFinDeUnaPlabra=infoCode.dividersWords;
-        //  Coloco un simbolo al comienzo y al final
-        valor_ESt_=this.divisorDePalabras+valor_ESt_+this.divisorDePalabras;
-        //  Pasa por cada una de estas y le coloca antes y despues de las mismas un '[%]' de tal manera que divida estas palabras
-        for(contPalabrasQSEFDUP=0;contPalabrasQSEFDUP<arPalabrasQueSimbolisanElFinDeUnaPlabra.length;contPalabrasQSEFDUP++)
-        {
-            var valor_ESt_=this.remplaceAll(arPalabrasQueSimbolisanElFinDeUnaPlabra[contPalabrasQSEFDUP],this.divisorDePalabras+arPalabrasQueSimbolisanElFinDeUnaPlabra[contPalabrasQSEFDUP]+this.divisorDePalabras,valor_ESt_);
-        }
-
-        //  Las funciones tipicas
-        var arPalabrasQueSimbolisanFunciones=infoCode.reserved;
-        //  Pasa por cada una de las funciones y le coloca en un span dandole color
-        for(contPalabrasQueSimbolisanFunciones=0;contPalabrasQueSimbolisanFunciones<arPalabrasQueSimbolisanFunciones.length;contPalabrasQueSimbolisanFunciones++)
-        {
-            var valor_ESt_=this.remplaceAll(this.divisorDePalabras+arPalabrasQueSimbolisanFunciones[contPalabrasQueSimbolisanFunciones].word+this.divisorDePalabras,this.divisorDePalabras+'<span fnc="ESt" >'+arPalabrasQueSimbolisanFunciones[contPalabrasQueSimbolisanFunciones].word+'</span>'+this.divisorDePalabras,valor_ESt_);
-        }
-        /** "%<span .. >o</span>%(%LasComillasSeRemplazanPorTextosUnicos%)%%.%<span .. >posicionEnX</span>%(%12%)%;" **/
-
-        //  palabras clave tipicas
-        var arPalabrasClaves_ESt=infoCode.reservedFunctions;
-        //  Pasa por cada una de las funciones y le coloca en un span dandole color
-        for(contPalabrasQueSimbolisanFunciones=0;contPalabrasQueSimbolisanFunciones<arPalabrasClaves_ESt.length;contPalabrasQueSimbolisanFunciones++)
-        {
-            var valor_ESt_=this.remplaceAll(this.divisorDePalabras+arPalabrasClaves_ESt[contPalabrasQueSimbolisanFunciones]+this.divisorDePalabras,this.divisorDePalabras+'<span palclv="ESt" >'+arPalabrasClaves_ESt[contPalabrasQueSimbolisanFunciones]+'</span>'+this.divisorDePalabras,valor_ESt_);
-        }
-        /** "%<span .. >o</span>%(%LasComillasSeRemplazanPorTextosUnicos%)%%.%<span .. >posicionEnX</span>%(%12%)%;" **/
-
-        //  Colocarle color a los puntos claves
-        var valor_ESt_=this.remplaceAll(this.divisorDePalabras+'('+this.divisorDePalabras,this.divisorDePalabras+'<span prntesis="ESt">(</span>'+this.divisorDePalabras,valor_ESt_);
-        var valor_ESt_=this.remplaceAll(this.divisorDePalabras+')'+this.divisorDePalabras,this.divisorDePalabras+'<span prntesis="ESt">)</span>'+this.divisorDePalabras,valor_ESt_);
-        var valor_ESt_=this.remplaceAll(this.divisorDePalabras+';'+this.divisorDePalabras,this.divisorDePalabras+'<span pntoycom="ESt">;</span>'+this.divisorDePalabras,valor_ESt_);
-        /** "%<span .. >o</span>%<span .. >(</span>%LasComillasSeRemplazanPorTextosUnicos%<span .. >)</span>%%.%<span .. >posicionEnX</span>%<span .. >(</span>%12%<span .. >)</span>%;" **/
-
-        //  Cambia los cambios de linea del tecto en cambios de linea HTML
-        var valor_ESt_=this.remplaceAll("\r"+this.divisorDePalabras+"\n",'<br/>',valor_ESt_);
-        var valor_ESt_=this.remplaceAll("\n",'<br/>',valor_ESt_);
-        var valor_ESt_=this.remplaceAll("\r",'<br/>',valor_ESt_);
-
-        //  Vuelve a convertir lo que esta entre comentarios a lo que era antes
-        valor_ESt_=ei.FiltAndMask.retornarValoresReservadoPorIntermedios(valor_ESt_,'comentarios');
-        //  Vuelve a convertir lo que esta entre comillas a lo que era antes
-        valor_ESt_=ei.FiltAndMask.retornarValoresReservadoPorIntermedios(valor_ESt_,'comillas');
-
-        //  Coloca un epacio al final para que sea visible el <br> al final
-        valor_ESt_=valor_ESt_+'&nbsp'+this.divisorDePalabras;
-
-        //  Divide el codigo por palabras para sacar los numeros y colocarle color
-        arPorPalabrasValor_ESt=valor_ESt_.split(this.divisorDePalabras);
-        //  Pasa por cada palabra
-        for(var contPorPalabrasValor_ESt=0;contPorPalabrasValor_ESt<arPorPalabrasValor_ESt.length;contPorPalabrasValor_ESt++)
-        {
-            if(this.qstnIsNumber(arPorPalabrasValor_ESt[contPorPalabrasValor_ESt]))
-            {
-                arPorPalabrasValor_ESt[contPorPalabrasValor_ESt]='<span num="ESt" >'+arPorPalabrasValor_ESt[contPorPalabrasValor_ESt]+'</span>';
-            }
-        }
-
-        //  Al final quita los divizores de la pabras
-        valor_ESt_=arPorPalabrasValor_ESt.join('');
-
-        return valor_ESt_;
     },
 };
 

@@ -95,11 +95,598 @@ _EduIntBasic = {
         return myArray.constructor.toString().indexOf("Array") > -1;
     },
 
-    filters: {
-
+    qstnIsNumber: function(numero) { return this._qstnIsNumber(numero); },
+    _qstnIsNumber: function(numero)
+    {
+        return !isNaN(numero) && numero!=='';
     },
-    masks: {
+    replaceAll: function(aCambiar_MyR,aColocar,valor_MyR) { return this._replaceAll(aCambiar_MyR,aColocar,valor_MyR); },
+    _replaceAll: function(aCambiar_MyR,aColocar,valor_MyR)
+    {
+        while(0<=valor_MyR.indexOf(aCambiar_MyR))
+        { valor_MyR=valor_MyR.replace(aCambiar_MyR,'¬'); }
+        while(0<=valor_MyR.indexOf('¬'))
+        { valor_MyR=valor_MyR.replace('¬',aColocar); }
+        return valor_MyR;
+    },
 
+    _trim(valor_MyR)
+    {
+        while(0<=valor_MyR.indexOf("  "))
+        {
+            valor_MyR=valor_MyR.replace("  "," ");
+        }
+        var valorLength_MyR=valor_MyR.length;
+        if(valor_MyR.substr(valorLength_MyR-1,valorLength_MyR)==" ")
+        {
+            valor_MyR=valor_MyR.substr(0,valorLength_MyR-1);
+        }
+        if(valor_MyR.substr(0,1)==" ")
+        {
+            valor_MyR=valor_MyR.substr(1,valorLength_MyR);
+        }
+        return valor_MyR;
+    },
+    _accNameFormat(nombre_MyR)
+    {
+        nombre_MyR=_EduIntBasic._trim(nombre_MyR);
+        var arNombre_MyR=nombre_MyR.split(" ");
+        var noArNombre_MyR=arNombre_MyR.length;
+        for(var contArNombre=0;contArNombre<noArNombre_MyR;contArNombre++)
+        {
+            if(0<arNombre_MyR[contArNombre].length)
+            {
+                arNombre_MyR[contArNombre]=arNombre_MyR[contArNombre].substr(0,1).toUpperCase()+arNombre_MyR[contArNombre].substr(1,arNombre_MyR[contArNombre].length).toLowerCase();
+            }
+            else
+            {
+                arNombre_MyR[contArNombre]=arNombre_MyR[contArNombre].toUpperCase();
+            }
+        }
+        return arNombre_MyR.join(" ");
+    },
+    _accNumberFormat: function(numero_MyR,decimales_MyR,decPunto,sepMiles)
+    {
+        if(decimales_MyR==undefined) { decimales_MyR = 2; }
+        if(decPunto==undefined)      { decPunto = ","; }
+        if(sepMiles==undefined)      { sepMiles = "."; }
+        //  Redondear
+        numero_MyR = _EduIntBasic._redondear(numero_MyR,decimales_MyR);
+        //  pasa a string
+        var stNumero_MyR=numero_MyR.toString();
+        //  Divide la parte entera de la decimal
+        var valor_MyR=stNumero_MyR.split(".");
+        //  Si no tiene parte entera la coloca
+        if(valor_MyR[0]==undefined) valor_MyR[0]=0;
+        //  Si no tiene parte decimal la coloca
+        if(valor_MyR[1]==undefined) { var valDecimal_MyR = ""; } else { var valDecimal_MyR=valor_MyR[1]; }
+        //  Se encarga que tenga el numero de decimales que quiere
+        while(valDecimal_MyR.length<decimales_MyR)
+        {
+            //  Concatena los ceros que hacen falta
+            valDecimal_MyR=valDecimal_MyR+"0";
+        }
+        //  Arreglo que dividira la parte entera por cada tres numeros
+        var numeroEntero_MyR="";
+        //  Si es mas largo de tres numeros enteros, este contendra temporalmente
+        //  los ultimos tres, luego se quitaran y contendra los que serian los 
+        //  ultomos tres.
+        var noUltimosTres_MyR;
+        //  Valor entero
+        var valorEnteroTemp_MyR = valor_MyR[0];
+        //  Longitud de la parte entera
+        var valorEnteroTempLeng_MyR = valorEnteroTemp_MyR.length;
+        //  va a quitarle de tres numeros por cada entrada
+        while(valorEnteroTempLeng_MyR>3)
+        {
+            //  Quita la parte entera
+            noUltimosTres_MyR=valorEnteroTemp_MyR.substr(valorEnteroTempLeng_MyR-3,valorEnteroTempLeng_MyR);
+            //  Concatena de tres em tres
+            if(numeroEntero_MyR=="") numeroEntero_MyR=sepMiles+noUltimosTres_MyR;
+            else                 numeroEntero_MyR=sepMiles+noUltimosTres_MyR+numeroEntero_MyR;
+            //  
+            valorEnteroTemp_MyR=valorEnteroTemp_MyR.substr(0,valorEnteroTempLeng_MyR-3);
+            //  Longitud de la parte entera
+            valorEnteroTempLeng_MyR=valorEnteroTemp_MyR.length;
+        }
+        //  
+        return valorEnteroTemp_MyR+numeroEntero_MyR+(decimales_MyR!==0?decPunto+valDecimal_MyR:'');
+    },
+    _redondear: function(valor_MyR,decimales_MyR)
+    {
+        myDecimales_MyR = Math.pow(10,decimales_MyR);
+        return Math.round(valor_MyR*myDecimales_MyR)/myDecimales_MyR;
+    },
+    _colocarCeros: function(noCeros_MyR,valor_MyR)
+    {
+        var stValor_MyR = valor_MyR.toString();
+        while(stValor_MyR.length<noCeros_MyR)
+        {
+            stValor_MyR="0"+stValor_MyR.toString()+"";
+        }
+        return stValor_MyR;
+    },
+
+    //  Objeto que tiene todo lo necesario de elemento
+    Code: function(valor,infoCode)
+    {
+        this._infoCode=infoCode;
+        this.valorConDivisorDePalabras = '';
+        this._divisorDePalabras = '~';
+        this._bnExisteAutocompletar = false;
+        this.accProcesarCodigo = function(valor,parent)
+        {
+            var infoCode=this._infoCode;
+            var _divisorDePalabras = this._divisorDePalabras;
+
+            /** pasarDeCodigoAColor_ESt("o('pedro').setPosicionEnX(12);"); **/
+
+            //  Coloca un divizor al comienzo y al final
+            var valor_ESt_=valor;
+            //  Cambia los espacios por un caracter que entiende html, y se aplica para todo el valor
+            valor_ESt_=_EduIntBasic._remplaceAll(' ','&nbsp',valor_ESt_);
+            valor_ESt_=_EduIntBasic._remplaceAll('<','&#60',valor_ESt_);
+            valor_ESt_=_EduIntBasic._remplaceAll('>','&#62',valor_ESt_);
+
+            //  Deja aparte los comentarios
+            valor_ESt_ = ei.FiltAndMask.cambiarValoresIntermediosPorReservado(valor_ESt_,'comentarios',infoCode.notIncluded);
+            //  Deja aparte los comentarios
+            valor_ESt_ = ei.FiltAndMask.cambiarValoresIntermediosPorReservado(valor_ESt_,'comillas',infoCode.quotes);
+
+            //  Colocamos un divizor al comienzo y final de las palabras
+            var valor_ESt_=_divisorDePalabras+valor_ESt_+_divisorDePalabras;
+            /** "%o(LasComillasSeRemplazanPorTextosUnicos).setPosicionEnX(12);%" **/
+
+            //  Estas son las palabras que tipicamente dividen una palabra de otra
+            var arPalabrasQueSimbolisanElFinDeUnaPlabra=infoCode.dividersWords;
+            //  Coloco un simbolo al comienzo y al final
+            valor_ESt_=_divisorDePalabras+valor_ESt_+_divisorDePalabras;
+            //  Pasa por cada una de estas y le coloca antes y despues de las mismas un '[%]' de tal manera que divida estas palabras
+            for(contPalabrasQSEFDUP=0;contPalabrasQSEFDUP<arPalabrasQueSimbolisanElFinDeUnaPlabra.length;contPalabrasQSEFDUP++)
+            {
+                var valor_ESt_=_EduIntBasic._remplaceAll(arPalabrasQueSimbolisanElFinDeUnaPlabra[contPalabrasQSEFDUP],_divisorDePalabras+arPalabrasQueSimbolisanElFinDeUnaPlabra[contPalabrasQSEFDUP]+_divisorDePalabras,valor_ESt_);
+            }
+            //  Limpia los divisores de lapabras dobles
+            var dP =_divisorDePalabras;
+            while(valor_ESt_.indexOf(dP+dP+'')!=-1){ valor_ESt_=valor_ESt_.replace(dP+dP,dP); };
+
+            var valorConDivisorDePalabras = valor_ESt_;
+
+            //  Por defecto no existen palabaras para autocompletar
+            this._bnExisteAutocompletar=false;
+            //  Verifica si no es el primer valor asignado, si no lo es verifica si puede colocar un select
+            if(this.valorConDivisorDePalabras)
+            {
+                this.valorConDivisorDePalabrasLast=this.valorConDivisorDePalabras;
+                this.valorConDivisorDePalabras=valorConDivisorDePalabras;            
+                if(this.valorConDivisorDePalabrasLast)
+                {
+                    //  Verifica si el nuevo y el viejo solo tiene una palabra nueva
+                    if(this.valorConDivisorDePalabrasLast.length+1==this.valorConDivisorDePalabras.length)
+                    {
+                        var arPalabrasAnteriores = this.valorConDivisorDePalabrasLast.split(_divisorDePalabras);
+                        var arPalabrasActuales = this.valorConDivisorDePalabras.split(_divisorDePalabras);
+                        if(arPalabrasAnteriores.length==arPalabrasActuales.length)
+                        {
+                            //  Pasar por cada una de las palabras y encontrar la palabra con la diferencia
+                            for(var countWords=0;countWords<arPalabrasAnteriores.length;countWords++)
+                            {
+                                var palabraAnterior = arPalabrasAnteriores[countWords];
+                                var palabraActual = arPalabrasActuales[countWords];
+
+                                if(palabraAnterior!==palabraActual)
+                                {
+                                    arPalabrasActuales[countWords]='<span id="eigdi-code-autocompletar" style="position: relative" ></span>'+palabraActual;
+                                    
+                                    this.palabraCambiada = palabraActual;
+                                    this._bnExisteAutocompletar=true;
+                                    break;
+                                }
+                            }
+
+                            var valor_ESt_ = arPalabrasActuales.join(_divisorDePalabras);
+
+                            //  Pasar este dato antes de convertir el html, de manera que deje un span con una posicion rastreable
+
+                            //  Guardar la palabra que cambio para buscarla en el autocompletar
+                            //  Mostrar ayudas y hacer todo muy cool
+                        }
+                    }
+                }
+            }
+            this.valorConDivisorDePalabras=valorConDivisorDePalabras;
+
+            //  Las funciones tipicas
+            var arPalabrasQueSimbolisanFunciones=infoCode.reserved;
+            //  Pasa por cada una de las funciones y le coloca en un span dandole color
+            for(contPalabrasQueSimbolisanFunciones=0;contPalabrasQueSimbolisanFunciones<arPalabrasQueSimbolisanFunciones.length;contPalabrasQueSimbolisanFunciones++)
+            {
+                var valor_ESt_=_EduIntBasic._remplaceAll(_divisorDePalabras+arPalabrasQueSimbolisanFunciones[contPalabrasQueSimbolisanFunciones].word+_divisorDePalabras,_divisorDePalabras+'<span fnc="ESt" >'+arPalabrasQueSimbolisanFunciones[contPalabrasQueSimbolisanFunciones].word+'</span>'+_divisorDePalabras,valor_ESt_);
+            }
+            /** "%<span .. >o</span>%(%LasComillasSeRemplazanPorTextosUnicos%)%%.%<span .. >posicionEnX</span>%(%12%)%;" **/
+
+            //  palabras clave tipicas
+            var arPalabrasClaves_ESt=infoCode.reservedFunctions;
+            //  Pasa por cada una de las funciones y le coloca en un span dandole color
+            for(contPalabrasQueSimbolisanFunciones=0;contPalabrasQueSimbolisanFunciones<arPalabrasClaves_ESt.length;contPalabrasQueSimbolisanFunciones++)
+            {
+                var valor_ESt_=_EduIntBasic._remplaceAll(_divisorDePalabras+arPalabrasClaves_ESt[contPalabrasQueSimbolisanFunciones]+_divisorDePalabras,_divisorDePalabras+'<span palclv="ESt" >'+arPalabrasClaves_ESt[contPalabrasQueSimbolisanFunciones]+'</span>'+_divisorDePalabras,valor_ESt_);
+            }
+            /** "%<span .. >o</span>%(%LasComillasSeRemplazanPorTextosUnicos%)%%.%<span .. >posicionEnX</span>%(%12%)%;" **/
+
+            //  Colocarle color a los puntos claves
+            var valor_ESt_=_EduIntBasic._remplaceAll(_divisorDePalabras+'('+_divisorDePalabras,_divisorDePalabras+'<span prntesis="ESt">(</span>'+_divisorDePalabras,valor_ESt_);
+            var valor_ESt_=_EduIntBasic._remplaceAll(_divisorDePalabras+')'+_divisorDePalabras,_divisorDePalabras+'<span prntesis="ESt">)</span>'+_divisorDePalabras,valor_ESt_);
+            var valor_ESt_=_EduIntBasic._remplaceAll(_divisorDePalabras+';'+_divisorDePalabras,_divisorDePalabras+'<span pntoycom="ESt">;</span>'+_divisorDePalabras,valor_ESt_);
+            /** "%<span .. >o</span>%<span .. >(</span>%LasComillasSeRemplazanPorTextosUnicos%<span .. >)</span>%%.%<span .. >posicionEnX</span>%<span .. >(</span>%12%<span .. >)</span>%;" **/
+
+            //  Vuelve a convertir lo que esta entre comentarios a lo que era antes
+            valor_ESt_=ei.FiltAndMask.retornarValoresReservadoPorIntermedios(valor_ESt_,'comentarios');
+            //  Vuelve a convertir lo que esta entre comillas a lo que era antes
+            valor_ESt_=ei.FiltAndMask.retornarValoresReservadoPorIntermedios(valor_ESt_,'comillas');
+
+            //  Cambia los cambios de linea del tecto en cambios de linea HTML
+            var valor_ESt_=_EduIntBasic._remplaceAll("\r"+_divisorDePalabras+"\n",'<br/>',valor_ESt_);
+            var valor_ESt_=_EduIntBasic._remplaceAll("\n",'<br/>',valor_ESt_);
+            var valor_ESt_=_EduIntBasic._remplaceAll("\r",'<br/>',valor_ESt_);
+
+            //  Coloca un epacio al final para que sea visible el <br> al final
+            valor_ESt_=valor_ESt_+'&nbsp'+_divisorDePalabras;
+
+            //  Divide el codigo por palabras para sacar los numeros y colocarle color
+            arPorPalabrasValor_ESt=valor_ESt_.split(_divisorDePalabras);
+            //  Pasa por cada palabra
+            for(var contPorPalabrasValor_ESt=0;contPorPalabrasValor_ESt<arPorPalabrasValor_ESt.length;contPorPalabrasValor_ESt++)
+            {
+                if(_EduIntBasic._qstnIsNumber(arPorPalabrasValor_ESt[contPorPalabrasValor_ESt]))
+                {
+                    arPorPalabrasValor_ESt[contPorPalabrasValor_ESt]='<span num="ESt" >'+arPorPalabrasValor_ESt[contPorPalabrasValor_ESt]+'</span>';
+                }
+            }
+
+            //  Al final quita los divizores de la pabras
+            valor_ESt_=arPorPalabrasValor_ESt.join('');
+
+            //  Parametros
+            //  =========
+            this.valorHtml=valor_ESt_;
+        }
+
+        this.accProcesarCodigo(valor);
+        //  Metodos
+        //  =======
+        this.getValorHTML=function(){
+            return this.valorHtml;
+        };
+        this.accMostrarAutocompletar=function(){
+            if(this._bnExisteAutocompletar)
+            {
+                if(document.getElementById('eigdi-code-autocompletar'))
+                {
+                    this.palabraCambiada;
+                    var select = _EduInt._Input.Plugins.Select.create({ options: ['setPosition','setPosInX','setPosInY']});
+                    select.element.style.position='absolute';
+                    select.element.style.top='10px';
+                    select.element.style.left='0px';
+                    document.getElementById('eigdi-code-autocompletar').appendChild(select.element);
+                }
+            }
+        };
+
+        return this;
+    },
+
+    _Filters: {
+        code: function(valor_ESt,infoCode) { return this._code(valor_ESt,infoCode); },
+        _code: function(valor_ESt,infoCode)
+        {
+            return _EduIntBasic.Code(valor_ESt,infoCode).getValorHTML();
+        },
+        _accFilter(field, filter)
+        {
+            switch(filter.type)
+            {
+                case 'name':
+                    field.value = _EduIntBasioc._accNameFormat(field.value);
+                    break;
+            }
+        },
+    },
+    _Masks: {
+        _accMask(field, filter)
+        {
+            field._eiValorOriginal = field.value;
+            switch(filter.type)
+            {
+                case 'documento':
+                    field.value = _EduIntBasic._accNumberFormat(field.value,0,",",".");
+                    break;
+                case 'colombianPeso':
+                    field.value = '$'+_EduIntBasic._accNumberFormat(field.value,0,",",".");
+                    break;
+            }
+        },
+        _accUnMask(field)
+        {
+            if(field._eiValorOriginal!==undefined)
+            {
+                field.value = field._eiValorOriginal;
+            }
+        },
+    },
+    _Validations:
+    {
+        _qstnIsNumber: function(num)
+        {
+            return _EduIntBasic._qstnIsNumber(num);
+        },
+        _qstnHaveContent: function(val)
+        {
+            if(val==='' || val===' ')
+            {
+                return false;
+            }
+            return true;
+        },
+        //  Retorna toda la información correspondiente a la validación, mensaje para usuario
+        _withInformation: function(value, validation)
+        {
+            var bnValidate = true;
+            if(validation.condition!==undefined)
+            {
+                bnValidate = validation.condition();
+            }
+
+            if(bnValidate)
+            {
+                switch(validation.type)
+                {
+                    case 'isNumber':
+                        if(this._qstnIsNumber(value))
+                        {
+                            if(validation.num_max!==undefined)
+                            {
+                                if(value.toString().length<=validation.num_max)
+                                {
+                                    return { result: 'correct' };
+                                }
+                                else
+                                {
+                                    return {
+                                        result: 'wrong',
+                                        codeValidationError: 'validation-1.1',
+                                        message: (validation.error_mesage!==undefined?validation.error_mesage:'El numero tiene que ser menor a <span style="font-weight: bold;" >'+validation.num_max+'</span> cacacteres'),
+                                    }
+                                }
+                            }
+                            else if(validation.num_limit!==undefined)
+                            {
+                                if(value.toString().length===validation.num_limit)
+                                {
+                                    return { result: 'correct' };
+                                }
+                                else
+                                {
+                                    return {
+                                        result: 'wrong',
+                                        codeValidationError: 'validation-1.2',
+                                        message: (validation.error_mesage!==undefined?validation.error_mesage:'El numero tiene que tener <span style="font-weight: bold;" >'+validation.num_limit+'</span> cacacteres'),
+                                    }
+                                }
+                            }
+                            else if(validation.num_min!==undefined)
+                            {
+                                if(validation.num_min<=value.toString().length)
+                                {
+                                    return { result: 'correct' };
+                                }
+                                else
+                                {
+                                    return {
+                                        result: 'wrong',
+                                        codeValidationError: 'validation-1.3',
+                                        message: (validation.error_mesage!==undefined?validation.error_mesage:'El numero tiene que ser mator a <span style="font-weight: bold;" >'+validation.num_min+'</span> cacacteres'),
+                                    }
+                                }
+                            }
+                            return { result: 'correct' };
+                        }
+                        else
+                        {
+                            return {
+                                result: 'wrong',
+                                codeValidationError: 'validation-1',
+                                message: (validation.error_mesage!==undefined?validation.error_mesage:'El valor tiene que ser un <span style="font-weight: bold;" >Numero</span>'),
+                            }
+                        }
+                        break;
+                    case 'haveContent':
+                        if(this._qstnHaveContent(value))
+                        {
+                            return { result: 'correct' };
+                        }
+                        else
+                        {
+                            return {
+                                result: 'wrong',
+                                codeValidationError: 'validation-2',
+                                message: (validation.error_mesage!==undefined?validation.error_mesage:'El valor tiene que ser un <span style="font-weight: bold;" >Numero</span>'),
+                            }
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                return { result: 'dont-validated' };
+            }
+        },
+    },
+    //  Se asignan en _addCharacteristicsInField
+    _accValidateAsField: function(field)
+    {
+        if(field===undefined) { field=this; }
+        
+        var bnPrimeraVezColocandoComentarioError=true;
+        var bnSinErrores=true;
+        if(field._fieldCharacteristics!==undefined)
+        {
+            if(field._fieldCharacteristics.validaciones!==undefined)
+            {
+                for(var countValidaciones=0;countValidaciones<field._fieldCharacteristics.validaciones.length;countValidaciones++)
+                {
+                    var validacion = field._fieldCharacteristics.validaciones[countValidaciones];
+                    var answValidacion = _EduIntBasic._Validations._withInformation(field.value, validacion);
+                    if(answValidacion.result==='correct')
+                    {
+                        field._fieldCharacteristics.errorElement.innerHTML='';
+                    }
+                    else if(answValidacion.result==='dont-validated')
+                    {
+                        
+                    }
+                    else
+                    {
+                        bnSinErrores=false;
+                        if(bnPrimeraVezColocandoComentarioError)
+                        {
+                            var bnBorrarLista = true;
+                        }
+                        else
+                        {
+                            var bnBorrarLista = false;
+                        }
+                        
+                        _EduIntBasic._accAddLiElement(field._fieldCharacteristics.errorElement, answValidacion.message, { bnClear: bnBorrarLista });
+                        bnPrimeraVezColocandoComentarioError=false;
+                    }
+                }
+            }
+        }
+        return bnSinErrores;
+    },
+    _accFilterAsField: function(field)
+    {
+        if(field===undefined) { field=this; }
+        
+        if(field._fieldCharacteristics!==undefined)
+        {
+            if(field._fieldCharacteristics.filters!==undefined)
+            {
+                for(var countFilters=0;countFilters<field._fieldCharacteristics.filters.length;countFilters++)
+                {
+                    var filter = field._fieldCharacteristics.filters[countFilters];
+                    _EduIntBasic._Filters._accFilter(field, filter);
+                }
+            }
+        }
+    },
+    _accMaskAsField: function(field)
+    {
+        if(field===undefined) { field=this; }
+        
+        if(field._fieldCharacteristics!==undefined)
+        {
+            if(field._fieldCharacteristics.masks!==undefined)
+            {
+                for(var countFilters=0;countFilters<field._fieldCharacteristics.masks.length;countFilters++)
+                {
+                    var mask = field._fieldCharacteristics.masks[countFilters];
+                    _EduIntBasic._Masks._accMask(field, mask);
+                }
+            }
+        }
+    },
+    _accUnMaskAsField: function(field)
+    {
+        if(field===undefined) { field=this; }
+        
+        _EduIntBasic._Masks._accUnMask(field);
+    },
+    //  Añade validaciones, mascaras y filtros a un input, select o textarea(Yo lo resume en campo/Field)
+    _addCharacteristicsInField: function(field, _fieldCharacteristics)
+    {
+        field._fieldCharacteristics=_fieldCharacteristics;
+        
+        field.addEventListener('focus', function() { _EduIntBasic._accUnMaskAsField(this); } );
+
+        field.addEventListener('change', function() { _EduIntBasic._accValidateAsField(this); });
+        field.addEventListener('keyup',  function() { _EduIntBasic._accValidateAsField(this); });
+        
+        field.addEventListener('blur', function() { _EduIntBasic._accValidateAsField(this); _EduIntBasic._accFilterAsField(this); _EduIntBasic._accMaskAsField(this); } );
+    },
+    _addCharacteristicsInFields: function(fieldsCharacteristics)
+    {
+        for(var countCampos=0;countCampos<fieldsCharacteristics.length;countCampos++)
+        {
+            var infoCampo = fieldsCharacteristics[countCampos];
+            _EduIntBasic._addCharacteristicsInField(infoCampo.inputElement, infoCampo);
+        }
+    },
+    _accSubmitFieldsWithValidations: function(form)
+    {
+        var bnPuedeHacerSubmit=true;
+        var arPosiblesTiposDeCampos=['input','select','textarea'];
+        for(var countTiposDeCampos=0;countTiposDeCampos<arPosiblesTiposDeCampos.length;countTiposDeCampos++)
+        {
+            fields = form.getElementsByTagName(arPosiblesTiposDeCampos[countTiposDeCampos]);
+            for(var countField=0;countField<fields.length;countField++)
+            {
+                field = fields[countField];
+                if(_EduIntBasic._accValidateAsField(field)===false)
+                {
+                    bnPuedeHacerSubmit=false;
+                }
+            }
+            if(required)
+            {
+
+            }
+        }
+
+        if(bnPuedeHacerSubmit)
+        {
+            form.submit();
+        }
+    },
+
+    
+    _accAddLiElement: function(errorElement, valor, jsonInfo)
+    {
+        jsonInfo.container=errorElement;
+        if(!jsonInfo.ulclass) { jsonInfo.ulclass='error-list-ul'; };
+        if(!jsonInfo.liclass) { jsonInfo.liclass='error-list-li'; };
+        jsonInfo.value=valor;
+
+        if(jsonInfo.bnClear===undefined) { jsonInfo.bnClear=false; }
+
+        //  Existe el ul
+        if(0<jQuery(jsonInfo.container).find('> ul').length)
+        {
+            jQuery(jsonInfo.container).find('> ul').addClass(jsonInfo.ulclass);
+            //  Existe el li
+            if(0<jQuery(jsonInfo.container).find('> ul > li').length)
+            {
+                //  Lo borra
+                if(jsonInfo.bnClear)
+                {
+                    jQuery(jsonInfo.container).find('> ul').html('');
+                }
+            }
+        }
+        else
+        {
+            var ul = document.createElement('ul');
+            jQuery(ul).addClass(jsonInfo.ulclass);
+            jsonInfo.container.appendChild(ul);
+        }
+
+        var li = document.createElement('li');
+
+        jQuery(li).addClass(jsonInfo.liclass);
+        li.innerHTML=jsonInfo.value;
+
+        jQuery(jsonInfo.container).find('> ul').append(li);
     },
 
     //  Deprecate
@@ -118,6 +705,8 @@ _EduIntBasic = {
     posEnX: function(object) { return this._posInX(object); },
     posEnY: function(object) { return this._posInY(object); },
     isArray: function(myArray) { return this._qstnIsArray(myArray);  },
+    remplaceAll: function(aCambiar_MyR,aColocar,valor_MyR) { return this._replaceAll(aCambiar_MyR,aColocar,valor_MyR); },
+    _remplaceAll: function(aCambiar_MyR,aColocar,valor_MyR) { return this._replaceAll(aCambiar_MyR,aColocar,valor_MyR); },
     // addThingStyleBlockFunctions: function(Thing) { _EduInt._Thing._Type._(Thing); }
 };
 
@@ -166,8 +755,8 @@ _EduInt = {
                     deappearRunFunction: true,
                 },
                 ar: [],
-                create: function(){
-                    return new _EduInt._Input.Plugins.Select.Select();
+                create: function(jsonOptions){
+                    return new _EduInt._Input.Plugins.Select.Select(jsonOptions);
                 },
                 Select: function(jsonOptions) {
                     jsonOptions = _EduIntBasic._defaultJson(jsonOptions,_EduInt._Input.Plugins.Select.defaultInfoSelect);
@@ -193,10 +782,16 @@ _EduInt = {
                     for(var countSection=0;countSection<jsonOptions.options.length;countSection++)
                     {
                         var option = jsonOptions.options[countSection];
+                        var bnHelp = false;
                         if(Array.isArray(option))
                         {
                             var valor = option[0];
                             var valorAMostrar = option[1];
+                            if(option[2])
+                            {
+                                var help = option[2];
+                                bnHelp=true;
+                            }
                         }
                         else
                         {
@@ -211,6 +806,11 @@ _EduInt = {
                         this.contenedorElementoUlLiA = document.createElement('span');
                         this.contenedorElementoUlLiA.className = 'c_ei_selection_ul_li_span';
                         this.contenedorElementoUlLiA.innerHTML=valorAMostrar;
+
+                        if(bnHelp)
+                        {
+                            this.contenedorElementoUlLi.appendChild(help);
+                        }
 
                         if(jsonOptions.functionOnSelect)
                         {
@@ -369,6 +969,15 @@ _EduInt = {
                 //  element.addEventListener('focus',  function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
                 //  element.addEventListener('blur',   function() { this._numEjecucionActual_WriteIdea++; this._eiMiFunction_WriteIdea(this._numEjecucionActual_WriteIdea); });
             //  },
+        },
+        _Special: {
+            arLastChanged: [],
+            getLastChanged: function(pk, code)
+            {
+
+
+                this.arLastChanged[pk]=code;
+            },
         },
         create: function(infoInput){
             return new _EduInt._Input.Input(infoInput);
@@ -572,9 +1181,14 @@ _EduInt = {
 
                 this.input.colorText=this.colorText;
                 this.input.infoCode=infoCode;
+                this.input.InputCode=this;
+
+
 
                 this.input.onkeyup = function(){
-                    this.colorText.innerHTML=ei.FiltAndMask.code(this.value,this.infoCode);
+                    this.InputCode.Code.accProcesarCodigo(this.value,this.infoCode);
+                    this.colorText.innerHTML=this.InputCode.Code.getValorHTML();
+                    this.InputCode.Code.accMostrarAutocompletar();
                 }
 
                 this.getValue=function()
@@ -582,7 +1196,9 @@ _EduInt = {
                 this.setValue=function(value)
                 { this.input.value=value; return this; }
 
-                this.colorText.innerHTML=ei.FiltAndMask.code(this.input.value,infoCode);
+                this.Code =_EduIntBasic.Code(this.input.value,infoCode);
+                this.colorText.innerHTML=this.Code.getValorHTML();
+                
                 this.element.appendChild(this.input);
 
             return this;
@@ -983,7 +1599,7 @@ _EduInt = {
         },
         error: function(message){ _EduInt._Log._error(message); },
         _error: function(message){
-            console.err(message);
+            console.log(message);
         },
         deprecated: function(value1,value2){ _EduInt._Log._deprecated(value1,value2); },
         _deprecated: function(value1,value2){
