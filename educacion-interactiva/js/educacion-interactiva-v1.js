@@ -376,6 +376,57 @@ _EduIntBasic = {
         return this;
     },
 
+    _Comunication: {
+        _Ajax: {
+            _defaultJson: {
+                method: 'GET',
+                path: '/',
+                sendInfo: '',
+                myFunction: function(jsonInfo) {  },
+                myFunctionJsonInfo: {  },
+            },
+            send: function(jsonInfo,parent) { this._send(jsonInfo,parent); },
+            _send: function(jsonInfo,parent)
+            {
+                jsonInfo=_EduIntBasic._defaultJson(jsonInfo,this.defaultJson);
+                var xhttp = new XMLHttpRequest();
+                xhttp.myFunction=jsonInfo.myFunction;
+                xhttp.myFunctionJsonInfo=jsonInfo.myFunctionJsonInfo;
+                xhttp.parent=parent;
+                if(typeof jsonInfo.path === 'function') { var path = jsonInfo.path(); }
+                else { var path = jsonInfo.path; }
+                xhttp.onreadystatechange = function()
+                {
+                    if(xhttp.readyState == 4 && xhttp.status == 200)
+                    {
+                        this.myFunctionJsonInfo.readyState=xhttp.readyState;
+                        this.myFunctionJsonInfo.status=xhttp.status;
+                        if(xhttp.parent===undefined)
+                        {
+                            this.myFunction(xhttp.responseText, this.myFunctionJsonInfo);
+                        }
+                        else
+                        {
+                            xhttp.parent._miFunction_=this.myFunction;
+                            xhttp.parent._miFunction_(xhttp.responseText, this.myFunctionJsonInfo);
+                        }
+                    }
+                };
+                xhttp.open(jsonInfo.method, path+((jsonInfo.sendInfo!='' && jsonInfo.method!='GET')?('?'+jsonInfo.sendInfo):''), true);
+
+                if(jsonInfo.sendInfo!='' && jsonInfo.method=='POST')
+                {
+                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    xhttp.send(jsonInfo.sendInfo);
+                }
+                else
+                {
+                    xhttp.send();
+                }
+            },
+        }
+    },
+
     _Filters: {
         code: function(valor_ESt,infoCode) { return this._code(valor_ESt,infoCode); },
         _code: function(valor_ESt,infoCode)
@@ -387,7 +438,7 @@ _EduIntBasic = {
             switch(filter.type)
             {
                 case 'name':
-                    field.value = _EduIntBasioc._accNameFormat(field.value);
+                    field.value = _EduIntBasic._accNameFormat(field.value);
                     break;
             }
         },
@@ -539,7 +590,7 @@ _EduIntBasic = {
                     var answValidacion = _EduIntBasic._Validations._withInformation(field.value, validacion);
                     if(answValidacion.result==='correct')
                     {
-                        field._fieldCharacteristics.errorElement.innerHTML='';
+                        if(field._fieldCharacteristics.errorElement!==undefined) { field._fieldCharacteristics.errorElement.innerHTML=''; }
                     }
                     else if(answValidacion.result==='dont-validated')
                     {
@@ -557,8 +608,11 @@ _EduIntBasic = {
                             var bnBorrarLista = false;
                         }
                         
-                        _EduIntBasic._accAddLiElement(field._fieldCharacteristics.errorElement, answValidacion.message, { bnClear: bnBorrarLista });
-                        bnPrimeraVezColocandoComentarioError=false;
+                        if(field._fieldCharacteristics.errorElement!==undefined)
+                        {
+                            _EduIntBasic._accAddLiElement(field._fieldCharacteristics.errorElement, answValidacion.message, { bnClear: bnBorrarLista });
+                            bnPrimeraVezColocandoComentarioError=false;
+                        }
                     }
                 }
             }
@@ -709,6 +763,16 @@ _EduIntBasic = {
     _remplaceAll: function(aCambiar_MyR,aColocar,valor_MyR) { return this._replaceAll(aCambiar_MyR,aColocar,valor_MyR); },
     // addThingStyleBlockFunctions: function(Thing) { _EduInt._Thing._Type._(Thing); }
 };
+
+_EduIntBasic.Comunication = _EduIntBasic._Comunication;
+_EduIntBasic.Comunication.Ajax = _EduIntBasic._Comunication._Ajax;
+_EduIntBasic.Comunication.Ajax.defaultJson = _EduIntBasic._Comunication._Ajax._defaultJson;
+
+_EduIntBasic.Filters = _EduIntBasic._Filters;
+_EduIntBasic.Masks = _EduIntBasic._Masks;
+_EduIntBasic.Validations = _EduIntBasic._Validations;
+
+
 
 //  Framework _EduInt
 //  ================
@@ -934,7 +998,7 @@ _EduInt = {
                         else
                         { var path = this.WriteIdeaAjax._path; }
                         //  Ejecuta la funcion enviada por el usuario
-                        ei.Comunication.Ajax.send({
+                        _EduIntBasic._Comunication._Ajax._send({
                             method: this.WriteIdeaAjax._method,
                             path: path,
                             sendInfo: this.WriteIdeaAjax._sendInfo,
@@ -2142,45 +2206,6 @@ _EduInt = {
             { return this._positionMouseInY; }
 
 
-    //  ALERT - Documentar
-            //  Arreglo de Grupos Things
-            this._arGroupThings=[];
-            //  Arreglo del numero de Grupos Things por nombre
-            this._arGroupThingsForName=[];
-            //  Retorna el Grupo Thing por su numero
-            this.getGroupThings = function(numGroupThings) { return this._getGroupThings(numGroupThings); };
-            this._getGroupThings = function(numGroupThings)
-            {
-                return this._arGroupThings[numGroupThings];
-            }
-            //  Retorna true si existe el Grupo Thing
-            this.qstnGroupThingsForName = function(nameGroupThings) { return this._qstnGroupThingsForName(nameGroupThings); };
-            this._qstnGroupThingsForName = function(nameGroupThings)
-            {
-                //  Si existe retorna el true
-                if(this._arGroupThingsForName[nameGroupThings]!==undefined) { return true; }
-                //  Si este no existe
-                return false;
-            }
-            //  Retorna el Grupo Thing por su nombre
-            this.getGroupThingsForName = function(nameGroupThings) { return this._getGroupThingsForName(nameGroupThings); };
-            this._getGroupThingsForName = function(nameGroupThings)
-            {
-                return this.getGroupThings(this._arGroupThingsForName[nameGroupThings]);
-            }
-            //  Función sensilla para crear o retornar Grupos Thing
-            this.gt = function(nameGroupThings) { return this._gt(nameGroupThings); };
-            this._gt = function(nameGroupThings)
-            {
-                //  Si existe el objeto lo retorna
-                if(this._qstnGroupThingsForName(nameGroupThings))
-                {
-                    var GroupThings = this._getGroupThingsForName(nameGroupThings);
-                    return Thing;
-                }
-                else
-                { return this._createThing(nameGroupThings); }
-            }
              //  Crea un Grupo de Things
             this.createGoupThings = function(nameGroupThings) { return this._createGoupThings(nameGroupThings); };
             this._createGoupThings = function(nameGroupThings)
@@ -2229,18 +2254,18 @@ _EduInt = {
             this._getThingForName = function(nameThing)
             {
                 return this._getThing(this._arThingsForName[nameThing]);
-            }
+            };
             // (Board)
             //  Función sensilla para crear o retornar objetos
             this.Thing = function(nameThing,posInX,posInY,width,height) { return this._Thing(nameThing,posInX,posInY,width,height); };
             this._Thing = function(nameThing,posInX,posInY,width,height)
             { EduInt._Log._deprecated('Board._Thing','Board.t'); this._t(nameThing,posInX,posInY,width,height); };
-            this.t = function(nameThing,posInX,posInY,width,height) { return this._t(nameThing,posInX,posInY,width,height); };
-            this._t = function(nameThing,posInX,posInY,width,height)
+            this.t = function(nameThing,posInX,posInY,width,height,parentThing) { return this._t(nameThing,posInX,posInY,width,height,parentThing); };
+            this._t = function(nameThing,posInX,posInY,width,height,parentThing)
             {
                 //  Si existe el objeto lo retorna
                 if(this._prThingForName(nameThing)) {
-                    var Thing = this._getThingForName(nameThing,posInX,posInY,width,height);
+                    var Thing = this._getThingForName(nameThing);
                     //  Cuando uno llama a un this.t('nombre').accAlgo(9).inSeconds(5), el almacena un arreglo con las acciones a realizar,
                     //  Estas acciones se tienen que borrar cuando se vuelve a llamar al nombre,permitiendo que lo siguoente funcione
                     //  Ejemplo:
@@ -2253,13 +2278,18 @@ _EduInt = {
                 }
                 //  Si NO existe lo retorna
                 else {
-                    return this._createThing(nameThing,posInX,posInY,width,height);
+                    return this._createThing(nameThing,posInX,posInY,width,height,parentThing);
                 }
+            };
+            this.g  = function(nameThing,posInX,posInY,width,height) { return this._g(nameThing,posInX,posInY,width,height); };
+            this._g = function(nameThing,posInX,posInY,width,height)
+            {
+                return this._t(nameThing,posInX,posInY,width,height).setType('group');
             }
             // (Board)
             //  Crea un Thing
-            this.createThing = function(nameThing,posInX,posInY,width,height) { return this._createThing(nameThing,posInX,posInY,width,height); };
-            this._createThing = function(nameThing,posInX,posInY,width,height)
+            this.createThing = function(nameThing,posInX,posInY,width,height,parentThing) { return this._createThing(nameThing,posInX,posInY,width,height,parentThing); };
+            this._createThing = function(nameThing,posInX,posInY,width,height,parentThing)
             {
                 var Board = this;
                 //  Creamos el objeto "Thing"
@@ -2270,11 +2300,26 @@ _EduInt = {
                 this._arThings[numThings]=Thing;
                 //  Regusistra el numero del thin del board segun el nombre
                 this._arThingsForName[nameThing]=numThings;
-                //  Lo agregamos al tablero
-                Thing._setThingIn(this._oDivThings);
+                //  Si viene de un grupo u otro objeto
+                if(parentThing===undefined)
+                {
+                    //  Lo agregamos al tablero
+                    Thing._setThingIn(this._oDivThings);
+                }
+                else
+                {
+                    //  Lo agregamos al objeto padre
+                    Thing._setThingIn(parentThing._element);
+                }
                 //  Retornamos el objeto "Thing"
                 return Thing;
             };
+            // (Board)
+            //  Obtiene el numero de things
+            this.getNumThings = function() { return this._getNumThings; }
+            this._getNumThings = function() {
+                return this._arThings.length;
+            }
             // (Board)
     //  ALERT - Comentar
             //  Es como inicia una animación, este se puede omitir, pero si se usa se puede reinicar la animación
@@ -2506,18 +2551,21 @@ _EduInt = {
                 this._animation.start();
             };
             // (Board)
-            this.accAddKeyboard = {
+            this._accAddKeyboard = {
                 _Board: this,
                 arrows: function(){
-                    this._Board.t('__KeyboardArrow-up')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosition(60,0);
-                    this._Board.t('__KeyboardArrow-right')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosition(120,60)._setBackgroundPosition('-60px 0');
-                    this._Board.t('__KeyboardArrow-bottom')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosition(60,60)._setBackgroundPosition('-120px 0');
-                    this._Board.t('__KeyboardArrow-left')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosition(0,60)._setBackgroundPosition('-180px 0');
+                    this._Board._g('__KeyBoard')._t('__KeyboardArrow-up')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosition(60,0);
+                    this._Board._g('__KeyBoard')._t('__KeyboardArrow-right')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosition(120,60)._setBackgroundPosition('-60px 0');
+                    this._Board._g('__KeyBoard')._t('__KeyboardArrow-bottom')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosition(60,60)._setBackgroundPosition('-120px 0');
+                    this._Board._g('__KeyBoard')._t('__KeyboardArrow-left')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosition(0,60)._setBackgroundPosition('-180px 0');
+
+
                 },
             };
+            this.accAddKeyboard = this._accAddKeyboard;
             // (Board)
             //  Envia un mensajes al usuario
-            this.accSendMessage = {
+            this._accSendMessage = {
                 _Board: this,
                 good: function(){
                     if(!this._Board._qstnIssetCustom('__MessageGood'))
@@ -2559,7 +2607,7 @@ _EduInt = {
                                 //  Crea el thing
                                 this.t('_MessageWrong').getCustom('__MessageWrong');
                                 //  Mira si existe un custom creado por el usuario
-                                if(this._qstnIssetCustom('_MessageWrong')) { this.t('_MessageGood')._getCustom('_MessageWrong'); }
+                                if(this._qstnIssetCustom('_MessageWrong')) { this.t('_MessageWrong')._getCustom('_MessageWrong'); }
                                 //  Guarda el elemento en una variable
                                 optionJson.element = this.t('_MessageWrong')._element;
                             }
@@ -2616,11 +2664,9 @@ _EduInt = {
                     });
                 }
             };
+            this.accSendMessage = this._accSendMessage;
         },
     },
-
-    //  Group
-    //  =====
 
     //  Thing
     //  =====
@@ -2651,6 +2697,7 @@ _EduInt = {
                 }
             },
         },
+
         _Thing: function(Board,nameThing,posInX,posInY,width,height)
         {
             //  Guardamos en que tablero estamos
@@ -2660,7 +2707,7 @@ _EduInt = {
             if(nameThing!==undefined)
                 { this._nameThing=nameThing; }
                 else
-                { this._nameThing=_EduInt._Thing._default.name+(_EduInt._Board._getNumBoards()+1); }
+                { this._nameThing=_EduInt._Thing._default.name+(_EduInt._Board._getNumThings()+1); }
             if(posInX!==undefined)
                 { this._posInX=posInX; }
                 else
@@ -2677,7 +2724,7 @@ _EduInt = {
                 { this._height=height; }
                 else
                 { this._height=_EduInt._Thing._default.height; }
-            this._radio=_EduInt._Thing._default.height;
+            this._radio=_EduInt._Thing._default.radio;
             this._rotation=0;
 
             //  Permite colocar variables dentro del Thing
@@ -2864,6 +2911,7 @@ _EduInt = {
                         case 'element':
                         case 'html':
                         case 'input':
+                        //  case 'group':
                             this._Container._divContainer.removeChild(this._element);
                             break;
                         case 'form':
@@ -2915,7 +2963,7 @@ _EduInt = {
                         //  Añade todas las funciones de texto necesarias
                         _EduInt._Thing._Type._TextFunctions(this);
                         //  Añade todas las funciones de HTML necesarias
-                        _EduInt._Basic.addThingStyleBlockFunctions(this);
+                        _EduInt._Thing._Type._DisplayBlockFunctions(this);
                         //  Añade las funciones del elemento
                         _EduInt._Thing._Type._ElementsFunctions(this);
 //  WARN
@@ -2937,7 +2985,7 @@ _EduInt = {
                         //  Añade todas las funciones de input necesarias
                         _EduInt._Basic.addThingInputFunctions(this);
                         //  Añade todas las funciones de HTML necesarias
-                        _EduInt._Basic.addThingStyleBlockFunctions(this);
+                        _EduInt._Thing._Type._DisplayBlockFunctions(this);
                         //  Añade las funciones del elemento
                         _EduInt._Thing._Type._ElementsFunctions(this);
 
@@ -2950,12 +2998,18 @@ _EduInt = {
                     case 'html':
                         this._element = document.createElement('div');
                         //  Para poder acceder a las opciones del Thing, desde el objeto
+                        this.setHTML = function(myHTML) { this._setHTML(myHTML); }
                         this._setHTML = function(myHTML){
                             this._element.innerHTML = myHTML;
                         }
 
                         this._element._Thing = this;
                         this._putThisElementInDivOfBoard(this._element);
+
+                        //  Añade todas las funciones de HTML necesarias
+                        _EduInt._Thing._Type._DisplayBlockFunctions(this);
+                        //  Añade las funciones del elemento
+                        _EduInt._Thing._Type._ElementsFunctions(this);
 
                         //  Informa que el objeto fue creado
                         bnThingCreated = true;
@@ -2974,7 +3028,7 @@ _EduInt = {
                                 this._element.style.position = 'absolute';
 
                                 //  Añade todas las funciones de HTML necesarias
-                                _EduInt._Basic.addThingStyleBlockFunctions(this);
+                                _EduInt._Thing._Type._DisplayBlockFunctions(this);
                                 //  Añade las funciones del elemento
                                 _EduInt._Thing._Type._ElementsFunctions(this);
 
@@ -2988,6 +3042,30 @@ _EduInt = {
 
                                 break;
                         }
+                        break;
+                    case 'group':
+                        this._element = document.createElement('div');
+                        this.addClass('eduintgd-group');
+                        //  Para poder acceder a las opciones del Thing, desde el objeto
+                        this._element._Thing = this;
+
+                        this._element.style.backgroundColor = '#F00';
+                        this._element.style.position = 'absolute';
+
+                        //  Añade todas las funciones de HTML necesarias
+                        _EduInt._Thing._Type._DisplayBlockFunctions(this);
+                        //  Añade las funciones del elemento
+                        _EduInt._Thing._Type._ElementsFunctions(this);
+                        //  Añade las funciones de grupo
+                        _EduInt._Thing._Type._GroupsFunctions(this);
+
+                        //  Ingresamos el nuevo objeto
+                        this._putThisElementInDivOfBoard(this._element);
+                        //  Inicia el movimiento del mouse
+                        _EduInt._Cursor._enMovementDetect();
+
+                        //  Informa que el objeto fue creado
+                        bnThingCreated = true;
                         break;
                     case 'svg':
 
@@ -3144,6 +3222,19 @@ _EduInt = {
                             this._bnActionToDraw=[];
                             break;
                         case 'input':
+    //  ALERT - Problema al crearlo queda de 20 por 20
+                            //  Realiza solo los cambios asignados
+                            for(var countChanges=0;countChanges<this._bnActionToDraw.length;countChanges++)
+                            {
+                                if(this._bnActionToDraw[countChanges]=='width')
+                                { this._element.style.width = this._width + 'px'; }
+                                if(this._bnActionToDraw[countChanges]=='height')
+                                { this._element.style.height = this._height + 'px'; }
+                            }
+                            //  Reinicia los cambios asignados
+                            this._bnActionToDraw=[];
+                            break;
+                        case 'html':
     //  ALERT - Problema al crearlo queda de 20 por 20
                             //  Realiza solo los cambios asignados
                             for(var countChanges=0;countChanges<this._bnActionToDraw.length;countChanges++)
@@ -3802,6 +3893,18 @@ _EduInt = {
                 };
             },
 
+            _GroupsFunctions: function(Thing)
+            {
+                Thing._Board._parentThing = Thing;
+                Thing.t = function(nameThing,posInX,posInY,width,height) { return this._t(nameThing,posInX,posInY,width,height,this); };
+                Thing._t = function(nameThing,posInX,posInY,width,height)
+                {
+                    var thing = this._Board._t(nameThing,posInX,posInY,width,height,this);
+                    thing._thingParent = this;
+                    return thing;
+                };
+            },
+
             _DefaultFunctions: function(Thing)
             {
                 Thing.enAboveAll = function() { this._enAboveAll(); };
@@ -3936,12 +4039,6 @@ _EduInt = {
             //  Deprecate
             //  =========
             createMouseMovementDetect: function() { _EduInt._Cursor._enMovementDetect(); },
-        },
-    },
-
-    _Group: {
-        _Group: function(){
-            
         },
     },
 

@@ -129,15 +129,18 @@ BoardMemConc.start(function(info){
     });
 
     this.setCustom('_MessageGood',function(){
-        this.setPosition(200,200);
+        this.setPosition(250,200);
+    });
+    this.setCustom('_MessageWrong',function(){
+        this.setPosition(80,200);
     });
 
     //  Things por defecto
     //  ==================
-    this.t('flecha-arriba').getCustom('flecha').setDirection('arriba').setGameControlPosition(40,40);
-    this.t('flecha-derecha').getCustom('flecha').setDirection('derecha').setGameControlPosition(40,40);
-    this.t('flecha-abajo').getCustom('flecha').setDirection('abajo').setGameControlPosition(40,40);
-    this.t('flecha-izquierda').getCustom('flecha').setDirection('izquierda').setGameControlPosition(40,40);
+    this.t('flecha-arriba').getCustom('flecha').setDirection('arriba').setGameControlPosition(125,40);
+    this.t('flecha-derecha').getCustom('flecha').setDirection('derecha').setGameControlPosition(125,40);
+    this.t('flecha-abajo').getCustom('flecha').setDirection('abajo').setGameControlPosition(125,40);
+    this.t('flecha-izquierda').getCustom('flecha').setDirection('izquierda').setGameControlPosition(125,40);
 
     this.t('puntos-correctos').setType('text').setValue(0).setPosition(0,0);
     this.t('puntos-total').setType('text').setValue(0).setPosition(0,20);
@@ -198,6 +201,8 @@ BoardMemConc.start(function(info){
     });
 
     this.selectNewDirection=true;
+
+    this.g('__KeyBoard').setPosition(110,250)
 });
 
 BoardMemConc.createAnimation(function(info){
