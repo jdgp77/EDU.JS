@@ -382,7 +382,7 @@ _EduIntBasic = {
                 method: 'GET',
                 path: '/',
                 sendInfo: '',
-                myFunction: function(jsonInfo) {  },
+                myFunction: function(responseText, jsonInfo) {  },
                 myFunctionJsonInfo: {  },
             },
             send: function(jsonInfo,parent) { this._send(jsonInfo,parent); },
@@ -1863,6 +1863,19 @@ _EduInt = {
             };
             //  Funciones publicas
             //  ------------------
+            this.setBackgroundImage=function(imageUrl) { return this._setBackgroundImage(imageUrl); };
+            this._setBackgroundImage=function(imageUrl)
+            {
+                this._oDiv.style.backgroundImage='url('+imageUrl+')';
+                return this;
+            };
+            this.setBackgroundSize=function(backgroundSize) { return this._setBackgroundSize(backgroundSize); };
+            this._setBackgroundSize=function(backgroundSize)
+            {
+                this._oDiv.style.backgroundSize=backgroundSize;
+                return this;
+            };
+
             this._arCustoms=[];
             this.setCustom=function(name,myFunction) { return this._setCustom(name,myFunction); };
             this._setCustom=function(name,myFunction)
@@ -2736,6 +2749,11 @@ _EduInt = {
                 bnCursorDown: false,
             };
 
+            this.getName = function() { return this._getName(); };
+            this._getName = function()
+            {
+                return this._nameThing;
+            }
             //  Variables de movimiento
             this._moveInX=0;
             this._moveInY=0;
@@ -2881,10 +2899,11 @@ _EduInt = {
                 this._bnContainer=true;
             };
             //  (Thing)
-            this.setEvOnClick = function(myFunction) { this._setEvOnClick(myFunction); };
-            this._setEvOnClick = function(myFunction)
+            this.setOnClick = function(myFunction) { this._setEvOnClick(myFunction); };
+            this._setOnClick = function(myFunction)
             {
                 this._funcOnClick = myFunction;
+                return this;
             };
             //  (Thing)
             this.delete = function() { this._delete(); };
@@ -3348,6 +3367,22 @@ _EduInt = {
                 return this;
             }
             //  (Thing)
+            this.setTop = function(posInY) { return this._setTop(posInY); };
+            this._setTop = function(posInY)
+            {
+                this._setPosInY(posInY,false);
+                this._draw();
+                return this;
+            }
+            //  (Thing)
+            this.setLeft = function(posInX) { return this._setLeft(posInX); };
+            this._setLeft = function(posInX)
+            {
+                this._setPosInX(posInX,false);
+                this._draw();
+                return this;
+            }
+            //  (Thing)
             this.setPosInX = function(posInX,bnDraw) { return this._setPosInX(posInX,bnDraw); };
             this._setPosInX = function(posInX,bnDraw)
             {
@@ -3540,6 +3575,8 @@ _EduInt = {
             //  Deprecated
             //  ==========
             this.setDimensions = function(width,height) { return this._setDimentions(width,height); };
+            this._setEvOnClick = function(myFunction)  { return this._setOnClick(myFunction); };
+            this.setEvOnClick = function(myFunction) { return this._setOnClick(myFunction); };
         },
         _Container: function(posInX,posInY) {
             this._divContainer=document.createElement('div');
@@ -3791,7 +3828,7 @@ _EduInt = {
 
                     return this;
                 }
-                Thing.setBackgroundImage = function(urlImage) { return this._setBackgroundImage(urlImage); };
+                Thing.setBackgroundImage = function(urlImage,bnDefaultPath) { return this._setBackgroundImage(urlImage,bnDefaultPath); };
                 Thing._setBackgroundImage = function(urlImage,bnDefaultPath)
                 {
                     if(bnDefaultPath===undefined) { bnDefaultPath=true; }

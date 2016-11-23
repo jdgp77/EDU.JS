@@ -1,0 +1,8 @@
+{
+	"pregunta": "En Drupal 8 cual es la carpeta para instalar modulos",
+	"respuesta1": "/core/modules",
+	"respuesta2": "/core/sites/all/modules",
+	"respuesta3": "/modules",
+	"respuesta4": "/sites/default/modules",
+	"correcta": "3"
+}
