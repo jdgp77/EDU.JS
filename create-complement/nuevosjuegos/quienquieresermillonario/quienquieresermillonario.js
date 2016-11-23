@@ -60,6 +60,7 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 		this.board.accVeryfyPosition = function(numRespuesta)
 		{
 			this.accSelRight(this.correcta);
+			this.accDisableSelect();
 			if(this.correcta == numRespuesta)
 			{
 				this.accNextPosition();
@@ -68,6 +69,13 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 			{
 
 			}
+		}
+
+		this.board.accDisableSelect = function(){
+			this.g('respuesta1').accDisableSelect();
+			this.g('respuesta2').accDisableSelect();
+			this.g('respuesta3').accDisableSelect();
+			this.g('respuesta4').accDisableSelect();
 		}
 
 		this.board.g('group-pregunta').setPosition(96,115);
@@ -89,14 +97,21 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 				return this.bnSelected;
 			}
 			this.numRespuesta = infoJSON.numRespuesta;
+			this.enabled=true;
+			this.accDisableSelect=function(){
+				this.enabled=false;
+			};
 			this.accSelect=function(){
-				this.t(this.getName()+'-fondo').setBackgroundPosition('0 -45px');
-				this.t(this.getName()+'-texto').setColor('#333');
-				this.t(this.getName()+'-numero').setColor('#fff');
+				if(this.enabled)
+				{
+					this.t(this.getName()+'-fondo').setBackgroundPosition('0 -45px');
+					this.t(this.getName()+'-texto').setColor('#333');
+					this.t(this.getName()+'-numero').setColor('#fff');
 
-				this.Board.accVeryfyPosition(this.numRespuesta);
+					this.Board.accVeryfyPosition(this.numRespuesta);
 
-				this.bnSelected=true;
+					this.bnSelected=true;
+				}
 			}
 			this.accUnSelect=function(){
 				this.t(this.getName()+'-fondo').setBackgroundPosition('0 0');
