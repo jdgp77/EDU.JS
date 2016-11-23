@@ -1,5 +1,6 @@
 var eBoardMemConc = document.getElementById('id_mente_concentracion');
 var BoardMemConc = EduInt.createBoardIn(eBoardMemConc,'concentracion',400,400);
+BoardMemConc.setBackgroundImage('create-complement/mental/concentracion/images/Fondo.png').setBackgroundSize('cover');
 
 BoardMemConc.start(function(info){
     //  Balores por defecto

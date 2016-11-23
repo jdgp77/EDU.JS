@@ -1,4 +1,5 @@
 var boardColoniaHormigas = EduInt.createBoardIn(document.getElementById('id_board_coloniahormigas'),'Colonia De Hormigas',500,500);
+boardColoniaHormigas.setBackgroundImage('create-complement/colonia-hormigas/images/fondo.png').setBackgroundSize('cover');
 boardColoniaHormigas.start(function(){
     this.my.board = this;
 
@@ -9,7 +10,7 @@ boardColoniaHormigas.start(function(){
     this.my.posIniInY=25;
     this.my.distLugarEnX=40;
     this.my.distLugarEnY=40;
-    this.my.colorLugar='#AFA';
+    this.my.colorLugar='rgba(200,255,200,0.05)';
     this.my.posInXForNumber = function(numX)
     { return numX*this.distLugarEnX+this.posIniInX; }
     this.my.posInYForNumber = function(numY)
@@ -114,7 +115,7 @@ boardColoniaHormigas.start(function(){
         this.board.t(nombreHormiga).my.arHistorialDeDireccion=arNuevoHistorialDeDireccion;
     }
 
-    this.t('colonia').setPosition(this.my.posInXForNumber(this.my.coloniaPosX-1)-10,this.my.posInYForNumber(this.my.coloniaPosY-1)-10).setDimensions(30,30).setBackgroundColor('#F50');
+    this.t('colonia').setPosition(this.my.posInXForNumber(this.my.coloniaPosX-1)-10,this.my.posInYForNumber(this.my.coloniaPosY-1)-10).setDimensions(30,30).setBackgroundColor('rgba(255,100,0,0.1)');
 
     this.my.lugaresEnX=12;
     this.my.lugaresEnY=12;
@@ -232,7 +233,7 @@ boardColoniaHormigas.start(function(){
 
 
     this.my.addNumeroAPosibEnNuevasDir=5;
-    this.my.maxNumHormigas=5;
+    this.my.maxNumHormigas=30;
     this.my.numHormigas=0;
     this.my.addNumHormigasIn_seconds=1;
     this.my.segLlegarAOtroPunto=1;
