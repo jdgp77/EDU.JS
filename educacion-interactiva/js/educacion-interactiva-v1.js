@@ -197,6 +197,7 @@ _EduIntBasic = {
         myDecimales_MyR = Math.pow(10,decimales_MyR);
         return Math.round(valor_MyR*myDecimales_MyR)/myDecimales_MyR;
     },
+    colocarCeros: function(noCeros_MyR,valor_MyR) { return this._colocarCeros(noCeros_MyR,valor_MyR); },
     _colocarCeros: function(noCeros_MyR,valor_MyR)
     {
         var stValor_MyR = valor_MyR.toString();
@@ -1863,6 +1864,21 @@ _EduInt = {
             };
             //  Funciones publicas
             //  ------------------
+            this._arWaitFrames = [];
+            this.accQstnWaitNumFrames = function(numFrames,name) { return this._accQstnWaitNumFrames(numFrames,name); };
+            this._accQstnWaitNumFrames = function(numFrames,name)
+            {
+                if(this._arWaitFrames[name]!=undefined)
+                { this._arWaitFrames[name]--; }
+                else
+                { this._arWaitFrames[name]=numFrames; }
+
+                if(this._arWaitFrames[name]<=0) { return false; }
+                return true;
+            };
+            this.accRestarWaitNumFrames = function(name){
+                this._arWaitFrames[name]=undefined;
+            };
             this.setBackgroundImage=function(imageUrl) { return this._setBackgroundImage(imageUrl); };
             this._setBackgroundImage=function(imageUrl)
             {
@@ -1889,6 +1905,7 @@ _EduInt = {
                 if(this._arCustoms[name]===undefined) { return false; }
                 else { return true; }
             };
+//  Analizar esta funcion
             this.accAddEventFunction=function(typeEvent,Board) { this._Event._accAddEventFunction(typeEvent,Board); return this; }
 //  <================================================
             // (Board)
