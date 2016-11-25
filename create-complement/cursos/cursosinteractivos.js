@@ -1,6 +1,6 @@
 $(document).ready(function() {
     selectCursos({
-        achoTablero: 1100,
+        achoTablero: 952,
         velocidadMaxima: 6,
         espacioDeActivacionEnLados: 100,
         anchoImagenes: 300,
@@ -9,37 +9,13 @@ $(document).ready(function() {
         distranciaEntreImagenes: 20,
         arImagesViews: [
             {
-                url: 'create-complement/select-images/images/foto1-mini.jpg',
+                url: 'http://www.educacioninteractiva.com.co/static/educacion/create-complement/cursos/images/curso-appsscript.png',
                 js: function() { alert('casa1'); },
             },{
-                url: 'create-complement/select-images/images/foto2-mini.jpg',
+                url: 'http://www.educacioninteractiva.com.co/static/educacion/create-complement/cursos/images/curso-drupal8.png',
                 js: function() { alert('casa1'); },
             },{
-                url: 'create-complement/select-images/images/foto1-mini.jpg',
-                js: function() { alert('casa1'); },
-            },{
-                url: 'create-complement/select-images/images/foto2-mini.jpg',
-                js: function() { alert('casa1'); },
-            },{
-                url: 'create-complement/select-images/images/foto1-mini.jpg',
-                js: function() { alert('casa1'); },
-            },{
-                url: 'create-complement/select-images/images/foto2-mini.jpg',
-                js: function() { alert('casa1'); },
-            },{
-                url: 'create-complement/select-images/images/foto2-mini.jpg',
-                js: function() { alert('casa1'); },
-            },{
-                url: 'create-complement/select-images/images/foto1-mini.jpg',
-                js: function() { alert('casa1'); },
-            },{
-                url: 'create-complement/select-images/images/foto2-mini.jpg',
-                js: function() { alert('casa1'); },
-            },{
-                url: 'create-complement/select-images/images/foto1-mini.jpg',
-                js: function() { alert('casa1'); },
-            },{
-                url: 'create-complement/select-images/images/foto2-mini.jpg',
+                url: 'http://www.educacioninteractiva.com.co/static/educacion/create-complement/cursos/images/curso-circuitos.png',
                 js: function() { alert('casa1'); },
             }
         ],
