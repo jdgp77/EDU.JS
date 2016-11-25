@@ -2548,6 +2548,17 @@ _EduInt = {
 
                 return idTheFunctionInShadow;
             };
+            this.accCreateAnimateFunctionInShadow = function(functionAnimatedInShadow,jsonInfoEnviada) { this._accCreateAnimateFunctionInShadow(functionAnimatedInShadow,jsonInfoEnviada); }
+            this._accCreateAnimateFunctionInShadow = function(functionAnimatedInShadow,jsonInfoEnviada)
+            {
+                var idTheFunctionInShadow = this._addFunctionAnimatedInShadow(functionAnimatedInShadow,{
+                    options: jsonInfoEnviada,
+                    father: this,
+                    //  frameToDesapear: ,
+                });
+
+                return idTheFunctionInShadow;
+            }
             // (Board)
     //  ALERT - COMMENT
             this.addFunctionAnimatedInShadowSimple = function(functionAnimatedInShadow,jsonOnFunctionAnimatedInShadow,father) { return this._addFunctionAnimatedInShadowSimple(functionAnimatedInShadow,jsonOnFunctionAnimatedInShadow,father); };
@@ -2618,7 +2629,7 @@ _EduInt = {
                     this._goodOrWrong('wrong');
                 },
                 _goodOrWrong: function(goodOrWrong){
-                    this._Board.addFunctionAnimatedInShadow(function(info,optionJson) {
+                    this._Board._addFunctionAnimatedInShadow(function(info,optionJson) {
                         //  console.info(info.time)
                         //  La primera vez
                         if(optionJson.numFrames==0)
@@ -3193,7 +3204,7 @@ _EduInt = {
                 if(bnThingCreated)
                 {
                     //  Añade todas las funciones comunes
-                    _EduInt._Basic.addThingCommon(this);
+                    _EduInt._Thing._Type._DefaultFunctions(this);
                 }
 
                 //  Informa que ya se realizaron los cambios de tipo al crearlo
@@ -3967,6 +3978,17 @@ _EduInt = {
                 Thing.enAboveNormal = function() { this._enAboveNormal(); };
                 Thing._enAboveNormal = function()
                 { this._Container._enAboveNormal(); };
+                Thing.accCreateAnimateFunctionInShadow = function(functionAnimatedInShadow,jsonInfoEnviada) { this._accCreateAnimateFunctionInShadow(functionAnimatedInShadow,jsonInfoEnviada); }
+                Thing._accCreateAnimateFunctionInShadow = function(functionAnimatedInShadow,jsonInfoEnviada)
+                {
+                    var idTheFunctionInShadow = this._Board._addFunctionAnimatedInShadow(functionAnimatedInShadow,{
+                        options: jsonInfoEnviada,
+                        father: this,
+                        //  frameToDesapear: ,
+                    });
+
+                    return idTheFunctionInShadow;
+                }
             },
 
             _Qstns: {

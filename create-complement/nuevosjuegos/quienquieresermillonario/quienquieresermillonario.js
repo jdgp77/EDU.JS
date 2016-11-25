@@ -1,8 +1,18 @@
 var qqsmInfo = {
 	id: 'id_qqsed',
 	name: 'Experto Drupal',
-	titulo: '¿Quien quiere ser Expero en Drupal?',
+	titulo: '¿Quien quiere ser Drupalero?',
 	subtitulo: '---Conceptos basicos de programación ---',
+	puntaje: {
+		prefijo: 'pesos',
+		puntajes: [
+			'  $ 100',
+			'  $ 200',
+			'  $ 300',
+			'  $ 500',
+			'$ 1.000',
+		],
+	},
 	preguntas: {
 		paradas: [
 			{ Premio: 'Por   1 puntos.', ajaxurl: 'quienquieresermillonario_parada01.json', },
@@ -20,8 +30,11 @@ var qqsmInfo = {
 
 var AppQuienQuiereSerExpertoDrupal = function(){
 	this.create = function(qqsmInfo){
-		this.board = EduInt.createBoardIn(document.getElementById(qqsmInfo.id),qqsmInfo.name,600,303);
+		this.board = EduInt.createBoardIn(document.getElementById(qqsmInfo.id),qqsmInfo.name,600,400);
 		this.board.setBackgroundImage('create-complement/nuevosjuegos/quienquieresermillonario/images/fondo.png').setBackgroundSize('cover');
+		this.board.qqsmInfo=qqsmInfo;
+
+		Board = this.board;
 		
 		this.board.start(function(){
 			var espacioEntrePuntajes = 15;
@@ -29,6 +42,48 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 			this.numPregunta = 1;
 			this.numFamesDeEsperaAntesDeSeguir = 1;
 			this.bnNuevaPregunta = false;
+			this.bnPrimeraVezEnSelectRight=true;
+			this.bnPrimeraVezEnNuevaPregunta=true;
+			this.bnPrimeraVezEnFelicitacion=true;
+			this.bnPrimeraVezEnPreguntaIncorrecta=true;
+
+			this.setCustom('presentador', function(){
+				this.t('imagen-persentador').setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/presentador.png').setDimentions(350,200);
+				this.t('voz').setType('text').setDimentions(200,100).setBackgroundColor('rgba(0,0,0,0.1)').setTextAlign('center');
+				this.bnTextoVisible=false;
+				this.setText=function(texto,numFramesVisible){
+					this.t('voz').setText(texto);
+					if(numFramesVisible!==undefined)
+					{
+						this.bnTextoVisible=true;
+						this.numFramesTextoVisible=numFramesVisible;
+						this.Board.accRestarWaitNumFrames('presentador--tiempotextovisible');
+					}
+					else
+					{
+						this.bnTextoVisible=false;
+					}
+				};
+				this.accCreateAnimateFunctionInShadow(function(info,optionJson){
+					if(this.bnTextoVisible)
+					{
+						if(!this.Board.accQstnWaitNumFrames(this.numFramesTextoVisible,'presentador--tiempotextovisible'))
+						{
+							this.t('voz').setText('');
+							this.bnTextoVisible=false;
+							this.Board.accRestarWaitNumFrames('presentador--tiempotextovisible');
+						}
+					}
+				});
+			});
+			this.g('presentador').getCustom('presentador',{ }).setPosition(200,10);
+			this.accPresentadorDice=function(texto,numFramesVisible)
+			{
+				this.g('presentador').setText(texto,numFramesVisible);
+			}
+			this.accPresentadorDice('<br>¡¡Hola!! y bienvenido<br><br>a<br>'+qqsmInfo.titulo,25*5);
+			this.accPresentadorDice('<br>La primera pregunta por '+qqsmInfo.titulo);
+
 			this.setCustom('puntaje',function(jsonInfo){
 				for(var count=0;count<jsonInfo.puntajes.length;count++)
 				{
@@ -47,14 +102,8 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 			});
 			this.g('posición').getCustom('puntaje',{
 				espacioEntrePuntajes: 12,
-				prefijo: 'pesos',
-				puntajes: [
-					'  $ 100',
-					'  $ 200',
-					'  $ 300',
-					'  $ 500',
-					'$ 1.000',
-				],
+				prefijo: qqsmInfo.puntaje.prefijo,
+				puntajes: qqsmInfo.puntaje.puntajes,
 			}).setLeft(10).setTop(10);
 			this.accNextPositionPuntaje = function()
 			{
@@ -66,6 +115,8 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 			}
 
 			this.bnSelectRight = false;
+			this.numFramesEsperandoSiEsCorrecto=25*1.2;
+			this.numFramesEsperandoNuevaPregunta=25*2;
 			this.accVeryfyPosition = function(numRespuesta)
 			{
 				this.accDisableSelect();
@@ -92,7 +143,7 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 				this.g('respuesta4').accUnSelect();
 			}
 
-			this.g('group-pregunta').setPosition(96,115);
+			this.g('group-pregunta').setPosition(96,220);
 			this.g('group-pregunta').t('pregunta-fondo').setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/pregunta.png').setDimentions(410,45);
 			this.g('group-pregunta').t('pregunta').setType('text').setColor('#FFF').setText('Pregunta').setPosition(32,10).setWidth(350);
 
@@ -162,26 +213,26 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 				this.setHeight(7).setBackgroundColor('#c7c7c7');
 			});
 
-			this.t('linea-pregunta-izq').getCustom('linea').setPosition(0,134).setWidth(96);
-			this.t('linea-pregunta-der').getCustom('linea').setPosition(96+410,134).setWidth(94);
+			this.t('linea-pregunta-izq').getCustom('linea').setPosition(0,220+19).setWidth(96);
+			this.t('linea-pregunta-der').getCustom('linea').setPosition(96+410,220+19).setWidth(94);
 
-			this.t('linea-respuesta1-izq').getCustom('linea').setPosition(0,191).setWidth(97);
-			this.t('linea-respuesta1-der').getCustom('linea').setPosition(97+197,191).setWidth(8);
+			this.t('linea-respuesta1-izq').getCustom('linea').setPosition(0,191+100).setWidth(97);
+			this.t('linea-respuesta1-der').getCustom('linea').setPosition(97+197,191+100).setWidth(8);
 
-			this.t('linea-respuesta2-izq').getCustom('linea').setPosition(97+197+8,191).setWidth(7);
-			this.t('linea-respuesta2-der').getCustom('linea').setPosition(97+197+8+7+197,191).setWidth(94);
+			this.t('linea-respuesta2-izq').getCustom('linea').setPosition(97+197+8,191+100).setWidth(7);
+			this.t('linea-respuesta2-der').getCustom('linea').setPosition(97+197+8+7+197,191+100).setWidth(94);
 
-			this.t('linea-respuesta3-izq').getCustom('linea').setPosition(0,248).setWidth(97);
-			this.t('linea-respuesta3-der').getCustom('linea').setPosition(97+197,248).setWidth(8);
+			this.t('linea-respuesta3-izq').getCustom('linea').setPosition(0,248+100).setWidth(97);
+			this.t('linea-respuesta3-der').getCustom('linea').setPosition(97+197,248+100).setWidth(8);
 
-			this.t('linea-respuesta4-izq').getCustom('linea').setPosition(97+197+8,248).setWidth(7);
-			this.t('linea-respuesta4-der').getCustom('linea').setPosition(97+197+8+7+197,248).setWidth(94);
+			this.t('linea-respuesta4-izq').getCustom('linea').setPosition(97+197+8,248+100).setWidth(7);
+			this.t('linea-respuesta4-der').getCustom('linea').setPosition(97+197+8+7+197,248+100).setWidth(94);
 
 
-			this.g('respuesta1').setPosition( 97,172).getCustom('respuesta', { texto_opcion: 'A:', numRespuesta: 1 });
-			this.g('respuesta2').setPosition(309,172).getCustom('respuesta', { texto_opcion: 'B:', numRespuesta: 2 });
-			this.g('respuesta3').setPosition( 97,234-5).getCustom('respuesta', { texto_opcion: 'C:', numRespuesta: 3 });
-			this.g('respuesta4').setPosition(309,234-5).getCustom('respuesta', { texto_opcion: 'D:', numRespuesta: 4 });
+			this.g('respuesta1').setPosition( 97,171+100).getCustom('respuesta', { texto_opcion: 'A:', numRespuesta: 1 });
+			this.g('respuesta2').setPosition(309,172+100).getCustom('respuesta', { texto_opcion: 'B:', numRespuesta: 2 });
+			this.g('respuesta3').setPosition( 97,234-5+100).getCustom('respuesta', { texto_opcion: 'C:', numRespuesta: 3 });
+			this.g('respuesta4').setPosition(309,234-5+100).getCustom('respuesta', { texto_opcion: 'D:', numRespuesta: 4 });
 
 			this.setQuestion = function(text){ this.g('group-pregunta').t('pregunta').setText(text); };
 			this.setAnswer1  = function(text){ this.g('respuesta1').setAnswer(text); };
@@ -212,9 +263,11 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 		});
 
 		this.board.createAnimation(function(infoAnimation){
+
 			if(this.bnSelectRight)
 			{
-				if(!this.accQstnWaitNumFrames(25*1.2,'Esperar que seleccionen la correcta'))
+				if(this.bnPrimeraVezEnSelectRight) { this.accPresentadorDice('<br>...Ultima Palabra...',this.numFramesEsperandoSiEsCorrecto); this.bnPrimeraVezEnSelectRight=false; }
+				if(!this.accQstnWaitNumFrames(this.numFramesEsperandoSiEsCorrecto,'Esperar que seleccionen la correcta'))
 				{
 					this.accSelRight(this.correcta);
 					if(this.correcta == this.numRespuestaActual)
@@ -223,18 +276,27 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 						this.accNextPositionPuntaje();
 						this.bnNuevaPregunta=true;
 					}
+					else
+					{
+						this.accPresentadorDice('<br>INCORRECTO,<br> Lo sentimos,<br><br>Vuelve a intentarlo', 25*100);
+					}
 					this.accRestarWaitNumFrames('Esperar que seleccionen la correcta');
 					this.bnSelectRight=false;
+					this.bnPrimeraVezEnSelectRight=true;
 				}
 			}
 			if(this.bnNuevaPregunta)
 			{
-				if(!this.accQstnWaitNumFrames(25*2,'Esperando la siguiente pregunta'))
+				if(this.bnPrimeraVezEnFelicitacion) { this.accPresentadorDice('<br>Genial, Bien pensado',this.numFramesEsperandoNuevaPregunta); this.bnPrimeraVezEnFelicitacion=false; }
+				if(!this.accQstnWaitNumFrames(this.numFramesEsperandoNuevaPregunta,'Esperando la siguiente pregunta'))
 				{
 					this.loadNewQuestion();
 					this.accEnableSelect();
 
 					this.accRestarWaitNumFrames('Esperando la siguiente pregunta');
+					if(this.bnPrimeraVezEnNuevaPregunta) { this.accPresentadorDice('<br>La siguiente pregunta es:'); this.bnPrimeraVezEnNuevaPregunta=false; }
+					this.bnPrimeraVezEnNuevaPregunta=true;
+					this.bnPrimeraVezEnFelicitacion=true;
 					this.bnNuevaPregunta=false;
 				}
 			}
