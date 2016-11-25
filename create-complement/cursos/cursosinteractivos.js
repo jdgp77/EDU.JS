@@ -10,13 +10,13 @@ $(document).ready(function() {
         arImagesViews: [
             {
                 url: 'http://www.educacioninteractiva.com.co/static/educacion/create-complement/cursos/images/curso-appsscript.png',
-                js: function() { alert('casa1'); },
+                js: function() { window.location="http://www.consejostic.com/node/30"; },
             },{
                 url: 'http://www.educacioninteractiva.com.co/static/educacion/create-complement/cursos/images/curso-drupal8.png',
-                js: function() { alert('casa1'); },
+                js: function() { window.location="http://www.consejostic.com/node/28"; },
             },{
                 url: 'http://www.educacioninteractiva.com.co/static/educacion/create-complement/cursos/images/curso-circuitos.png',
-                js: function() { alert('casa1'); },
+                js: function() { window.location="http://www.consejostic.com/node/20"; },
             }
         ],
     });
