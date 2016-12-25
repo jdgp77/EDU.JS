@@ -1,8 +1,8 @@
 {
-	"pregunta": "Como andar en....",
-	"respuesta1": "/core/modules",
-	"respuesta2": "/core/sites/all/modules",
-	"respuesta3": "/modules",
-	"respuesta4": "/sites/default/modules",
+	"pregunta": "Pregunta 2",
+	"respuesta1": "...",
+	"respuesta2": "...",
+	"respuesta3": "...",
+	"respuesta4": "...",
 	"correcta": "1"
 }

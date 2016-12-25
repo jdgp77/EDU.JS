@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+
+	<!-- JQuery -->
+	<script src="educacion-interactiva/js/jquery-1.9.1.js"></script>
+
+	<!-- Educación Interactiva V4 -->
+	<!-- <script src="educacion-interactiva/js/educacion-interactiva-v5_Beta.js" charset="UTF-8" ></script> -->
+	<script src="educacion-interactiva/js/educacion-interactiva-v1.js" charset="UTF-8" ></script>
+
+	<script type="text/javascript" charset="UTF-8" >
+
+	</script>
+</head>
+<body>
+	<script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
+	<script>
+	  // Initialize Firebase
+	  var config = {
+	    apiKey: "AIzaSyDKrXo79YNERMsRwtVRLxA9zL5dDmp02is",
+	    authDomain: "chat-drupal-8.firebaseapp.com",
+	    databaseURL: "https://chat-drupal-8.firebaseio.com",
+	    storageBucket: "chat-drupal-8.appspot.com",
+	    messagingSenderId: "318807382422"
+	  };
+	  firebase.initializeApp(config);
+	</script>
+	<script src="create-complement/talk-tools/chat.js" charset="UTF-8" ></script>
+	<link rel="stylesheet" href="create-complement/talk-tools/css/talk-tools.css">
+	<script>
+		User = {
+			uid: 1,
+			username: 'amigo'+EduInt.Basic.randomInt(1,10000000),
+			name: 'Julian David',
+			lastname: 'Guerrero Pinilla',
+			profilePhotoUrl: 'http://www.consejostic.com/sites/default/files/styles/informacion_en_bloque_300_x_300_/public/2016-11/UsuarioDestacado.png',
+		};
+		var ListaDeUsuarios = EduIntGD_WorkTogether.createListOfUsers({
+			title: 'Personas Conectadas',
+			user: User,
+		});
+		ListaDeUsuarios.accAddUsers(User);
+		firebase.database().ref('users').push(User);
+	</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+.eduintgd-listofusers,
+.eduintgd-chat
+{
+	max-width: 300px;
+	margin-right: 20px;
+	font-family: 'Arial';
+	font-size: 13px;
+
+}
+	.eduintgd-listofusers .header,
+	.eduintgd-chat .header
+	{
+		display: table;
+		height: 40px;
+		background-color: #222;
+		color: #fff;
+		width: 100%;
+		box-sizing: border-box;
+	}
+		..eduintgd-listofusers .title,
+		.eduintgd-chat .title
+		{
+		    padding: 5px 5px;
+		    display: table-cell;
+		    vertical-align: middle;
+		    text-align: left;
+		}
+		..eduintgd-listofusers .options,
+		.eduintgd-chat .options
+		{
+			width: 120px;
+			display: table-cell;
+		}
+			.eduintgd-listofusers .options > div,
+			.eduintgd-chat .options > div
+			{
+				cursor: pointer;
+				text-align: center; 
+				vertical-align: middle;
+				padding-top: 12px;
+				box-sizing: border-box;
+			}
+				.eduintgd-listofusers .options div:hover,
+				.eduintgd-chat .options div:hover
+				{
+					background-color: #555;
+				}
+			.eduintgd-listofusers .options .moreoptions,
+			.eduintgd-chat .options .moreoptions
+			{
+				width: 40px;
+				height: 40px;
+				float: right;
+			}
+			.eduintgd-listofusers .options .minimize,
+			.eduintgd-chat .options .minimize
+			{
+				width: 40px;
+				height: 40px;
+				float: right;
+			}
+			.eduintgd-listofusers .options .close,
+			.eduintgd-chat .options .close
+			{
+				width: 40px;
+				height: 40px;
+				float: right;
+			}
+	.eduintgd-listofusers .content,
+	.eduintgd-chat .content
+	{
+		height: 250px;
+	}
+		.eduintgd-listofusers .content .messages,
+		.eduintgd-chat .content .messages
+		{
+			background-color: #EEE;
+			height: 210px;
+		}
+			.eduintgd-listofusers .content .messages .message,
+			.eduintgd-chat .content .messages .message
+			{
+				margin: 0 2% 2% 2%;
+				box-sizing: border-box;
+				width: 96%;
+				position: relative;
+				display: table;
+			}
+				.eduintgd-listofusers .content .messages .message .photo,
+				.eduintgd-chat .content .messages .message .photo
+				{
+					width: 40px;
+					min-height: 40px;
+					display: table-cell;
+				}
+				.eduintgd-listofusers .content .messages .message .message_text,
+				.eduintgd-chat .content .messages .message .message_text
+				{
+					background-color: #CCC;
+					display: table-cell;
+					padding: 10px;
+					text-align: left;
+					box-sizing: border-box;
+					position: relative;
+				}
+					.eduintgd-listofusers .content .messages .message .message_text::after,
+					.eduintgd-chat .content .messages .message .message_text::after	
+					{
+						content: '';
+						display: block;
+						width: 0;
+						height: 0;
+						top: 0;
+						border-width: 5px;
+						position: absolute;
+						border-style: solid;
+					}
+			.eduintgd-listofusers .content .messages .message.mine .message_text::after,
+			.eduintgd-chat .content .messages .message.mine .message_text::after
+			{
+				right: -2%;
+				border-color: #ccc transparent transparent #ccc;
+			}
+			.eduintgd-listofusers .content .messages .message.other .message_text::after,
+			.eduintgd-chat .content .messages .message.other .message_text::after
+			{
+				left: -2%;
+				border-color: #ccc #ccc transparent transparent;
+			}
+		.eduintgd-chat .content .write
+		{
+
+		}
+			.eduintgd-chat .content .write .input
+			{
+				width: 240px;
+				height: 40px;
+				box-sizing: border-box;
+			}
+			.eduintgd-chat .content .write .send
+			{
+				width: 40px;
+				height: 40px;
+				float: right;
+				background-color: #222;
+				color: #fff;
+			}

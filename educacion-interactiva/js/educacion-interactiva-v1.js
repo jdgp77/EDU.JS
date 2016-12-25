@@ -100,6 +100,12 @@ _EduIntBasic = {
     {
         return !isNaN(numero) && numero!=='';
     },
+    // this function was linked by @Paul Rosania.
+    qstnIsFunction: function(functionToCheck) { return this._qstnIsFunction(functionToCheck); },
+    _qstnIsFunction: function(functionToCheck) {
+        var getType = {};
+        return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';   
+    },
     replaceAll: function(aCambiar_MyR,aColocar,valor_MyR) { return this._replaceAll(aCambiar_MyR,aColocar,valor_MyR); },
     _replaceAll: function(aCambiar_MyR,aColocar,valor_MyR)
     {
@@ -440,6 +446,14 @@ _EduIntBasic = {
             {
                 case 'name':
                     field.value = _EduIntBasic._accNameFormat(field.value);
+                    break;
+                case 'toUpperCase':
+                case 'uppercase':
+                    field.value = field.value.toUpperCase();
+                    break;
+                case 'toLowerCase':
+                case 'lowercase':
+                    field.value = field.value.toLowerCase();
                     break;
             }
         },
@@ -1864,20 +1878,68 @@ _EduInt = {
             };
             //  Funciones publicas
             //  ------------------
+            this.accEnResponsiveMinWidth = function(minwidth) { return this._accEnResponsiveMinWidth(minwidth); };
+            this._accEnResponsiveMinWidth = function(minwidth)
+            {
+                this._oDiv.style.minWidth=_EduInt._Basic.measure(minwidth);
+                if(this._oDiv.style.width)
+                {
+                    this._oDiv.style.maxWidth = this._oDiv.style.width;
+                    this._oDiv.style.width = 'inherit';
+                }
+                return this;
+            };
+            this.accEnResponsiveMaxWidth = function(maxwidth) { return this._accEnResponsiveMaxWidth(maxwidth); };
+            this._accEnResponsiveMaxWidth = function(maxwidth)
+            {
+                this._oDiv.style.maxWidth=_EduInt._Basic.measure(maxwidth);
+                return this;
+            };
+            this._arWaitOneTime = [];
+            this.accGetTrueOneTime = function(name) { return this._accGetTrueOneTime(name); };
+            this._accGetTrueOneTime = function(name)
+            {
+                if(this._arWaitOneTime[name]!=undefined)
+                { this._arWaitOneTime[name]=true; }
+
+                var valToReturn = this._arWaitOneTime[name];
+                this._arWaitOneTime[name]=false;
+
+                return valToReturn;
+            };
+            this.accRestartGetTrueOneTime = function(name){
+                this._arWaitOneTime[name]=true;
+            };
             this._arWaitFrames = [];
             this.accQstnWaitNumFrames = function(numFrames,name) { return this._accQstnWaitNumFrames(numFrames,name); };
             this._accQstnWaitNumFrames = function(numFrames,name)
             {
-                if(this._arWaitFrames[name]!=undefined)
-                { this._arWaitFrames[name]--; }
-                else
-                { this._arWaitFrames[name]=numFrames; }
+                if(0<=this._arWaitFrames[name] || this._arWaitFrames[name]===undefined)
+                {
+                    if(this._arWaitFrames[name]===undefined)
+                    { this._arWaitFrames[name]=numFrames; }
+                    else
+                    { this._arWaitFrames[name]--; }
 
-                if(this._arWaitFrames[name]<=0) { return false; }
-                return true;
+                    if(this._arWaitFrames[name]<=0) { return false; }
+                    return true;
+                }
+                return false;
             };
-            this.accRestarWaitNumFrames = function(name){
+            this.accRestarWaitNumFrames = function(name) { return this._accRestarWaitNumFrames(name); };
+            this._accRestarWaitNumFrames = function(name){
                 this._arWaitFrames[name]=undefined;
+
+                return this;
+            };
+            this.accQstnWaitInSeconds = function(seconds,name) { return this._accQstnWaitInSeconds(seconds,name); };
+            this._accQstnWaitInSeconds = function(seconds,name)
+            {
+                return this._accQstnWaitNumFrames(this._animation.getStepsPerSecond()*seconds);
+            };
+            this.accRestarWaitInSeconds = function(name) { return this._accRestarWaitInSeconds(name); };
+            this._accRestarWaitInSeconds = function(name){
+                return this._accRestarWaitNumFrames(name);
             };
             this.setBackgroundImage=function(imageUrl) { return this._setBackgroundImage(imageUrl); };
             this._setBackgroundImage=function(imageUrl)
@@ -1891,7 +1953,6 @@ _EduInt = {
                 this._oDiv.style.backgroundSize=backgroundSize;
                 return this;
             };
-
             this._arCustoms=[];
             this.setCustom=function(name,myFunction) { return this._setCustom(name,myFunction); };
             this._setCustom=function(name,myFunction)
@@ -2896,8 +2957,8 @@ _EduInt = {
                 //  Pasa por todas las acciones hasta ahora colocadas y les coloca el tiempo en que se ejecutaran
                 for(var countActionsInTime=0;countActionsInTime<this._arActionsInTime.length;countActionsInTime++)
                 {
-    //  WARNING
-    //  QUeda faltarlo al cambio de ancho y alto
+//  WARNING
+//  QUeda faltarlo al cambio de ancho y alto
                     switch(this._arActionsInTime[countActionsInTime])
                     {
                         case 'rotate':
@@ -2914,6 +2975,15 @@ _EduInt = {
                 //  Borra todas las acciones para cambiern segun el tiempo
                 this._clearActionsInTime();
 
+                return this;
+            };
+            //  (Thing)
+            //  Permite añadir funciones y agruparlas
+            this.setCustom=function(myFunction) { return this._setCustom(myFunction); };
+            this._setCustom=function(myFunction)
+            {
+                this._myFunction=myFunction;
+                this._myFunction();
                 return this;
             };
             //  (Thing)
@@ -3030,7 +3100,7 @@ _EduInt = {
                         this._putThisElementInDivOfBoard(this._element);
 
                         //  Añade todas las funciones de input necesarias
-                        _EduInt._Basic.addThingInputFunctions(this);
+                        _EduInt._Thing._Type._InputFunctions(this);
                         //  Añade todas las funciones de HTML necesarias
                         _EduInt._Thing._Type._DisplayBlockFunctions(this);
                         //  Añade las funciones del elemento
@@ -3294,6 +3364,19 @@ _EduInt = {
                             //  Reinicia los cambios asignados
                             this._bnActionToDraw=[];
                             break;
+                        case 'group':
+                            //  Realiza solo los cambios asignados
+                            for(var countChanges=0;countChanges<this._bnActionToDraw.length;countChanges++)
+                            {
+                                if(this._bnActionToDraw[countChanges]=='width')
+                                { this._element.style.width = this._width + 'px'; }
+                                if(this._bnActionToDraw[countChanges]=='height')
+                                { this._element.style.height = this._height + 'px'; }
+                            }
+                            //  Reinicia los cambios asignados
+                            this._bnActionToDraw=[];
+                            break;
+
                         //  Si se trata de una forma
                         case 'element':
                             switch(this._subType)
@@ -3577,6 +3660,11 @@ _EduInt = {
             {
                 return this._Events.onmouseover;
             },
+            this.setZIndex = function(value) { this._setZIndex(value); };
+            this._setZIndex = function(value)
+            {
+                this._Container._setZIndex(value);
+            };
             //  (Thing)
             //  Crea el objeto
             this._create();
@@ -3656,6 +3744,11 @@ _EduInt = {
             {
                 this._divContainer.style.top=_EduInt._Basic.measure(posInY);
             };
+            this.setZIndex = function(value) { this._setZIndex(value); };
+            this._setZIndex = function(value)
+            {
+                this._divContainer.style.zIndex=value;
+            };
             this.enAboveAll = function() { this._enAboveAll(); };
             this._enAboveAll = function()
             {
@@ -3707,10 +3800,32 @@ _EduInt = {
                 Thing._getTextAlign = function(value)
                 { return this._element.style.textAlign; };
 
+                Thing.setPlaceholder = function(value) { return this._setPlaceholder(value); }
+                Thing._setPlaceholder = function(value)
+                { this._element.placeholder=value; return this; };
+                Thing.getPlaceholder = function(value) { return this._getPlaceholder(value); }
+                Thing._getPlaceholder = function(value)
+                { return this._element.style.placeholder; };
+
                 //  Deprecate
                 Thing.setText = function(text) { return this._setText(text); }
                 Thing._setText = function(text)
                 { return Thing._setValue(text); };
+
+                Thing.arFilters=[];
+                Thing.setFilter = function(value) { return this._setFilter(value); }
+                Thing._setFilter = function(value)
+                { 
+                    _EduIntBasic._addCharacteristicsInFields([{
+                        //  errorElement: document.getElementById('error-input-name'),
+                        inputElement: this._element,
+                        filters: [{
+                            type: value
+                        }],
+                    }]);
+
+                    return this;
+                };
             },
 
             //  Texto
@@ -3733,12 +3848,6 @@ _EduInt = {
                 {
                     return this._getText();
                 };
-                Thing.setTextAlign = function(value) { return this._setTextAlign(value); }
-                Thing._setTextAlign = function(value)
-                {
-                    this._element.style.textAlign = value;
-                    return this;
-                }
                 Thing.setColor = function(value) { return this._setColor(value); }
                 Thing._setColor = function(value)
                 {
@@ -3750,6 +3859,12 @@ _EduInt = {
                 {
                     if(!isNaN(value)) { value = _EduInt._Basic.measure(value); }
                     this._element.style.fontSize = value;
+                    return this;
+                }
+                Thing.setFontFamily = function(value) { return this._setFontFamily(value); }
+                Thing._setFontFamily = function(value)
+                {
+                    this._element.style.fontFamily = value;
                     return this;
                 }
                 Thing.setLineHeight = function(value) { return this._setLineHeight(value); }
@@ -3881,7 +3996,19 @@ _EduInt = {
                 //  Margen
                 Thing.setMargin = function(margin) { return this._setMargin(margin); };
                 Thing._setMargin = function(margin)
-                { return this._element.style.margin = margin; }
+                { this._element.style.margin = _EduInt._Basic.measure(margin); return this; }
+                Thing.setPadding = function(value) { return this._setPadding(value); };
+                Thing._setPadding = function(value)
+                { this._element.style.padding = _EduInt._Basic.measure(value); return this; }
+                Thing.setBorderRadius = function(value) { return this._setBorderRadius(value); };
+                Thing._setBorderRadius = function(value)
+                { this._element.style.borderRadius = _EduInt._Basic.measure(value); return this; }
+                Thing.setCursor = function(value) { return this._setCursor(value); };
+                Thing._setCursor = function(value)
+                { this._element.style.cursor = value; return this; }
+                Thing.setBorder = function(value) { return this._setBorder(value); };
+                Thing._setBorder = function(value)
+                { this._element.style.border = _EduInt._Basic.measure(value); return this; }
 
                 //  ID
                 Thing.setId = function(id) { return this._setId(id); };
@@ -3960,7 +4087,6 @@ _EduInt = {
 
             _GroupsFunctions: function(Thing)
             {
-                Thing._Board._parentThing = Thing;
                 Thing.t = function(nameThing,posInX,posInY,width,height) { return this._t(nameThing,posInX,posInY,width,height,this); };
                 Thing._t = function(nameThing,posInX,posInY,width,height)
                 {
