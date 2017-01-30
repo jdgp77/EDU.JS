@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Quien quiere ser millonario</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans|Open+Sans+Condensed:300" rel="stylesheet">
+	<!-- JQuery -->
+	<script src="educacion-interactiva/js/jquery-1.9.1.js"></script>
+
+	<!-- Educación Interactiva V4 -->
+	<!-- <script src="educacion-interactiva/js/educacion-interactiva-v5_Beta.js" charset="UTF-8" ></script> -->
+	<script src="educacion-interactiva/js/educacion-interactiva-v1.js" charset="UTF-8" ></script>
+	<style>
+		body
+		{
+			padding: 0;
+			margin: 0;
+			min-width: 410px;	
+		}
+			.ei_board
+			{
+				margin: 0 auto;
+			}
+	</style>
+</head>
+<body>
+<!--
+	Memoria:<br>
+	<div id="id_memoria" ></div>
+	<script src="create-complement/nuevosjuegos/memoria/memorizar.js" charset="UTF-8" ></script>
+-->
+
+	<div id="id_qqsed" ></div>
+	<script>
+		var qqsmInfo = {
+			id: 'id_qqsed',
+			name: 'Experto Drupal',
+			titulo: '¿Quien quiere ser Drupalero?',
+			subtitulo: '---Conceptos basicos de programación ---',
+			mensajeGanador: '--- Has ganado eres un campeón ---',	
+			puntaje: {
+				prefijo: 'pesos',
+				puntajes: [
+					'  $ 100',
+					'  $ 200',
+					'  $ 300',
+					'  $ 500',
+					'$ 1.000',
+				],
+			},
+			preguntas: {
+				paradas: [
+					{ Premio: 'Por   1 puntos.', ajaxurl: 'quienquieresermillonario_parada01.json', },
+					{ Premio: 'Por   2 puntos.', ajaxurl: 'quienquieresermillonario_parada02.json', },
+					{ Premio: 'Por   3 puntos.', ajaxurl: 'quienquieresermillonario_parada03.json', },
+					{ Premio: 'Por   5 puntos.', ajaxurl: 'quienquieresermillonario_parada04.json', },
+					{ Premio: 'Por  10 puntos,', ajaxurl: 'quienquieresermillonario_parada05.json', parada: true, },
+					{ Premio: 'Por  20 puntos.', ajaxurl: 'quienquieresermillonario_parada06.json', },
+					{ Premio: 'Por  30 puntos.', ajaxurl: 'quienquieresermillonario_parada07.json', },
+					{ Premio: 'Por  50 puntos.', ajaxurl: 'quienquieresermillonario_parada08.json', },
+					{ Premio: 'Por 100 puntos,', ajaxurl: 'quienquieresermillonario_parada09.json', parada: true, },
+				],
+			},
+			objetosAlIniciar: function(){
+				this.t('iniciar').setType('text').setTextAlign('center').setText('Iniciar el Juego').setWidth(this.Board.getWidth()).setTop(40).setFontFamily('Open Sans, Arial').setFontSize(44);
+				this.t('quien-quiere').setType('text').setTextAlign('center').setText('--- ¿Quien quiere ser Drupalero? ---').setWidth(this.Board.getWidth()).setTop(100).setFontFamily('Open Sans, Arial').setFontSize(17.4);
+				this.t('Nombre').setType('input').setDimensions(400,40).setBorder('1px solid #CCC').setPosition(100,170).setPlaceholder('Nombre').setFilter('name').setPadding(10);
+				this.t('Correo Electrónico').setType('input').setDimensions(400,40).setBorder('1px solid #CCC').setPosition(100,230).setPlaceholder('Correo').setFilter('lowercase').setPadding(10);
+				
+
+				this.t('Boton Continuar').setPosition(150,280).setDimensions(300,60).setOnClick(function(){
+					this.Board.accMoverIzquierdaInicio();
+				});
+				this.t('Boton Continuar')._setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/BotonInicio.png').setCursor('pointer');
+
+			},
+		};
+	</script>
+	<script src="create-complement/nuevosjuegos/quienquieresermillonario/quienquieresermillonario.js" charset="UTF-8" ></script>
+
+</body>
+</html>

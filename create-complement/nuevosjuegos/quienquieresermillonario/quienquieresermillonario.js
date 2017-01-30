@@ -2,7 +2,7 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 	this.create = function(qqsmInfo){
 		this.board = EduInt.createBoardIn(document.getElementById(qqsmInfo.id),qqsmInfo.name,600,400);
 		this.board.setBackgroundImage('create-complement/nuevosjuegos/quienquieresermillonario/images/fondo.png').setBackgroundSize('cover');
-		this.board.accEnResponsiveMinWidth(300);
+		this.board.accEnResponsiveMinWidth(410);
 		this.board.qqsmInfo=qqsmInfo;
 
 		Board = this.board;
@@ -96,7 +96,8 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 			//	===========
 			this.setCustom('presentador', function(){
 				this.t('imagen-persentador').setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/presentador.png').setDimentions(350,179);
-				this.t('voz').setType('text').setDimentions(200,100).setBackgroundColor('rgba(0,0,0,0.1)').setTextAlign('center').setFontFamily('Open Sans, Aria').setFontSize(13).setLineHeight(15);
+				this.t('voz').setType('text').setDimentions(193,100).setTextAlign('center').setFontFamily('Open Sans, Aria').setFontSize(13).setLineHeight(15).setPosition(0,5);
+				this.t('boca').setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/presentador-boca.png').setDimentions(14,6).setPosition(238,58);
 				this.bnTextoVisible=false;
 				this.setText=function(texto,numFramesVisible){
 					this.t('voz').setText(texto);
@@ -111,15 +112,41 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 						this.bnTextoVisible=false;
 					}
 				};
+				this.numFramesMoverBoca=5;
+				this.countFramesMoverBoca=0;
+				this.accAbrirYCerrarBoca=function(){
+					this.bnMoverBoca=true;
+				};
 				this.accCreateAnimateFunctionInShadow(function(info,optionJson){
 			
 					if(this.bnTextoVisible)
 					{
-						if(!this.Board.accQstnWaitNumFrames(this.numFramesTextoVisible,'presentador--tiempotextovisible'))
+						if(this.Board.accQstnWaitNumFrames(this.numFramesTextoVisible,'presentador--tiempotextovisible'))
+						{
+							this.accAbrirYCerrarBoca();
+						}
+						else
 						{
 							this.t('voz').setText('');
 							this.bnTextoVisible=false;
 							this.Board.accRestarWaitNumFrames('presentador--tiempotextovisible');
+						}
+					}
+					if(this.bnMoverBoca)
+					{
+						this.countFramesMoverBoca++;
+						if(this.countFramesMoverBoca<this.numFramesMoverBoca)
+						{
+							this.t('boca').setBackgroundPosition('-14px 0');
+						}
+						else if(this.countFramesMoverBoca<this.numFramesMoverBoca*2)
+						{
+							this.t('boca').setBackgroundPosition('0 0');
+						}
+						else
+						{
+							this.bnMoverBoca=false;
+							this.countFramesMoverBoca=0;
 						}
 					}
 				});
@@ -366,7 +393,7 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 				}
 				else
 				{
-					this.accPresentadorDice('<br>INCORRECTO,<br> Lo sentimos,<br><br>Vuelve a intentarlo', 25*100);
+					this.accPresentadorDice('<br>INCORRECTO,<br> Lo sentimos,<br><br>Vuelve a intentarlo', 25*10);
 				}
 			});
 		});

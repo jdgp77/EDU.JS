@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Document</title>
-
+	<title>Creado por: Educación Interactiva G.D. S.A.S.</title>
+	<meta name="view<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- JQuery -->
 	<script src="educacion-interactiva/js/jquery-1.9.1.js"></script>
 
@@ -27,6 +27,16 @@
 	</script>
 </head>
 <body>
+	Paco:<br>
+	<div id="id_paco" ></div>
+	<script src="create-complement/paco/paco.js" charset="UTF-8" ></script>
+	<script>
+		var pacoInfo = {
+			id: 'id_paco',
+			name: 'Paco',
+		};
+		paco.createBoard(pacoInfo);
+	</script>
 <!--
 	Memoria:<br>
 	<div id="id_memoria" ></div>
@@ -40,16 +50,16 @@
 			id: 'id_qqsed',
 			name: 'Experto Drupal',
 			titulo: '¿Quien quiere ser Drupalero?',
-			subtitulo: '---Conceptos basicos de programación ---',
-			mensajeGanador: '--- Has ganado eres un campeón ---',	
+			subtitulo: '---Gana un curso gratis de Drupal8 ---',
+			mensajeGanador: '--- Anota Bien el Codigo E4DE4R4 ---',	
 			puntaje: {
-				prefijo: 'pesos',
+				prefijo: 'Punto(s)',
 				puntajes: [
-					'  $ 100',
-					'  $ 200',
-					'  $ 300',
-					'  $ 500',
-					'$ 1.000',
+					' 1',
+					' 2',
+					' 3',
+					' 5',
+					'10',
 				],
 			},
 			preguntas: {
@@ -68,8 +78,8 @@
 			objetosAlIniciar: function(){
 				this.t('iniciar').setType('text').setTextAlign('center').setText('Iniciar el Juego').setWidth(this.Board.getWidth()).setTop(40).setFontFamily('Open Sans, Arial').setFontSize(44);
 				this.t('quien-quiere').setType('text').setTextAlign('center').setText('--- ¿Quien quiere ser Drupalero? ---').setWidth(this.Board.getWidth()).setTop(100).setFontFamily('Open Sans, Arial').setFontSize(17.4);
-				this.t('Nombre').setType('input').setDimensions(400,40).setBorder('1px solid #CCC').setPosition(100,170).setPlaceholder('Nombre').setFilter('name').setPadding(10);
-				this.t('Correo Electrónico').setType('input').setDimensions(400,40).setBorder('1px solid #CCC').setPosition(100,230).setPlaceholder('Correo').setFilter('lowercase').setPadding(10);
+				//this.t('Nombre').setType('input').setDimensions(400,40).setBorder('1px solid #CCC').setPosition(100,170).setPlaceholder('Nombre').setFilter('name').setPadding(10);
+				//this.t('Correo Electrónico').setType('input').setDimensions(400,40).setBorder('1px solid #CCC').setPosition(100,230).setPlaceholder('Correo').setFilter('lowercase').setPadding(10);
 				
 
 				this.t('Boton Continuar').setPosition(150,280).setDimensions(300,60).setOnClick(function(){
@@ -89,9 +99,11 @@
 	-->
 	<br>
 	<br>
+	<!--
 	Juegos de concentración:<br>
 	<div id="id_mente_concentracion" ></div>
 	<script src="create-complement/mental/concentracion/concentracion.js" charset="UTF-8" ></script>
+	-->
 
 	<br>
 	<br>

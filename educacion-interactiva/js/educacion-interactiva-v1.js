@@ -1732,6 +1732,7 @@ _EduInt = {
             //  Retorna false
             return false;
         },
+        _arBoardsFunctionResize: [],
         //  Carga el tablero de una base de datos de algun servidor, esto para pegarlo en cualquier pagina web
         //  Ejemplo:
         //      loadBoardIn(object,'http://mipagina.com/juego3','casa=2&paso=3','casa=2&paso=3&hola=mundo')
@@ -1876,30 +1877,74 @@ _EduInt = {
                     });
                 },
             };
+            // (Board)
             //  Funciones publicas
             //  ------------------
-            this.accEnResponsiveMinWidth = function(minwidth) { return this._accEnResponsiveMinWidth(minwidth); };
-            this._accEnResponsiveMinWidth = function(minwidth)
+            this._bnResponsiveEvent=false;
+            this._accEnResponsiveIn = function(position) {
+                //  Solo entra una vez
+                if(!_EduInt._Board._bnExistResposniveEvents)
+                {
+                    window.addEventListener('resize',function(){
+                        for(var countBoardFunctionResize=0;countBoardFunctionResize<_EduInt._Board._arBoardsFunctionResize.length;countBoardFunctionResize++)
+                        {
+                            var board = _EduInt._Board._arBoardsFunctionResize[countBoardFunctionResize];
+                            board._myFunctionResponsive();
+                        }
+                    });
+
+                    _EduInt._Board._bnExistResposniveEvents=true;
+                }
+                //  Solo entra una vez por tablero
+                if(!this._bnResponsiveEvent)
+                {
+                    _EduInt._Board._arBoardsFunctionResize[_EduInt._Board._arBoardsFunctionResize.length]=this;
+                    this._myFunctionResponsive=function(){
+                        if(this._align=='center')
+                        {
+                            var contenedorAncho = this._oDiv.offsetWidth;
+                            var tableroAncho = this._oDivThings.offsetWidth;
+
+                            var nuevaMargen = -1*parseInt(tableroAncho - contenedorAncho)/2;
+                            this._oDivThings.style.marginLeft=_EduInt._Basic.measure(nuevaMargen);
+                        }
+                    }
+
+                    this._bnResponsiveEvent=true;
+                }
+            };
+            // (Board)
+            this.accEnResponsiveMinWidth = function(minwidth,align) { return this._accEnResponsiveMinWidth(minwidth,align); };
+            this._accEnResponsiveMinWidth = function(minwidth,align)
             {
-                this._oDiv.style.minWidth=_EduInt._Basic.measure(minwidth);
+                if(align===undefined)
+                { this._align='center'; }
+                else
+                { this._align=align; }
+                this._minWidth=_EduInt._Basic.measure(minwidth);
+                this._oDiv.style.minWidth=this._minWidth;
                 if(this._oDiv.style.width)
                 {
                     this._oDiv.style.maxWidth = this._oDiv.style.width;
                     this._oDiv.style.width = 'inherit';
                 }
+                this._accEnResponsiveIn();
+                this._myFunctionResponsive();
                 return this;
             };
+            // (Board)
             this.accEnResponsiveMaxWidth = function(maxwidth) { return this._accEnResponsiveMaxWidth(maxwidth); };
             this._accEnResponsiveMaxWidth = function(maxwidth)
             {
                 this._oDiv.style.maxWidth=_EduInt._Basic.measure(maxwidth);
                 return this;
             };
+            // (Board)
             this._arWaitOneTime = [];
             this.accGetTrueOneTime = function(name) { return this._accGetTrueOneTime(name); };
             this._accGetTrueOneTime = function(name)
             {
-                if(this._arWaitOneTime[name]!=undefined)
+                if(this._arWaitOneTime[name]===undefined)
                 { this._arWaitOneTime[name]=true; }
 
                 var valToReturn = this._arWaitOneTime[name];
@@ -1907,9 +1952,11 @@ _EduInt = {
 
                 return valToReturn;
             };
+            // (Board)
             this.accRestartGetTrueOneTime = function(name){
                 this._arWaitOneTime[name]=true;
             };
+            // (Board)
             this._arWaitFrames = [];
             this.accQstnWaitNumFrames = function(numFrames,name) { return this._accQstnWaitNumFrames(numFrames,name); };
             this._accQstnWaitNumFrames = function(numFrames,name)
@@ -1926,33 +1973,39 @@ _EduInt = {
                 }
                 return false;
             };
+            // (Board)
             this.accRestarWaitNumFrames = function(name) { return this._accRestarWaitNumFrames(name); };
             this._accRestarWaitNumFrames = function(name){
                 this._arWaitFrames[name]=undefined;
 
                 return this;
             };
+            // (Board)
             this.accQstnWaitInSeconds = function(seconds,name) { return this._accQstnWaitInSeconds(seconds,name); };
             this._accQstnWaitInSeconds = function(seconds,name)
             {
                 return this._accQstnWaitNumFrames(this._animation.getStepsPerSecond()*seconds);
             };
+            // (Board)
             this.accRestarWaitInSeconds = function(name) { return this._accRestarWaitInSeconds(name); };
             this._accRestarWaitInSeconds = function(name){
                 return this._accRestarWaitNumFrames(name);
             };
+            // (Board)
             this.setBackgroundImage=function(imageUrl) { return this._setBackgroundImage(imageUrl); };
             this._setBackgroundImage=function(imageUrl)
             {
                 this._oDiv.style.backgroundImage='url('+imageUrl+')';
                 return this;
             };
+            // (Board)
             this.setBackgroundSize=function(backgroundSize) { return this._setBackgroundSize(backgroundSize); };
             this._setBackgroundSize=function(backgroundSize)
             {
                 this._oDiv.style.backgroundSize=backgroundSize;
                 return this;
             };
+            // (Board)
             this._arCustoms=[];
             this.setCustom=function(name,myFunction) { return this._setCustom(name,myFunction); };
             this._setCustom=function(name,myFunction)
@@ -1960,6 +2013,7 @@ _EduInt = {
                 this._arCustoms[name]=myFunction;
                 return this;
             };
+            // (Board)
             this.qstnIssetCustom=function(name) { return this._qstnIssetCustom(name); };
             this._qstnIssetCustom=function(name)
             {
@@ -2798,6 +2852,15 @@ _EduInt = {
                     height: 'inherit',
                 }
             },
+        },
+
+        //  Añade funciones custom para los objetos, con la caracteristica que es global, para todos los tableros
+        _arCustoms: [],
+        setCustom: function(name,myFunction) { return this._setCustom(name,myFunction); },
+        _setCustom: function(name,myFunction)
+        {
+            this._arCustoms[name]=myFunction;
+            return this;
         },
 
         _Thing: function(Board,nameThing,posInX,posInY,width,height)
@@ -3677,7 +3740,10 @@ _EduInt = {
             this._getCustom = function(name,infoJSon)
             {
                 if(infoJSon===undefined) { infoJSon={ }; }
-                this._myFunction_ = this._Board._arCustoms[name];
+                if(this._Board._arCustoms[name]!==undefined)
+                { this._myFunction_ = this._Board._arCustoms[name]; }
+                else
+                { this._myFunction_ = _EduInt._Thing._arCustoms[name]; }
                 this._myFunction_(infoJSon);
 
                 return this;
