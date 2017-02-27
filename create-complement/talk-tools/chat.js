@@ -419,7 +419,6 @@ EduInt.Thing.setCustom('ayudante',function(){
 				color: 'rojo'
 			}]
 		});
-	
 
 	/*
 
@@ -1111,3 +1110,5 @@ starCountRef.on('child_added', function(snapshot) {
   //Chat.accAddMessage(snapshot.val().valor,{ bnOther: (snapshot.username===user.username?true:false), name: snapshot.val().username });
 });
 */
+
+//	Comentario borrame
