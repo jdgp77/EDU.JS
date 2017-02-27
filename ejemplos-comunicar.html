@@ -10,6 +10,7 @@
 	<!-- Educación Interactiva V4 -->
 	<!-- <script src="educacion-interactiva/js/educacion-interactiva-v5_Beta.js" charset="UTF-8" ></script> -->
 	<script src="educacion-interactiva/js/educacion-interactiva-v1.js" charset="UTF-8" ></script>
+	<script src="educacion-interactiva/js/educacion-interactiva-v1.js" charset="UTF-8" ></script>
 
 	<script type="text/javascript" charset="UTF-8" >
 
@@ -17,20 +18,14 @@
 </head>
 <body>
 	<script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
-	<script>
-	  // Initialize Firebase
-	  var config = {
-	    apiKey: "AIzaSyDKrXo79YNERMsRwtVRLxA9zL5dDmp02is",
-	    authDomain: "chat-drupal-8.firebaseapp.com",
-	    databaseURL: "https://chat-drupal-8.firebaseio.com",
-	    storageBucket: "chat-drupal-8.appspot.com",
-	    messagingSenderId: "318807382422"
-	  };
-	  firebase.initializeApp(config);
-	</script>
+	<script src="create-complement/talk-tools/chat_secret.js" charset="UTF-8" ></script>
+	<script src="create-complement/talk-tools/js/socket.io.min.js" charset="UTF-8" ></script>
 	<script src="create-complement/talk-tools/chat.js" charset="UTF-8" ></script>
 	<link rel="stylesheet" href="create-complement/talk-tools/css/talk-tools.css">
 	<script>
+		//	Activa e modo debug
+		EduInt.accEnDebugMode();
+		/*
 		User = {
 			uid: 1,
 			username: 'amigo'+EduInt.Basic.randomInt(1,10000000),
@@ -43,7 +38,17 @@
 			user: User,
 		});
 		ListaDeUsuarios.accAddUsers(User);
-		firebase.database().ref('users').push(User);
+	//	firebase.database().ref('users').push(User);
+		
+	//	workToquetherEIGD.initFirebase();
+		WorkToqueder_GD.init({
+			project: 'Clases-Drupal8-Du45Y5h34457613da'
+		});
+		*/
+		//	Crea el MyChat, con todas las herramientas de este proyecto
+		GDPlataform.create('Clases-Drupal8-Du45Y5h34457613da');
 	</script>
+	<button onclick="workToquetherEIGD.signIn();" >Login</button>
+	<button onclick="workToquetherEIGD.signOut();" >Logout</button>
 </body>
 </html>

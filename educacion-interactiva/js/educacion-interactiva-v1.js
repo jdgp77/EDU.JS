@@ -214,6 +214,60 @@ _EduIntBasic = {
         return stValor_MyR;
     },
 
+    /*
+    crearElementos({
+        element: 'div',
+        className: 'casa',
+        children: [{
+            element: 'div',
+            className: 'casa2'
+        }],
+    });
+    <div class="casa">
+        <div class="casa2"></div>
+    </div>
+    */
+    crearElementos: function(jsonBloqueInfo,parent)
+    {
+        var elementBase=document.createElement(jsonBloqueInfo.element);
+        for(keyJsonBloqueInfo in jsonBloqueInfo)
+        {
+            var valueJsonBloqueInfoField = jsonBloqueInfo[keyJsonBloqueInfo];
+            switch(keyJsonBloqueInfo)
+            {
+                case 'element':
+
+                    break;
+                case 'style':
+                    for(stylesValueKey in valueJsonBloqueInfoField)
+                    {
+                        elementBase.style[stylesValueKey] = valueJsonBloqueInfoField[stylesValueKey];
+                    }
+                    break;
+                case 'name':
+                    parent[valueJsonBloqueInfoField]=elementBase;
+                    break;
+                case 'class':
+                    elementBase.className=valueJsonBloqueInfoField;
+                    break;
+                case 'html':
+                    elementBase.innerHTML=valueJsonBloqueInfoField;
+                    break;
+                default:
+                    elementBase[keyJsonBloqueInfo]=valueJsonBloqueInfoField;
+                    break;
+            }
+        }
+        if(jsonBloqueInfo.children!==undefined)
+        {
+            for(var countChildren=0;countChildren<jsonBloqueInfo.children.length;countChildren++)
+            {
+                elementBase.appendChild(this.crearElementos(jsonBloqueInfo.children[countChildren]));
+            }
+        }
+        return elementBase;
+    },
+
     //  Objeto que tiene todo lo necesario de elemento
     Code: function(valor,infoCode)
     {
@@ -799,6 +853,24 @@ _EduInt = {
     //  ======
     //  Todas las funciones basicas
     _Basic: _EduIntBasic,
+
+    //  Valore spor defecto
+    //  ===================
+    //  En caso de ser true, muestra alugnos logs extra para poder probar
+    //  EduInt.accEnDebugMode(); // Para activar el modo debug
+    _bnDebug: false,
+
+    accEnDebugMode: function() { this._accEnDebugMode(); },
+    _accEnDebugMode: function() { this._bnDebug=true; },
+    
+    accDisDebugMode: function() { this._accDisDebugMode(); },
+    _accDisDebugMode: function() { this._bnDebug=true; },
+
+    qstnIsInDebugMode: function() { return this._qstnIsInDebugMode(); },
+    _qstnIsInDebugMode: function() { return this._bnDebug; },
+
+
+
     
     //  Inputs
     //  ======
@@ -1784,6 +1856,21 @@ _EduInt = {
                 class: 'cCanvas_LugarDelCanvas_ei',
             }
         },
+        createSimpleInBody: function(nameBoard) { return _EduInt._Board._createSimpleInBody(nameBoard); },
+        _createSimpleInBody: function(nameBoard) {
+            //  Si el nombre del tablero no esta definido, lo pide
+            if(nameBoard===undefined)
+            { _EduInt._Log.error('The nameBoard is mandatory'); }
+            else
+            {
+                var myNewBoard = new _EduInt._Board._Board(nameBoard).createBoardInBody();
+                _EduInt._Board._arForNames[nameBoard]=_EduInt._Board._ar.length;
+                _EduInt._Board._ar[_EduInt._Board._ar.length]=myNewBoard;
+                return myNewBoard;
+            }
+            //  Si no retorno el tablero existe un error
+            return false;
+        },
         createSimple: function(nameBoard,width,height) { return _EduInt._Board._createSimple(nameBoard,width,height); },
         _createSimple: function(nameBoard,width,height) {
             //  Si el nombre del tablero no esta definido, lo pide
@@ -2103,30 +2190,20 @@ _EduInt = {
                 //  Añadimos la clase al tablero
                 this._oDiv.className=this._oDiv.className + ' ' + 'ei_board';
                 //  Permite que pueda ser seleccionado o no
-                this._oDiv.tabIndex=-1;
+                //  this._oDiv.tabIndex=-1;
 
     //  ALERT
-                this._oDiv.onmouseover = function()
-                {
+                this._oDiv.onmouseover = function() {
                     this._Board._bnIsMouseOver = true;
                 },
-                this._oDiv.onmouseout = function(){
+                this._oDiv.onmouseout = function() {
                     this._Board._bnIsMouseOver = false;
                 }
 
                 //  DivThings
                 //  ---------
 
-                this._oDivThings=document.createElement('div');
-                //  Agregamos el canvas al elemento
-                this._oDiv.appendChild(this._oDivThings);
-                //  Colocamos la posicion absolute
-                this._oDivThings.style.position='absolute';
-                this._oDivThings.style.top='0px';
-                this._oDivThings.style.left='0px';
-                //  Colocamos el ancho y el alto
-                this._oDivThings.style.width='10px';
-                this._oDivThings.style.height='10px';
+                this._oDivThings=document.body;
 
                 //  Informa que ya fue creado
                 this._bnCreated = true;
@@ -2426,10 +2503,10 @@ _EduInt = {
                     return this._createThing(nameThing,posInX,posInY,width,height,parentThing);
                 }
             };
-            this.g  = function(nameThing,posInX,posInY,width,height) { return this._g(nameThing,posInX,posInY,width,height); };
-            this._g = function(nameThing,posInX,posInY,width,height)
+            this.g  = function(nameThing,posInX,posInY,width,height,parentThing) { return this._g(nameThing,posInX,posInY,width,height,parentThing); };
+            this._g = function(nameThing,posInX,posInY,width,height,parentThing)
             {
-                return this._t(nameThing,posInX,posInY,width,height).setType('group');
+                return this._t(nameThing,posInX,posInY,width,height,parentThing).setType('group');
             }
             // (Board)
             //  Crea un Thing
@@ -2453,6 +2530,8 @@ _EduInt = {
                 }
                 else
                 {
+                    Thing._parentThing=parentThing;
+                    Thing.parentThing=Thing._parentThing;
                     //  Lo agregamos al objeto padre
                     Thing._setThingIn(parentThing._element);
                 }
@@ -2898,9 +2977,66 @@ _EduInt = {
             this._Events = {
                 onclick: false,
                 onmouseover: false,
-                bnCursorDown: false,
+                onmouseover: false,
+                Thing: this,
+                setEvent: function(myEvent,myFunction)
+                {
+                    switch(myEvent)
+                    {
+                        case 'click':
+                            this.onclick=true;
+                            this.arFunctionsOnClick[this.arFunctionsOnClick.length]=myFunction;
+                            this.Thing._element.addEventListener(myEvent,this.eventOnClick);
+                            break;
+                        default:
+                            this.Thing._element.addEventListener(myEvent,myFunction);
+                            break;
+                    }
+                },
+                arEvents: [],
+                arEventsByName: [],
+                _Event: function(eventName)
+                {
+                    this.arFunctions = [];
+                    this.accAddFunction = function(myFunction)
+                    {
+                        this.arFunctions[this.arFunctions.length]=myFunction;
+                    };
+                    this.accExecuteFunctions = function(evento)
+                    {
+                        var Evento =this._Thing.event(evento.type);
+                        for(var countFunction=0;countFunction<Evento.arFunctions.length;countFunction++)
+                        {
+                            this._Thing._myFunction_ = Evento.arFunctions[countFunction];
+                            this._Thing._myFunction_(event);
+                        }
+                    };
+                },
             };
-
+            //  (Thing)
+            this.event = function(nombreEvento) { return this._event(nombreEvento); };
+            this._event = function(nombreEvento)
+            {
+                if(this._Events.arEventsByName[nombreEvento]===undefined)
+                {
+                    var evento = new this._Events._Event(nombreEvento);
+                    this._element.addEventListener(nombreEvento,evento.accExecuteFunctions);
+                    this._Events.arEvents[this._Events.arEvents.length]=evento;
+                    this._Events.arEventsByName[nombreEvento]=evento;
+                    return evento;
+                }
+                else
+                {
+                    return this._Events.arEventsByName[nombreEvento];
+                }
+            };
+            //  (Thing)
+            this.setOnClick = function(myFunction) { return this._setOnClick(myFunction); };
+            this._setOnClick = function(myFunction)
+            {
+                this._event('click').accAddFunction(myFunction);
+                return this;
+            };
             this.getName = function() { return this._getName(); };
             this._getName = function()
             {
@@ -3060,13 +3196,6 @@ _EduInt = {
                 this._bnContainer=true;
             };
             //  (Thing)
-            this.setOnClick = function(myFunction) { this._setEvOnClick(myFunction); };
-            this._setOnClick = function(myFunction)
-            {
-                this._funcOnClick = myFunction;
-                return this;
-            };
-            //  (Thing)
             this.delete = function() { this._delete(); };
             this._delete = function()
             {
@@ -3118,6 +3247,8 @@ _EduInt = {
             {
                 //  Crea el elemento en el contenedor correspondiente
                 this._Container._divContainer.appendChild(element);
+                //  Si esta en modo debug, el le coloca la clase con el nombre
+                if(_EduInt.qstnIsInDebugMode()){ this._Container._divContainer.className='name-||-'+element._Thing._nameThing; }
                 //  Informa que fue creado
                 this._bnWasCreated = true;
             }
@@ -3205,7 +3336,7 @@ _EduInt = {
                                 this._element.style.width = this._width + 'px';
                                 this._element.style.height = this._height + 'px';
                                 this._element.style.backgroundColor = '#000';
-                                this._element.style.position = 'absolute';
+                                //  this._element.style.position = 'absolute';
 
                                 //  Añade todas las funciones de HTML necesarias
                                 _EduInt._Thing._Type._DisplayBlockFunctions(this);
@@ -3230,7 +3361,7 @@ _EduInt = {
                         this._element._Thing = this;
 
                         this._element.style.backgroundColor = '#F00';
-                        this._element.style.position = 'absolute';
+                        //  this._element.style.position = 'absolute';
 
                         //  Añade todas las funciones de HTML necesarias
                         _EduInt._Thing._Type._DisplayBlockFunctions(this);
@@ -3300,6 +3431,7 @@ _EduInt = {
                             case 'circle':
                                 //
                                 this._svgThingType = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                                this._svgThingType._Thing = this;
                                 this._svgThingType.setAttribute("width", _EduInt._Basic.measure(this._width));
                                 this._svgThingType.setAttribute("height", _EduInt._Basic.measure(this._height));
                                 this._svgThingType.style.position='absolute';
@@ -3373,16 +3505,24 @@ _EduInt = {
             this.draw = function() { this._draw(); };
             this._draw = function()
             {
-                //  Si tiene acciones las coloca para pintarlas
-                if(this._moveInX!=0) { this._posInX=this._posInX+this._moveInX; }
-                if(this._moveInY!=0) { this._posInY=this._posInY+this._moveInY; }
-                //  Camba la poscición del contenedor deacuerdo a las variables
-                this._Container._setPostion(this._posInX,this._posInY);
-                //  Limpia las variables de movimiento, por posición
-                this._moveInX=0;
-                this._moveInY=0;
+                if(this._bnSetRightButtom)
+                {
+                    this._Container._setPostionRightBottom(this._posInXInRight,this._posInYInBottom);
+                }
+                else
+                {
+                    //  Si tiene acciones las coloca para pintarlas
+                    if(this._moveInX!=0) { this._posInX=this._posInX+this._moveInX; }
+                    if(this._moveInY!=0) { this._posInY=this._posInY+this._moveInY; }
 
-                this._Container._setPostion(this._posInX,this._posInY);
+                    //  Camba la poscición del contenedor deacuerdo a las variables
+                    this._Container._setPostion(this._posInX,this._posInY);
+
+                    //  Camba la poscición del contenedor deacuerdo a las variables
+                    //  Limpia las variables de movimiento, por posición
+                    this._moveInX=0;
+                    this._moveInY=0;
+                }
                 //  En caso de que el tipo no cambiara el permite dibujarlo
                 if(!this._prTypeChange())
                 {
@@ -3535,8 +3675,20 @@ _EduInt = {
             this.setPosition = function(posInX,posInY) { return this._setPosition(posInX,posInY); };
             this._setPosition = function(posInX,posInY)
             {
+                this._bnSetRightButtom=false;
                 this._setPosInX(posInX,false);
                 this._setPosInY(posInY,false);
+                this._draw();
+                return this;
+            }
+            //  (Thing)
+            this._bnSetRightButtom=false;
+            this.setPostionRightBottom = function(posInX,posInY) { return this._setPostionRightBottom(posInX,posInY); };
+            this._setPostionRightBottom = function(posInX,posInY)
+            {
+                this._bnSetRightButtom=true;
+                this._setPosInXInRight(posInX,false);
+                this._setPosInYInBottom(posInY,false);
                 this._draw();
                 return this;
             }
@@ -3587,6 +3739,38 @@ _EduInt = {
             this._getPosInY = function()
             {
                 return this._posInY;
+            }
+            //  (Thing)
+            this.setPosInXInRight = function(posInX,bnDraw) { return this._setPosInXInRight(posInX,bnDraw); };
+            this._setPosInXInRight = function(posInX,bnDraw)
+            {
+                this._posInXInRight=posInX;
+                this._bnActionToDraw[this._bnActionToDraw.length]='posInXInRight';
+                //  Dibuja el cambio
+                if(bnDraw===undefined) { bnDraw=true; } if(bnDraw) { this._draw(); }
+                return this;
+            }
+            //  (Thing)
+            this.getPosInXInRight = function() { return this._getPosInXInRight(); };
+            this._getPosInXInRight = function()
+            {
+                return this._setPosInXInRight;
+            }
+            //  (Thing)
+            this.setPosInYInBottom = function(posInY,bnDraw) { return this._setPosInYInBottom(posInY,bnDraw); };
+            this._setPosInYInBottom = function(posInY,bnDraw)
+            {
+                this._posInYInBottom=posInY;
+                this._bnActionToDraw[this._bnActionToDraw.length]='posInYInBottom';
+                //  Dibuja el cambio
+                if(bnDraw===undefined) { bnDraw=true; } if(bnDraw) { this._draw(); }
+                return this;
+            }
+            //  (Thing)
+            this.getPosInYInBottom = function() { return this._getPosInY(); };
+            this._getPosInYInBottom = function()
+            {
+                return this._posInYInBottom;
             }
     //  ALERT
     //  Sin documentar
@@ -3721,6 +3905,7 @@ _EduInt = {
             this.qstnMouseOver = function() { return this._qstnMouseOver(); };
             this._qstnMouseOver = function()
             {
+
                 return this._Events.onmouseover;
             },
             this.setZIndex = function(value) { this._setZIndex(value); };
@@ -3798,17 +3983,40 @@ _EduInt = {
                 this._setPosInX(posInX);
                 this._setPosInY(posInY);
             };
+            //  Coloca la posicion desde la derecha abajo
+            this.setPostionRightBottom = function(posInX,posInY) { this._setPostionRightBottom(posInX,posInY); };
+            this._setPostionRightBottom = function(posInX,posInY)
+            {
+                this._setPosInXInRight(posInX);
+                this._setPosInYInBottom(posInY);
+            };
             //  Coloca una nueva posición en X
             this.setPosInX = function(posInX) { this._setPosInX(posInX); };
             this._setPosInX = function(posInX)
             {
                 this._divContainer.style.left=_EduInt._Basic.measure(posInX);
+                this._divContainer.style.right='auto';
             };
             //  Coloca una nueva posición en Y
             this.setPosInY = function(posInY) { this._setPosInY(posInY); };
             this._setPosInY = function(posInY)
             {
                 this._divContainer.style.top=_EduInt._Basic.measure(posInY);
+                this._divContainer.style.bottom='auto';
+            };
+            //  Coloca una nueva posición en X
+            this.setPosInXInRight = function(posInX) { this._setPosInXInRight(posInX); };
+            this._setPosInXInRight = function(posInX)
+            {
+                this._divContainer.style.right=_EduInt._Basic.measure(posInX);
+                this._divContainer.style.left='auto';
+            };
+            //  Coloca una nueva posición en Y
+            this.setPosInYInBottom = function(posInY) { this._setPosInYInBottom(posInY); };
+            this._setPosInYInBottom = function(posInY)
+            {
+                this._divContainer.style.bottom=_EduInt._Basic.measure(posInY);
+                this._divContainer.style.top='auto';
             };
             this.setZIndex = function(value) { this._setZIndex(value); };
             this._setZIndex = function(value)
@@ -3946,19 +4154,15 @@ _EduInt = {
                     this._element.style.textAlign = value;
                     return this;
                 }
+                Thing.setLetterSpacing = function(value) { return this._setLetterSpacing(value); }
+                Thing._setLetterSpacing = function(value)
+                {
+                    this._element.style.letterSpacing = _EduInt._Basic.measure(value);
+                    return this;
+                }
             },
 
             _DisplayBlockFunctions: function(Thing) {
-                Thing._element.onclick = function()
-                {
-                    this._Thing._Events.onclick=true;
-                    //  Si existe una función a ejecutar al hacer click
-                    if(this._Thing._funcOnClick) { this._Thing._funcOnClick(); }
-
-                    console.info('click');
-                    //  Carga la posición relativa del mouse con el Thing
-                    this._Thing._loadPosDelta();
-                }
                 Thing._element.onmouseover = function()
                 {
                     this._Thing._Events.onmouseover=true;
@@ -3977,7 +4181,7 @@ _EduInt = {
                     //  Carga la posición relativa del mouse con el Thing
                     this._loadPosDelta(event);
 
-                    console.info('oncursordown');
+                    //  console.info('oncursordown');
                 }
                 Thing.qstnIsCursorDown = function() { return this._qstnIsCursorDown(); };
                 Thing._qstnIsCursorDown = function()
@@ -3992,7 +4196,7 @@ _EduInt = {
                 Thing._oncursorup = function()
                 {
                     this._Events.bnCursorDown=false;
-                    console.info('oncursorup');
+                    //  console.info('oncursorup');
                 }
                 Thing.loadPosDelta = function(event) { this._loadPosDelta(event); };
                 Thing._loadPosDelta = function(event)
@@ -4059,6 +4263,15 @@ _EduInt = {
                 Thing.setBackgroundPosition = function(backgroundPosition) { return this._setBackgroundPosition(backgroundPosition); };
                 Thing._setBackgroundPosition = function(backgroundPosition)
                 { this._element.style.backgroundPosition = backgroundPosition; return this; }
+                Thing.setBoxshadow = function(boxShadow) { return this._setBoxshadow(boxShadow); };
+                Thing._setBoxshadow = function(boxShadow)
+                { this._element.style.boxShadow = boxShadow; return this; }
+                Thing.setOverflow = function(overflow) { return this._setOverflow(overflow); };
+                Thing._setOverflow = function(overflow)
+                { this._element.style.overflow = overflow; return this; }
+                Thing.setVisibility = function(visibility) { return this._setVisibility(visibility); };
+                Thing._setVisibility = function(visibility)
+                { this._element.style.visibility = visibility; return this; }
                 //  Margen
                 Thing.setMargin = function(margin) { return this._setMargin(margin); };
                 Thing._setMargin = function(margin)
@@ -4156,9 +4369,16 @@ _EduInt = {
                 Thing.t = function(nameThing,posInX,posInY,width,height) { return this._t(nameThing,posInX,posInY,width,height,this); };
                 Thing._t = function(nameThing,posInX,posInY,width,height)
                 {
-                    var thing = this._Board._t(nameThing,posInX,posInY,width,height,this);
+                    var thing = this._Board._t(this._nameThing+'--'+nameThing,posInX,posInY,width,height,this);
                     thing._thingParent = this;
                     return thing;
+                };
+                Thing.g = function(nameThing,posInX,posInY,width,height) { return this._g(nameThing,posInX,posInY,width,height,this); };
+                Thing._g = function(nameThing,posInX,posInY,width,height)
+                {
+                    var group = this._Board._g(this._nameThing+'--'+nameThing,posInX,posInY,width,height,this);
+                    group._thingParent = this;
+                    return group;
                 };
             },
 
@@ -4310,6 +4530,111 @@ _EduInt = {
         },
     },
 
+    //  Objeto para manejo de cambios en pantalla
+    _Responsive: {
+        $desktop_width_limit: 1200,
+        $desktop_width: 1180,
+        $laptop_width: 1024,
+        $tablet_width: 768,
+        $mobile_width: 425,
+        $mobile_l_width: 425,
+        $mobile_m_width: 375,
+        $mobile_s_width: 320,
+
+        anchoPantalla: 0, tipoResolucion: '', subTipoResolucion: '', lastTipoResolucion: '', lastSubTipoResolucion: '', bnCambioTipoDeResolucion: false, bnCambioSubTipoDeResolucion: false,
+
+        //  Inicia el proceso de responsive
+        init: function(){
+            _EduInt._Responsive.setInformation();
+            window.addEventListener("resize", function() { _EduInt._Responsive.setInformation(); });
+        },
+        //  Retorna la resolución de la pantalla : Responsive.getResolution()
+        getResolution: function() { return this.anchoPantalla; },
+
+        //  Retorna el tipo de resolución de la pantalla : Responsive.getTypeResolution()
+        //  ============================================
+        //  'Desktop', 'Tablet', 'Mobile'
+        getTypeResolution: function() { return this.tipoResolucion; },
+        //  Retorna el sub tipo de resolución de la pantalla : Responsive.getSubTypeResolution()
+        //  ================================================
+        //  Dentro de Desktop Tenemos
+        //  -------------------------
+        //  - Desktop: Pantalla mayor al ancho maximo de la pagina (>1200px)
+        //  - PageMaxWith: Pantalla menor al ancho maximo de la pagina (<1200px)
+        //  - Laptop: Pantalla menor a 1024px (Igual que lo que dice chrome)
+        //
+        //  Dentro de Tablet Tenemos
+        //  ------------------------
+        //  - Tablet: No existen mas subtipos
+        //
+        //  Dentro de Mobile Tenemos
+        //  ------------------------
+        //  - Mobil_L: Pantalla menor a 425px (Igual que lo que dice chrome)
+        //  - Mobil_M: Pantalla menor a 375px (Igual que lo que dice chrome)
+        //  - Mobil_S: Pantalla menor a 320px (Igual que lo que dice chrome)
+        getSubTypeResolution: function() { return this.subTipoResolucion; },
+        //  Retorna true, si cambio de tipo de resolución Ej. Tablet -> Mobile
+        qstnChangeTypeResolution: function() { return this.bnCambioTipoDeResolucion; },
+        //  Retorna true, si cambio de Sub tipo de resolución Ej. Mobil_L -> Mobil_M
+        qstnChangeSubTypeResolution: function() { return this.bnCambioSubTipoDeResolucion; },
+        //  Añade una funciona a responsive
+        arFunctionsToExecuteOnResize: [],
+        addFunctionToExecuteOnResize: function(myFunction,bnEjecutar){ this.arFunctionsToExecuteOnResize[this.arFunctionsToExecuteOnResize.length]=myFunction; if(bnEjecutar) { this.accExecuteFunction(myFunction); }; },
+        //  Cada vez que cambia de resolución ingresa aca para dar información
+        setInformation: function()
+        {
+            this.lastTipoResolucion=this.tipoResolucion;
+            this.lastSubTipoResolucion=this.subTipoResolucion;
+            this.anchoPantalla = jQuery(window).innerWidth();
+            if(this.$desktop_width<this.anchoPantalla)
+            { this.tipoResolucion='Desktop'; this.subTipoResolucion='Desktop'; }
+            if(this.$laptop_width<this.anchoPantalla   && this.anchoPantalla<=this.$desktop_width)
+            { this.tipoResolucion='Desktop'; this.subTipoResolucion='PageMaxWith'; }
+            if(this.$tablet_width<this.anchoPantalla   && this.anchoPantalla<=this.$laptop_width)
+            { this.tipoResolucion='Desktop'; this.subTipoResolucion='Laptop'; }
+            if(this.$mobile_l_width<this.anchoPantalla && this.anchoPantalla<=this.$tablet_width)
+            { this.tipoResolucion='Tablet'; this.subTipoResolucion='Tablet'; }
+            if(this.$mobile_m_width<this.anchoPantalla && this.anchoPantalla<=this.$mobile_l_width)
+            { this.tipoResolucion='Mobile'; this.subTipoResolucion='Mobil_L'; }
+            if(this.$mobile_s_width<this.anchoPantalla && this.anchoPantalla<=this.$mobile_m_width)
+            { this.tipoResolucion='Mobile'; this.subTipoResolucion='Mobil_M'; }
+            if(0<this.anchoPantalla && this.anchoPantalla<=this.$mobile_s_width)
+            { this.tipoResolucion='Mobile'; this.subTipoResolucion='Mobil_S'; }
+
+            if(this.lastTipoResolucion!=this.tipoResolucion)
+            { this.bnCambioTipoDeResolucion=true; } else { this.bnCambioTipoDeResolucion=false; }
+            if(this.lastSubTipoResolucion!=this.subTipoResolucion)
+            { this.bnCambioSubTipoDeResolucion=true; } else { this.bnCambioSubTipoDeResolucion=false; }
+
+            //console.info('ejecuto el on rezise');
+            //  Pasa por cada funcion y la ejecuta
+            for(var countFunctions=0;countFunctions<this.arFunctionsToExecuteOnResize.length;countFunctions++)
+            {
+                var myFunction = this.arFunctionsToExecuteOnResize[countFunctions];
+                //  Ejecuta la función
+                this.accExecuteFunction(myFunction);
+            }
+        },
+        //  Ejecuta la función y envia los parametros
+        accExecuteFunction: function(myFunction)
+        {
+            myFunction({
+                anchoPantalla: this.anchoPantalla,
+                tipoResolucion: this.tipoResolucion,
+                lastTipoResolucion: this.lastTipoResolucion,
+                subTipoResolucion: this.subTipoResolucion,
+                bnCambioTipoDeResolucion: this.bnCambioTipoDeResolucion,
+                bnCambioSubTipoDeResolucion: this.bnCambioSubTipoDeResolucion
+            });
+        },
+        //  arFunctionsOnResize: [],
+        //  Las funciones que se añaden aca se ejecutan cuando cambia la resolución
+        //  addFunctionToOnResize: function(myFunction)
+        //  {
+        //      this.arFunctionsOnResize[this.arFunctionsOnResize.length]=myFunction;
+        //  }
+    },
+
     //  Funciones Basicas
     //  =================
 
@@ -4347,7 +4672,6 @@ try
         };
         $.fn.createInThisABoardThings=function(nameBoard)
         {
-
             //  Create a new board
             eiBoard=_EduInt.createInThisABoardThings(nameBoard,this);
             //  Retorna el tablero
@@ -4365,9 +4689,11 @@ catch(err)
 //  ================================
 _EduInt7=_EduInt;
 EduInt=_EduInt7;
+b = _EduInt._Board._Board;
+_EduInt.createBoardIn=_EduInt._Board._createSimpleIn;
+_EduInt.createBoardInBody=_EduInt._Board._createSimpleInBody;
 
 //  Deprecate
 //  =========
 //  =========
 BasicEI = _EduInt._Basic;
-_EduInt.createBoardIn=_EduInt._Board._createSimpleIn;
