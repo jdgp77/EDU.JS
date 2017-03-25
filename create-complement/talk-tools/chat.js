@@ -1,21 +1,8 @@
-/*
-<div class="eduintgd-chat">
-	<div className="header">
-		<div className="title"></div>
-		<div className="options"></div>
-	</div>
-	<div className="messages">
-		<div className="chats"></div>
-		<div className="write"></div>
-	</div>
-</div>
-*/
-
 EduInt.Thing.setCustom('tipo-contenido',function(informacion){
 	this.g('bloques').setCustom(function(){
 		this.setPostionRightBottom(0,20+45*(this.Board.numBloques));	
 
-		this.g('open').setDimentions(45,45).setPostionRightBottom(40*3,0).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBoxshadow('#676F67 2.5px 2.5px 5px');
+		this.g('open').setDimentions(45,45).setPostionRightBottom(40*3,0).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBoxShadow('#676F67 2.5px 2.5px 5px');
 		this.g('open').setCustom(function(){
 
 			this.t('letrero').setDimentions(41,41).setPostionRightBottom(2,2).setBackgroundImageInAlpha('create-complement/talk-tools/images/LogoOpenClose.png');
@@ -26,7 +13,7 @@ EduInt.Thing.setCustom('tipo-contenido',function(informacion){
 		{
 			var cuadrado = informacion.cuadrados[countCuadradosExtra];
 
-			this.t(cuadrado.nombre).setDimentions(40,40).setPostionRightBottom(40*(2-countCuadradosExtra),2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBoxshadow('#676F67 2px 2px 5px');
+			this.t(cuadrado.nombre).setDimentions(40,40).setPostionRightBottom(40*(2-countCuadradosExtra),2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBoxShadow('#676F67 2px 2px 5px');
 			switch(cuadrado.color)
 			{
 				case 'verde':
@@ -42,7 +29,7 @@ EduInt.Thing.setCustom('tipo-contenido',function(informacion){
 		}
 
 		this.t('open').setOnClick(function(){
-			if(this.Board.bnLogin || true) //	Quitar el true para poder pedir el login
+			if(this.Board.bnLogin) //	Quitar el true para poder pedir el login
 			{
 				this.parentThing.bnAgrandar=!this.parentThing.bnAgrandar;
 				this.parentThing.bnEnAgrandarOpen=true;
@@ -57,12 +44,12 @@ EduInt.Thing.setCustom('tipo-contenido',function(informacion){
 			}
 			else
 			{
-				// Sign in Firebase using popup auth and Google as the identity provider.
-				var provider = new firebase.auth.GoogleAuthProvider();
-				GDPlataform.auth.signInWithPopup(provider);
-
-				// Initiates Firebase auth and listen to auth state changes.
-				GDPlataform.auth.onAuthStateChanged(GDPlataform.onAuthStateChanged.bind(this.Board.MyChat));
+				if(AyudanteGD.auth.currentUser===null)
+				{
+					// Sign in Firebase using popup auth and Google as the identity provider.
+					var provider = new firebase.auth.GoogleAuthProvider();
+					AyudanteGD.auth.signInWithPopup(provider);
+				}
 			}
 		});
 		
@@ -83,7 +70,7 @@ EduInt.Thing.setCustom('tipo-contenido',function(informacion){
 						this.bnEnAgrandarOpen=false;
 						this.bnBotonContraido=false;
 						this.t('base-info').setOverflow('visible');
-						this.t('base-info').setVisibility('visible');
+						this.t('base-info').setVisibility('inherit');
 						this.t('text').setColor('#FFF');
 					}
 				}
@@ -122,10 +109,10 @@ EduInt.Thing.setCustom('tipo-contenido',function(informacion){
 
 		this.t('text').setType('text').setText(informacion.text).setPostionRightBottom(40*3+45+5,10).setFontSize(20).setColor('#CCC').setFontFamily('Arial').setLetterSpacing(3.5);
 		this.Board.numBloques++;
-		//	this.t('privadas').setDimentions(40,40).setPostionRightBottom(40*2,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -45px').setBoxshadow('#676F67 2px 2px 5px');
-		//	this.t('publicas').setDimentions(40,40).setPostionRightBottom(40*1,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -85px').setBoxshadow('#676F67 2px 2px 5px');
+		//	this.t('privadas').setDimentions(40,40).setPostionRightBottom(40*2,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -45px').setBoxShadow('#676F67 2px 2px 5px');
+		//	this.t('publicas').setDimentions(40,40).setPostionRightBottom(40*1,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -85px').setBoxShadow('#676F67 2px 2px 5px');
 
-		//	this.t('borrame' ).setDimentions(40,40).setPostionRightBottom(40*0,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -125px').setBoxshadow('#676F67 2px 2px 5px');
+		//	this.t('borrame' ).setDimentions(40,40).setPostionRightBottom(40*0,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -125px').setBoxShadow('#676F67 2px 2px 5px');
 	});
 });
 EduInt.Thing.setCustom('ayudante',function(){
@@ -144,6 +131,22 @@ EduInt.Thing.setCustom('ayudante',function(){
 		});
 	*/
 
+	/*
+	this.g('retos').getCustom('tipo-contenido',{
+			text: 'RETOS',
+			cuadrados: [{
+				nombre: 'normales',
+				color: 'verde'
+			},{
+				nombre: 'importantes',
+				color: 'amarillo'
+			},{
+				nombre: 'urgentes',
+				color: 'rojo'
+			}]
+		});
+	*/
+
 	this.g('chat').getCustom('tipo-contenido',{
 			text: 'CHAT',
 			cuadrados: [{
@@ -154,20 +157,108 @@ EduInt.Thing.setCustom('ayudante',function(){
 				color: 'amarillo'
 			}]
 		}).setCustom(function(){
-			this.getChatId = function(code)
-			{
-				return 'chat-'+code;
-			}
-			this.accAnadirChat = function(user){
+			//this.g('lista-chats').setPosition(5,90).setDimentions(34,50000).setBoxSizing('border-box');
+			this.arChats=[];
+			this.accAccAnadirImagenChat = function(name){
+				this.g('lista-chats').t(name).setBackgroundColor('#FFF').setBackgroundImageInAlpha('casa.png');
+
 				var chat = _EduIntBasic.crearElementos({
 					element: 'div',
-					id: this.getChatId(user.id),
+					id: 'lista-chats-'+AyudanteGD.Chats.chatIdByName(name),
 					style: {
-						position: 'absolute',
+						float: 'left',
 						bottom: 0,
 						width: '283px',
+						marginRight: '15px',
+					},
+				});
+			};
+			this.accAnadirChat = function(name){
+				this.name = name;
+
+				var chat = _EduIntBasic.crearElementos({
+					element: 'div',
+					id: AyudanteGD.Chats.chatIdByName(name),
+					style: {
+						float: 'left',
+						bottom: 0,
+						width: '283px',
+						marginRight: '15px',
 					},
 					children: [
+						{
+							element: 'div',
+							className: 'chat-top-button',
+							style: {
+								border: '0',
+								width: '100%',
+								height: '35px',
+							},
+							children: [
+								{
+									element: 'div',
+									className: 'chat-top-button-camera',
+									style: {
+										border: '0',
+										backgroundImage: 'url(http://edujs.educacioninteractiva.com.co/create-complement/talk-tools/images/Camara.png)',
+										width: '49px',
+										height: '35px',
+										float: 'right',
+										marginRight: '10px'
+									},
+									EduIntGDInfo: {
+										Board: this.Board,
+										name: name,
+										selectorTextArea: 'chat-main-messagesend-text-input',
+										selectorChat: AyudanteGD.Chats.chatIdByName(name),
+									},
+									onclick: function(event)
+									{
+										EduIntGDInfo = this.EduIntGDInfo;
+								        AyudanteGD.accBeTransparent();
+								        html2canvas(document.body).then(function(canvas) {
+											AyudanteGD.accBeVisible();
+								            //**dataURL to blob**
+											function dataURLtoBlob(dataurl) {
+											    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+											        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+											    while(n--){
+											        u8arr[n] = bstr.charCodeAt(n);
+											    }
+											    return new Blob([u8arr], {type:mime});
+											}
+
+								            //var file =  new File([canvas.toDataURL('png').split(',')[1]], 'pntalls-'+(new Date()).getTime()+".png", {type: "image/png", lastModified: (new Date()).getTime() });
+								            var file = dataURLtoBlob(canvas.toDataURL('png'));
+
+								            var nameChat = EduIntGDInfo.name;
+
+											var storageRef = AyudanteGD.storage.ref();
+											var uploadTask = storageRef.child('images/' + 'pntalls-'+(new Date()).getTime()+'.png').put(file);
+											uploadTask.on('state_changed', function(snapshot){
+												console.info('snapshot');
+												console.info(snapshot);
+											},
+											function(error) {
+												console.info('error');
+												console.info(error);
+											},
+											function() {
+											  	var downloadURL = uploadTask.snapshot.downloadURL;
+												console.info('downloadURL');
+												console.info(downloadURL);
+
+												AyudanteGD.Chats.c(nameChat).accAddMessageToAllUsers('<a href="'+downloadURL+'" target="_blank" ><img style="width: 100%; height: 100%;" src="'+downloadURL+'" alt="Imagen enviada" /></a>');
+												AyudanteGD.Chats.c(nameChat).accScrollDown();
+											});
+
+								        },{
+								        	background: '#fff'
+								        });
+									}
+								}
+							],
+						},
 						{
 							element: 'div',
 							className: 'chat-main',
@@ -175,13 +266,17 @@ EduInt.Thing.setCustom('ayudante',function(){
 								backgroundColor: '#eae4e4',
 								paddingBottom: '2px',
 								marginBottom: '4px',
+								boxShadow: '#777 1.5px 1.5px 5px',
 							},
 							children: [
 								{
 									element: 'div',
 									className: 'chat-main-message',
 									style: {
-    									height: '244px'
+    									height: '240px',
+    									marginBottom: '4px',
+    									overflow: 'auto',
+    									scrollTop: '999999',
 									},
 								},
 								{
@@ -192,7 +287,7 @@ EduInt.Thing.setCustom('ayudante',function(){
     									height: '56px',
     									boxSizing: 'border-box',
     									width: '279px',
-    									margin: '0 0 0 2px'
+    									margin: '0 0 0 2px',
 									},
 									children: [
 										{
@@ -206,7 +301,7 @@ EduInt.Thing.setCustom('ayudante',function(){
 														backgroundColor: 'transparent',
 														float: 'left',
 													    height: '50px',
-													    width: '218px',
+													    width: '170px',
 													    border: '0',
 													}
 												}
@@ -219,16 +314,64 @@ EduInt.Thing.setCustom('ayudante',function(){
 												{
 													element: 'button',
 													className: 'chat-main-messagesend-btnsend-button',
+													EduIntGDInfo: {
+														Board: this.Board,
+														name: name,
+														selectorTextArea: 'chat-main-messagesend-text-input',
+														selectorChat: AyudanteGD.Chats.chatIdByName(name),
+														getTextArea: function(element)
+														{
+															return document.querySelector('#'+element.EduIntGDInfo.selectorChat+' .'+element.EduIntGDInfo.selectorTextArea);
+														},
+													},
 													style: {
 														border: '0',
-														backgroundImage: 'url(create-complement/talk-tools/images/ButtonSend.png)',
+														backgroundImage: 'url(http://edujs.educacioninteractiva.com.co/create-complement/talk-tools/images/ButtonSend.png)',
+														width: '36px',
+														height: '35px',
+														float: 'right',
+														marginTop: '11px',
+														marginRight: '10px'
+													},
+													onclick: function(event)
+													{
+														var textArea = this.EduIntGDInfo.getTextArea(this);
+
+														var nuevoValorTextArea = textArea.value;
+														//textArea.EduIntGDInfo.Board.accAddMessage(AyudanteGD.myUser,textArea.value);
+														AyudanteGD.Chats.c(this.EduIntGDInfo.name).accAddMessageToAllUsers(AyudanteGD.Filtros.mensaje(textArea.value));
+														AyudanteGD.Chats.c(this.EduIntGDInfo.name).accScrollDown();
+														
+														textArea.value='';
+
+													},
+												},{
+													element: 'button',
+													className: 'chat-main-messagesend-btnloadimage-button',
+													EduIntGDInfo: {
+														Board: this.Board,
+														name: name,
+														selectorTextArea: 'chat-main-messagesend-text-input',
+														selectorChat: AyudanteGD.Chats.chatIdByName(name),
+														getTextArea: function(element)
+														{
+															
+														},
+													},
+													style: {
+														border: '0',
+														backgroundImage: 'url(http://edujs.educacioninteractiva.com.co/create-complement/talk-tools/images/ButtonLoadImage.png)',
 														width: '36px',
 														height: '35px',
 														float: 'right',
 														marginTop: '11px',
 														marginRight: '10px',
-
-													}
+														overflow: 'hidden'
+													},
+													onclick: function(event)
+													{
+														
+													},
 												}
 											]
 										},
@@ -239,8 +382,9 @@ EduInt.Thing.setCustom('ayudante',function(){
 							element: 'div',
 							className: 'chat-footer',
 							style: {
-								backgroundImage: 'url(create-complement/talk-tools/images/Fondos-Sprite.png)',
+								backgroundImage: 'url(http://edujs.educacioninteractiva.com.co/create-complement/talk-tools/images/Fondos-Sprite.png)',
 								height: '40px',
+								boxShadow: '#777 1.5px 1.5px 5px',
 							},
 							children: [
 								{
@@ -252,7 +396,7 @@ EduInt.Thing.setCustom('ayudante',function(){
 										margin: '2px',
 										padding: '2px',
 									},
-									html: '<img style="margin: 1px 0 0 1px; vertical-align: top;" width="32" height="32" src="'+user.image+'" alt="" />'
+									html: '<img style="margin: 1px 0 0 1px; vertical-align: top;" width="32" height="32" src="" alt="" />'
 								},
 								{
 									element: 'div',
@@ -265,7 +409,7 @@ EduInt.Thing.setCustom('ayudante',function(){
 										fontSize: '13px',
 										margin: '4px',
 									},
-									html: user.name
+									html: name
 								},
 								{
 									element: 'div',
@@ -314,111 +458,253 @@ EduInt.Thing.setCustom('ayudante',function(){
 					],
 				});
 				this.g('bloques').t('base-info')._element.appendChild(chat);
+				myDropzone = new Dropzone('#'+AyudanteGD.Chats.chatIdByName(name)+' .chat-main-messagesend-btnloadimage-button', { url: "/file/post" });
+				myDropzone.nameChat=this.name;
+				myDropzone.on('complete',function(file){
+//	Aca carga las imagenes
+					var storageRef = AyudanteGD.storage.ref();
+					var uploadTask = storageRef.child('images/' + file.name).put(file);
+					uploadTask.on('state_changed', function(snapshot){
+						console.info('snapshot');
+						console.info(snapshot);
+					},
+					function(error) {
+						console.info('error');
+						console.info(error);
+					},
+					function() {
+					  	var downloadURL = uploadTask.snapshot.downloadURL;
+						console.info('downloadURL');
+						console.info(downloadURL);
+
+						AyudanteGD.Chats.c(myDropzone.nameChat).accAddMessageToAllUsers('<a href="'+downloadURL+'" target="_blank" ><img style="width: 100%; height: 100%;" src="'+downloadURL+'" alt="Imagen enviada" /></a>');
+						AyudanteGD.Chats.c(myDropzone.nameChat).accScrollDown();
+						myDropzone.removeFile(file);
+					});
+				});
+
+				return {
+					chat: chat,
+					myDropzone: myDropzone
+				};
 			};
-			this.accAddMessage = function(user,message,codeChat)
+			this.accAddMessage = function(user,message,nameChat)
 			{
 				var message = _EduIntBasic.crearElementos({
 					element: 'div',
 					className: 'message-'+user.id,
+					style: {
+						display: 'table',
+					    width: '100%',
+					    boxSizing: 'border-box',
+					    marginTop: '10px',
+					    fontFamily: 'Arial',
+					    verticalAlign: 'top',
+					    fontSize: '13px',
+					    color: '#333',
+					    paddingTop: '4px'
+					},
 					children: [
 						{
 							element: 'div',
-							className: 'message-arrow',
+							className: 'message-arrow-left',
+							style: {
+								display: 'table-cell',
+								width: '20px',
+					    		verticalAlign: 'top',
+							},
 							children: [
 								{
 									element: 'div',
 									className: 'message-arrow-arrow',
 									style: {
 										borderColor: 'transparent #FFF transparent transparent',
-										borderWidth: '7px 18px 7px 0',
+										borderWidth: '7px 8px 7px 0',
 										borderStyle: 'solid',
+										marginTop: '10px',
+										visibility: (user.email==AyudanteGD.myUser.email?'hidden':'inherit')
 									},
 								},
 							],
-						},
-						{
+						},{
 							element: 'div',
 							className: 'message-text',
+							style: {
+								display: 'table-cell',
+								backgroundColor: '#fff',
+					    		verticalAlign: 'top',
+					    		padding: '9px 0 9px 11px',
+							},
 							children: [
 								{
 									element: 'div',
-									className: 'message-text-name',
-									html: user.name,
+									className: 'message-text-photo',
+									style: {
+										float: 'left',
+										height: '100%',
+									},
+									children: [
+										{
+											element: 'img',
+											className: 'message-text-photo-img',
+											src: user.photoURL,
+											style: {
+												height: '26px',
+												width: '26px'
+											}
+										},
+									],
 								},
 								{
 									element: 'div',
-									className: 'message-text-message',
-									html: message,
+									className: 'message-text-text',
+									children: [
+										{
+											element: 'div',
+											className: 'message-text-text-name',
+											style: {
+												fontSize: '9px',
+												color: '#AAA',
+												marginLeft: '33px',
+											},
+											html: user.name,
+										},
+										{
+											element: 'div',
+											className: 'message-text-text-message',
+											style: {
+												marginTop: '2px',
+												marginLeft: '33px',
+											},
+											html: message,
+										},
+									],
 								},
 							],
-						},
+						},{
+							element: 'div',
+							className: 'message-arrow-right',
+							style: {
+								display: 'table-cell',
+								width: '20px',
+					    		verticalAlign: 'top',
+							},
+							children: [
+								{
+									element: 'div',
+									className: 'message-arrow-arrow',
+									style: {
+										borderColor: 'transparent transparent transparent #FFF',
+										borderWidth: '7px 0 7px 8px',
+										borderStyle: 'solid',
+										marginTop: '10px',
+										visibility: (user.email==AyudanteGD.myUser.email?'inherit':'hidden')
+									},
+								},
+							],
+						}
 					],
 				});
 
-				document.querySelector('#'+this.getChatId(codeChat)+' .chat-main-message').appendChild(message);
+				document.querySelector('#'+AyudanteGD.Chats.chatIdByName(nameChat)+' .chat-main-message').appendChild(message);
 			};
 		});
 
-		this.Chat = {
-			Board: this,
-			addUsers: function(arUsers)
-			{
-				//	Chat User/Group
-				var chatUG = this.Board.g('chat').accAnadirChat(arUsers);
-				return chatUG;
-			},
-			UG: function(code)
-			{
-				this.code = code;
-				this.addMessage = function(message,user)
-				{
-
-				};
-			},
-		};
-
-		this.arChats = [];
-		this.arChatsByCode = [];
-		this.accAnadirChat = function(jsonInfo)
+	this.Board.Chats = {
+		Board: this.Board,
+		arChats: [],
+		c: function(name)
 		{
-			var chat = this.g('chat').accAnadirChat(jsonInfo);
-			this.arChats[this.arChats.length]=chat;
-			this.arChatsByCode[jsonInfo.id]=chat;
-			return chat;
-		};
-		this.accAddMessage = function(user,message,chatCode)
-		{
-			var chat = this.g('chat').accAddMessage(user,message,chatCode);
-		};
+			if(this.arChats[name]===undefined)
+			{
+				var chat = new this.Chat(name);
+				this.arChats[name] = chat;
+				return chat;
+			}
+			else
+			{
+				return this.arChats[name];
+			}
+		},
+		Chat: function(name){
+			this.Board = AyudanteGD.Board;
+			//	Guardamos el nombre del chat creado
+			this.name = name;
+			var info = this.Board.g('dashBoard-init').g('chat').accAnadirChat(this.name);
+			this._element = info.chat;
+			this.myDropzone = info.myDropzone;
 
-		var chatJDGP = this.accAnadirChat({
-			id: 'SreSUtq235awsrrEw',
-			name: 'Julian David Guerrero Pinilla',
-			image: 'pana.png',
-		});
+			//	(Chat)
+			this.accAddMessage = function(user,message)
+			{
+				this.Board.g('dashBoard-init').g('chat').accAddMessage(user,message,this.name);
+			};
 
-		this.accAddMessage({
-			id: 'SreSUtq235awsrrEw',
-			name: 'Julian David Guerrero Pinilla',
-			image: 'pana.png',
-		},'Hola hermano','SreSUtq235awsrrEw');
+			return this;
+		},
+	};
 
-		
+	this.arChats = [];
+	this.arChatsByCode = [];
+	this.accAnadirChat = function(jsonInfo)
+	{
+		var chat = this.g('chat').accAnadirChat(jsonInfo);
+		this.arChats[this.arChats.length]=chat;
+		this.arChatsByCode[jsonInfo.id]=chat;
+		return chat;
+	};
+	this.accAddMessage = function(user,message,chatCode)
+	{
+		this.g('chat').accAddMessage(user,message,chatCode);
+	};
+	this.getChatId = function(name)
+	{
+		return this.g('chat').getChatId(name);
+	};
+/*
+	var chatJDGP = this.accAnadirChat({
+		id: 'SreSUtq235awsrrEw',
+		name: 'Julian David Guerrero Pinilla',
+		image: 'pana.png',
+	});
+	this.accAddMessage({
+		id: 'SreSUtq235awsrrEw',
+		name: 'Julian David Guerrero Pinilla',
+		image: 'pana.png',
+	},'Hola hermano','SreSUtq235awsrrEw');
+
+	this.accAddMessage({
+		id: 'SreSUtq235awsrrEw',
+		name: 'Julian David Guerrero Pinilla',
+		image: 'pana.png',
+	},'Hola hermano','SreSUtq235awsrrEw');
+
+	this.accAddMessage({
+		id: 'SreSUtq235awsrrEw',
+		name: 'Julian David Guerrero Pinilla',
+		image: 'pana.png',
+	},'Hola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman o','SreSUtq235awsrrEw');
+
+	this.accAddMessage({
+		id: 'SreSUtq235awsrrEw',
+		name: 'Julian David Guerrero Pinilla',
+		image: 'pana.png',
+	},'Hola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman o','SreSUtq235awsrrEw');
+
+	this.accAddMessage({
+		id: 'SreSUtq235awsrrEw',
+		name: 'Julian David Guerrero Pinilla',
+		image: 'pana.png',
+	},'Hola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman o','SreSUtq235awsrrEw');
+
+	this.accAddMessage({
+		id: 'SreSUtq235awsrrEw',
+		name: 'Julian David Guerrero Pinilla',
+		image: 'pana.png',
+	},'Hola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman oHola herman o','SreSUtq235awsrrEw');
+*/
 
 	
-	this.g('retos').getCustom('tipo-contenido',{
-			text: 'RETOS',
-			cuadrados: [{
-				nombre: 'normales',
-				color: 'verde'
-			},{
-				nombre: 'importantes',
-				color: 'amarillo'
-			},{
-				nombre: 'urgentes',
-				color: 'rojo'
-			}]
-		});
 
 	/*
 
@@ -461,51 +747,65 @@ EduInt.Thing.setCustom('ayudante',function(){
 		});
 
 		this.t('text').setType('text').setText('CHAT').setPostionRightBottom(40*3+45+5,10).setFontSize(20).setColor('#CCC').setFontFamily('Arial').setLetterSpacing(3.5);;
-		this.t('open').setDimentions(45,45).setPostionRightBottom(40*3,0).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBoxshadow('#676F67 2.5px 2.5px 5px');
-			this.t('todos').setDimentions(40,40).setPostionRightBottom(40*2,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -45px').setBoxshadow('#676F67 2px 2px 5px');
-			//	this.t('publicas').setDimentions(40,40).setPostionRightBottom(40*1,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -85px').setBoxshadow('#676F67 2px 2px 5px');
-			//	this.t('borrame' ).setDimentions(40,40).setPostionRightBottom(40*0,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -125px').setBoxshadow('#676F67 2px 2px 5px');
+		this.t('open').setDimentions(45,45).setPostionRightBottom(40*3,0).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBoxShadow('#676F67 2.5px 2.5px 5px');
+			this.t('todos').setDimentions(40,40).setPostionRightBottom(40*2,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -45px').setBoxShadow('#676F67 2px 2px 5px');
+			//	this.t('publicas').setDimentions(40,40).setPostionRightBottom(40*1,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -85px').setBoxShadow('#676F67 2px 2px 5px');
+			//	this.t('borrame' ).setDimentions(40,40).setPostionRightBottom(40*0,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -125px').setBoxShadow('#676F67 2px 2px 5px');
 	});
 
 	this.g('retos').setCustom(function(){
 		this.setPostionRightBottom(20,20+45*0);
 
 		this.t('text').setType('text').setText('RETOS').setPostionRightBottom(40*3+45+5,10).setFontSize(20).setColor('#CCC').setFontFamily('Arial').setLetterSpacing(3.5);;
-		this.t('open').setDimentions(45,45).setPostionRightBottom(40*3,0).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBoxshadow('#676F67 2.5px 2.5px 5px');
-			this.t('normales').setDimentions(40,40).setPostionRightBottom(40*2,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -45px').setBoxshadow('#676F67 2px 2px 5px');
-			this.t('importantes').setDimentions(40,40).setPostionRightBottom(40*1,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -85px').setBoxshadow('#676F67 2px 2px 5px');
-			this.t('urgentes' ).setDimentions(40,40).setPostionRightBottom(40*0,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -125px').setBoxshadow('#676F67 2px 2px 5px');
+		this.t('open').setDimentions(45,45).setPostionRightBottom(40*3,0).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBoxShadow('#676F67 2.5px 2.5px 5px');
+			this.t('normales').setDimentions(40,40).setPostionRightBottom(40*2,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -45px').setBoxShadow('#676F67 2px 2px 5px');
+			this.t('importantes').setDimentions(40,40).setPostionRightBottom(40*1,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -85px').setBoxShadow('#676F67 2px 2px 5px');
+			this.t('urgentes' ).setDimentions(40,40).setPostionRightBottom(40*0,2).setBackgroundImage('create-complement/talk-tools/images/Fondos-Sprite.png').setBackgroundPosition('0 -125px').setBoxShadow('#676F67 2px 2px 5px');
 	});
 	*/
 
 	console.info('casa');
 });
 
-var GDPlataform = {
-	create: function(code)
+var AyudanteGD = {
+	defaultData: {
+		bnChat: true,
+		bnRetos: true,
+		bnNotas: true,
+	},
+	create: function(name)
 	{
-		var myChat_ = new GDPlataform.MyChat(code);
-		GDPlataform.arMyChats[GDPlataform.arMyChats.length] = myChat_;
-		GDPlataform.arMyChatsByName[name] = myChat_;
-		return myChat_;
+		this.name = name;
+		//	Realiza el inicio una sola vez
+		AyudanteGD.initOneTime();
+		//	Crea el tablero que maneja toda la interfaz
+		this.Board = EduInt.createBoardInBody('ayudante-'+this.name);
+		//	Iniciamos variables
+		this.Board.numBloques=0;
+		this.Board.bnLogin=false;
+		this.Board.name=this.name;
+		this.Board.Chat=this;
+		this.Board.setDefaultPaths({ images: 'http://edujs.educacioninteractiva.com.co/'});
+		//	Primero crea el contenedor global de todos las ventanas
+		this.Board.g('dashBoard-init').getCustom('ayudante');
+		//	Genera la animación
+		this.Board.createAnimation(function(infoAnimation){
+
+		}).startAnimation();
+		
+	},
+	accBeTransparent: function(){
+		this.Board.g('dashBoard-init')._element.style.visibility = 'hidden';
+	},
+	accBeVisible: function(){
+		this.Board.g('dashBoard-init')._element.style.visibility = 'visible';
 	},
 	myUser: {},	
-	//	Esta funcione es llamada tomando como padre el MyChat del cual es llamado
+	//	Esta funcione es llamada tomando como padre el Chat del cual es llamado
 	onAuthStateChanged: function(user){
 		if(user)
 		{
-			// User is signed in.
-			GDPlataform.myUser.name = user.displayName;
-			GDPlataform.myUser.email = user.email;
-			GDPlataform.myUser.photoUrl = user.photoURL;
-
-			this.accInformarQueEstaLogeuado();
-			/*
-			GDPlataform.socket = io.connect('http://localhost:3000');
-			GDPlataform.socket.on('connect', function (socket) {
-				GDPlataform.socket.emit('user',user);
-			});
-			*/
+			AyudanteGD.accSaveUserInfo(user);
 		}
 		else
 		{
@@ -513,602 +813,272 @@ var GDPlataform = {
 
 		}
 	},
+	accSaveUserInfo: function(user)
+	{
+		// User is signed in.
+		AyudanteGD.myUser.name = user.displayName;
+		AyudanteGD.myUser.email = user.email;
+		AyudanteGD.myUser.photoURL = user.photoURL;
+
+		AyudanteGD.accInformarQueEstaLogeuado();
+		/*
+		AyudanteGD.socket = io.connect('http://localhost:3000');
+		AyudanteGD.socket.on('connect', function (socket) {
+			AyudanteGD.socket.emit('user',user);
+		});
+		*/
+
+		AyudanteGD.socket.on('getMyFriends',function(arUsersData){
+			for(var email in arUsersData)
+			{
+				var user = arUsersData[email];
+				console.info(user);
+			}
+		});
+		AyudanteGD.socket.emit('conect_user',AyudanteGD.myUser);
+
+		//	Cuando recibe un mensaje de alguien
+		this.message = AyudanteGD.database.ref('/chats/'+AyudanteGD.name+'/messages/');
+		this.message.on('child_added',function(dataBase){
+			AyudanteGD.Chats.c(AyudanteGD.name).accAddMessage(dataBase.val().user,dataBase.val().message);
+			AyudanteGD.Chats.c(AyudanteGD.name).accScrollDown();
+			console.info('child_added');
+		});
+		this.message.on('child_changed',function(dataBase){
+			AyudanteGD.Chats.c(AyudanteGD.name).accAddMessage(dataBase.val().user,dataBase.val().message);
+			console.info('child_added');
+		});
+		this.message.on('child_removed',function(dataBase){
+			AyudanteGD.Chats.c(AyudanteGD.name).accAddMessage(dataBase.val().user,dataBase.val().message);
+			console.info('child_added');
+		});
+	},
 	bnInitOneTime: true,
 	initOneTime: function()
 	{
-		if(GDPlataform.bnInitOneTime)
+		if(AyudanteGD.bnInitOneTime)
 		{
 			//	Inicia las funcions de responsive
 			EduInt._Responsive.init();
 			
 			//	Iniciamos los datos de firebase
-			GDPlataform.auth = firebase.auth();
+			AyudanteGD.auth = firebase.auth();
+			// Initiates Firebase auth and listen to auth state changes.
+			AyudanteGD.auth.onAuthStateChanged(AyudanteGD.onAuthStateChanged.bind(AyudanteGD.Chats));
 			//	this.database = firebase.database();
-			//	this.storage = firebase.storage();
+			AyudanteGD.storage = firebase.storage();
 			//	Hace que nunca vuelva a ser ejecutada esta funcion
-			GDPlataform.bnInitOneTime=false;
+			AyudanteGD.bnInitOneTime=false;
+			//	Base de datos
+			AyudanteGD.database = firebase.database();
+
+			//	Socket.io
+			AyudanteGD.socket = io.connect('http://localhost:3000');
+			AyudanteGD.socket.on('connect', function() {
+				console.info(AyudanteGD.socket.id);
+				AyudanteGD.myUser.socketid = AyudanteGD.socket.id;
+				AyudanteGD.socket.emit('conect_user',AyudanteGD.myUser);
+			});
+			AyudanteGD.socket.on('console', function (data) {
+				console.log(data);
+			});
 		}
 	},
-	arMyChats: [],
-	arMyChatsByName: [],
-	MyChat: function(code){
-		//	Guardamos el nombre del chat creado
-		this.code = code;
-		//	(MyChat)
-		this.init = function(){
-			//	Realiza el inicio una sola vez
-			GDPlataform.initOneTime();
-			//	Crea el tablero que maneja toda la interfaz
-			this.board = EduInt.createBoardInBody('ayudante-'+this.code);
-			//	Iniciamos variables
-			this.board.numBloques=0;
-			this.board.bnLogin=false;
-			this.board.code=this.code;
-			this.board.MyChat=this;
-			//	Primero crea el contenedor global de todos las ventanas
-			this.board.g('dashboard-init').getCustom('ayudante');
-			//	Genera la animación
-			this.board.createAnimation(function(infoAnimation){
-
-			}).startAnimation();
-		};
-		//	(MyChat)
-		this.accInformarQueEstaLogeuado=function(user)
+	//	(Chat)
+	accInformarQueEstaLogeuado: function(user)
+	{
+		AyudanteGD.Board.bnLogin=true;
+	},
+	Chats: {
+		arChats: [],
+		c: function(name)
 		{
-			this.board.bnLogin=true;
-		}
-		//	(MyChat)
-		this.init();
-	},
-}
-
-
-
-
-var WorkToqueder_GD = {
-	init: function(){
-		//	Crea el tablero que maneja toda la interfaz
-		this.board = EduInt.createBoardInBody('ayudante');
-		//	Iniciamos variables
-		this.board.numBloques=0;
-		this.board.bnLogin=false;
-		//	Primero crea el contenedor global de todos las ventanas
-		WorkToqueder_GD.GlobalContainer.create();
-		//	Luego crea el unico elemento visible inicialmente
-		//	La ventana de inicio
-	//	WorkToqueder_GD.InitWindow.create();
-		// Shortcuts to Firebase SDK features.
-	//	this.auth = firebase.auth();
-		//	Inicia la animación
-		this.board.createAnimation(function(infoAnimation){
-
-		}).startAnimation();
-	},
-	myUser: {
-
-	},
-	//	Contenedor Global y sus metodos()
-	GlobalContainer: {
-		create: function(){
-			WorkToqueder_GD.board.g('dashboard-init').getCustom('ayudante');
-			/*
-			this.body = document.getElementsByTagName("BODY")[0];
-			this.containerGlobal =_EduIntBasic.crearElementos({
-				element: 'section',
-				className: 'footer_tooles-chat',
-				style: {
-					position: 'fixed',
-					left: '0px',
-					bottom: '0px',
-					width: '100%',
-					height: '1px',
-					textAlign: 'right'
-				}
-			});
-			this.body.appendChild(this.containerGlobal);
-			*/
-		},
-		addElement: function(element){
-			this.containerGlobal.appendChild(element);
-		},
-	},
-	//	Ventana de inicio, login chat
-	InitWindow: {
-		_defaultJson: {
-
-		},
-		create: function(){
-			this.createContainer();
-		},
-		createContainer: function(){
-			
-			this.container = _EduIntBasic.crearElementos({
-				element: 'div',
-				className: 'EduIntGD-Block Init-WorkToguether header',
-				style: {
-					position: 'absolute',
-					bottom: 0
-				},
-				children: [
-					{
-						element: 'div',
-						className: 'login',
-						html: 'Login',
-						onclick: function(){
-							// Sign in Firebase using popup auth and Google as the identity provider.
-							var provider = new firebase.auth.GoogleAuthProvider();
-							WorkToqueder_GD.auth.signInWithPopup(provider);
-
-							WorkToqueder_GD.auth.onAuthStateChanged(function(user) {
-								if (user)
-								{
-									// User is signed in.
-									WorkToqueder_GD.myUser.name = user.displayName;
-									WorkToqueder_GD.myUser.email = user.email;
-									WorkToqueder_GD.myUser.photoUrl = user.photoURL;
-									WorkToqueder_GD.socket = io.connect('http://localhost:3000');
-									WorkToqueder_GD.socket.on('connect', function (socket) {
-										console.log('conectado');
-										WorkToqueder_GD.socket.emit('user',user);
-									});
-								}
-								else
-								{
-									// No user is signed in.
-
-								}
-							});
-						},
-					},
-					{
-						element: 'div',
-						className: 'title-chat',
-						html: 'CHAT',
-					},
-					{
-						element: 'div',
-						className: 'eduintgd-logo',
-						html: '<img src="" alt="Logo Educación Interactiva" />',
-					},
-
-				],
-			});
-			WorkToqueder_GD.GlobalContainer.addElement(this.container);
-		}
-	},
-	//	Ventana de lista de contactos
-	ContactWindow: {
-		_defaultJson: {
-
-		},
-		create: function(jsonInfo){
-			this.jsonInfo = _EduIntBasic._defaultJson(jsonInfo,this._defaultJson);
-			this.elementBase = document.getElementById(this.jsonInfo.id);
-			this.elementBase.appendChild(this.createContainer());
-		},
-		createContainer: function(){
-			this.container = _EduIntBasic.crearElementos({
-				element: 'div',
-				className: 'EduIntGD-Block Contact-WorkToguether header',
-				children: [
-					{
-						element: 'div',
-						className: 'header',
-						children: [
-							{
-								element: 'div',
-								className: 'GD-Logo',
-							},
-							{
-								element: 'div',
-								className: 'title',
-								html: 'Lista de Contactos',
-							},
-						],
-					},
-					{
-						element: 'div',
-						className: 'main contacts',
-						children: [
-							{
-								element: 'div',
-								className: 'zona-busqueda',
-								children: [
-									{
-										element: 'div',
-										className: 'area-input-busqueda',
-										children: [
-											{
-												element: 'input',
-												className: 'search search-contact',
-												placeholder: 'Buscar contacto'
-											}
-										]
-									},
-								],
-							},
-							{
-								element: 'div',
-								className: 'zona-contactos',
-								name: 'area-contactos',
-							},
-						],
-					}
-				],
-			}, this);
-		}
-	},
-	//	Ventana de chat
-	ChatWindow: {
-		//	jsonInfo = {
-		//		members: [
-		//			'jdgp77@gmail.com',
-		//			'gerencia@gmail.com'
-		//		],
-		//		
-		//		
-		//		
-		//		
-		//	}
-		_defaultJson: {
-
-		},
-		create: function(jsonInfo){
-			this.jsonInfo = _EduIntBasic._defaultJson(jsonInfo,this._defaultJson);
-			this.elementBase = document.getElementById(this.jsonInfo.id);
-			this.elementBase.appendChild(this.createContainer());
-		},
-		createContainer: function(){
-			this.container = _EduIntBasic.crearElementos({
-				element: 'div',
-				className: 'EduIntGD-Block Init-WorkToguether header',
-				children: [
-					{
-						element: 'div',
-						className: 'login',
-						html: 'Login',
-					},
-					{
-						element: 'div',
-						className: 'title-chat',
-						html: 'CHAT',
-					},
-					{
-						element: 'div',
-						className: 'eduintgd-logo',
-						html: '<img src="" alt="Logo Educación Interactiva" />',
-					},
-
-				],
-			});
-		}
-	},
-	//	Toda la información de los contactos
-	Contactos: {
-		//	Retorna o crea el usuario, con el nombre señalado
-		u: function(name){
-			if(this.arUsers[name]!==undefined)
+			if(this.arChats[name]===undefined)
 			{
-				return this.arUsers[name];
+				var chat = new this.Chat(name);
+				this.arChats[name] = chat;
+				return chat;
 			}
 			else
 			{
-				this.arUsers[name] = new this.Usuario(name)
-				return this.arUsers[name];
+				return this.arChats[name];
 			}
 		},
-		//	Lista de usuarios creados
-		arUsers: [],
-		//	Clase usuarios, para tener información
-		Usuario: function(name){
-			//	Guarda el nombre
-			this.name;
-			//	Retorna el estado:
-			//	- Activo
-			//	- Ocupado
-			//	- Inactivo
-			this.getEstado = function(){
+		Chat: function(name){
+			//	Guardamos el nombre del chat creado
+			this.name = name;
+			//	(Chat)
+			this.init = function(){
 
 			};
-		}
-	}
-}
+			//	(Chat)
+			//	Crear un nuevo chat
+			AyudanteGD.Board.Chats.c(this.name);
+			//	(Chat)
+			AyudanteGD.socket.emit('newChat', { name: name });
+			//	(Chat)
+			AyudanteGD.socket.on('getmessage-'+name, function(data){
+				AyudanteGD.Board.accAddMessage({
+					id: 'SreSUtq235awsrrEw',
+					name: 'Julian David Guerrero Pinilla',
+					image: 'pana.png',
+				}, data.message, this.name);
+			});
+			//	(Chat)
+			//	Añade mensaje a este chat
+			this.accAddMessage = function(user,message)
+			{
+				AyudanteGD.Board.Chats.c(this.name).accAddMessage(user,AyudanteGD.Mascaras.mensaje(message));
+			}
+			//	Añade mensaje a otro chat
+			//	(Chat)
+			this.accAddMessageToAllUsers = function(message)
+			{
+				var keyNetMessage = AyudanteGD.database.ref('chats/'+AyudanteGD.name).child('messages').push().key;
+				var updates = {};
 
-function WorkToquetherEIGD()
-{
-	
-}
+				updates['/chats/'+AyudanteGD.name+'/messages/'+keyNetMessage+'/message/'] = message;
+				updates['/chats/'+AyudanteGD.name+'/messages/'+keyNetMessage+'/user/'] = AyudanteGD.myUser;
 
-WorkToquetherEIGD.prototype.initFirebase = function() {
-  // Shortcuts to Firebase SDK features.
-  this.auth = firebase.auth();
-  this.database = firebase.database();
-  this.storage = firebase.storage();
-  // Initiates Firebase auth and listen to auth state changes.
-  this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
-};
-
-WorkToquetherEIGD.prototype.signIn = function() {
-  // Sign in Firebase using popup auth and Google as the identity provider.
-  var provider = new firebase.auth.GoogleAuthProvider();
-  this.auth.signInWithPopup(provider);
-};
-
-WorkToquetherEIGD.prototype.signOut = function() {
-  // Sign out of Firebase.
-  this.auth.signOut();
-};
-
-WorkToquetherEIGD.prototype.onAuthStateChanged = function(user)
-{
-  if(user) // User is signed in!
-  {
-    // Get profile pic and user's name from the Firebase user object
-    var profilePicUrl = user.photoURL; // Only change these two lines!
-    var userName = user.displayName;   // Only change these two lines!
-
-	/*
-    // Set the user's profile pic and name.
-    this.userPic.style.backgroundImage = 'url(' + profilePicUrl + ')';
-    this.userName.textContent = userName;
-
-    // Show user's profile and sign-out button.
-    this.userName.removeAttribute('hidden');
-    this.userPic.removeAttribute('hidden');
-    this.signOutButton.removeAttribute('hidden');
-
-    // Hide sign-in button.
-    this.signInButton.setAttribute('hidden', 'true');
-    */
-
-    // We load currently existing chant messages.
-    this.loadMessages();
-  }
-  else // User is signed out!
-  {
-  	/*
-    // Hide user's profile and sign-out button.
-    this.userName.setAttribute('hidden', 'true');
-    this.userPic.setAttribute('hidden', 'true');
-    this.signOutButton.setAttribute('hidden', 'true');
-
-    // Show sign-in button.
-    this.signInButton.removeAttribute('hidden');
-    */
-  }
-};
-
-// Returns true if user is signed-in. Otherwise false and displays a message.
-WorkToquetherEIGD.prototype.checkSignedInWithMessage = function() {
-  // Return true if the user is signed in Firebase
-  if (this.auth.currentUser) {
-    return true;
-  }
-  /*
-  // Display a message to the user using a Toast.
-  var data = {
-    message: 'You must sign-in first',
-    timeout: 2000
-  };
-  this.signInSnackbar.MaterialSnackbar.showSnackbar(data);
-  */
-  return false;
-};
-
-window.workToquetherEIGD = new WorkToquetherEIGD();
-
-var EduIntGD_WorkTogether = {
-	_arBlockListOfUsers: [],
-	initWorkToguether: function(){
-		this.auth = firebase.auth();
-		this.database = firebase.database();
-		this.storage = firebase.storage();
-	},
-	signIn: function() {
-	  // Sign in Firebase using popup auth and Google as the identity provider.
-	  var provider = new firebase.auth.GoogleAuthProvider();
-	  this.auth.signInWithPopup(provider);
-	},
-	signOut: function() {
-	  // Sign out of Firebase.
-	  this.auth.signOut();
-	},
-	createListOfUsers: function(infoJsonListOfUsers)
-	{
-		this.createFooterTooles();
-		var newListOfUsers = new this.ListOfUsers(infoJsonListOfUsers);
-		return this._arBlockListOfUsers[this._arBlockListOfUsers.length] = newListOfUsers;
-	},
-	_arChats: [],
-	create: function(machineName, infoJSON)
-	{
-		if(this._arChats[machineName]===undefined)
-		{
-			this.createFooterTooles();
-			var newChat = new this.Chat(machineName, infoJSON);
-			return this._arChats[machineName] = newChat;
-		}
-		else
-		{
-			return this._arChats[machineName];
-		}
-	},
-	createFooterTooles: function()
-	{
-		if(this.footer_tooles===undefined)
-		{
-			this.body = document.getElementsByTagName("BODY")[0];
-				this.footer_tooles = document.createElement('section');
-				this.footer_tooles.className = 'footer_tooles-chat';
-				this.footer_tooles.style.position = 'fixed';
-				this.footer_tooles.style.left = '0px';
-				this.footer_tooles.style.bottom = '0px';
-				this.footer_tooles.style.width = '100%';
-				this.footer_tooles.style.height = '1px';
-				this.footer_tooles.style.textAlign = 'right';
-				this.body.appendChild(this.footer_tooles);
-		}
-	},
-	ListOfUsers: function(infoJsonListOfUsers)
-	{
-		this.infoJsonListOfUsers=infoJsonListOfUsers;
-
-		this.container = document.createElement('div');
-		this.container.style.display = 'inline-block';
-		this.container.style.height = '300px';
-		this.container.style.marginTop = '-300px';
-		this.container.className='eduintgd-listofusers';
-			this.header = document.createElement('header');
-			this.header.className='header';
-			this.container.appendChild(this.header);
-				this.title = document.createElement('div');
-				this.title.className='title';
-				this.title.innerHTML=infoJsonListOfUsers.title;
-				this.header.appendChild(this.title);
-				this.options = document.createElement('div');
-				this.options.className='options';
-				this.header.appendChild(this.options);
-					this.close = document.createElement('div');
-					this.close.className='close';
-					this.close.innerHTML='X';
-					this.options.appendChild(this.close);
-					this.minimize = document.createElement('div');
-					this.minimize.className='minimize';
-					this.minimize.innerHTML='_';
-					this.options.appendChild(this.minimize);
-					this.moreoptions = document.createElement('div');
-					this.moreoptions.className='moreoptions';
-					this.moreoptions.innerHTML='+';
-					this.options.appendChild(this.moreoptions);
-
-			this.content = document.createElement('div');
-			this.content.className='content';
-			this.container.appendChild(this.content);
-				this.messages = document.createElement('div');
-				this.messages.className='messages';
-				this.messages.style.overflow='auto';
-				this.content.appendChild(this.messages);
-
-		EduIntGD_WorkTogether.footer_tooles.appendChild(this.container);
-
-		this.arUsers=[];
-		this.accAddUsers = function(user)
-		{
-			var message = document.createElement('div');
-			message.className = 'message';
-			message.user = user;
-			message.onclick=function(){
-				EduIntGD_WorkTogether.create(this.user.uid,this.user);
+				AyudanteGD.database.ref().update(updates);
+			}
+			//	(Chat)
+			this.accScrollDown = function()
+			{
+				var messageArea = document.querySelector('#'+AyudanteGD.Chats.chatIdByName(this.name)+' .chat-main-message');
+				messageArea.scrollTop = messageArea.scrollHeight;
 			};
-			this.arUsers[this.arUsers-length] = message;
-			message.innerHTML = '<div class="photo"><img width="50" height="50" src="'+user.profilePhotoUrl+'" alt="Photo of '+user.name+' '+user.lastname+'" /></div><div class="message_text"><div class="name">'+user.name+':</div></div>';
-			this.messages.appendChild(message);
+			//	
+			this.init();
+		},	
+		chatIdByName: function(){
+			return 'chat-'+ _EduIntBasic.machineName(name);
+		},
+	},
+	Retos: {
+		
+	},
+	Notas: {
+
+	},
+	Mascaras: {
+		mensaje: function(valor)
+		{
+			var divisorDePalabras = '~';
+			var arDividersWords = [' ',':','(',')','[',']','+','-','/',';','.','\r','\n',',','=','<','>'];
+
+            //  Colocamos un divizor al comienzo y final de las palabras
+            valor = divisorDePalabras+valor+divisorDePalabras;
+
+            //  Pasa por cada una de estas y le coloca antes y despues de las mismas un '¬%¬' de tal manera que divida estas palabras
+            for(contPalabrasQSEFDUP=0;contPalabrasQSEFDUP<arDividersWords.length;contPalabrasQSEFDUP++)
+            {
+            	var valorUnico = 'ADJushenLMSKNDUe23423';
+                valor=_EduIntBasic._remplaceAll(arDividersWords[contPalabrasQSEFDUP],valorUnico,valor);
+                valor=_EduIntBasic._remplaceAll(valorUnico,divisorDePalabras+arDividersWords[contPalabrasQSEFDUP]+divisorDePalabras,valor);
+            }
+
+
+            //  Limpia los divisores de lapabras dobles
+            var dP = divisorDePalabras;
+            while(valor.indexOf(dP+dP+'')!=-1){ valor=valor.replace(dP+dP,dP); };
+
+            //	Quita los espacios que no son necesrios, como los que van despues de http
+            var arPalabras = valor.split(divisorDePalabras);
+            var bnUnirSiguientesPalabrasPorHTTP = false;
+            var numPalabraHTTP = -1;
+            var countPalabras=0;
+            var bnGuardarPalabra=true;
+            var arPalabrasNew = [];
+            for(var count=0;count<arPalabras.length;count++)
+            {
+            	var palabra = arPalabras[count];
+            	var palabraOrg = palabra;
+
+
+            	if(bnUnirSiguientesPalabrasPorHTTP)
+            	{
+            		if(palabra!==' ')
+            		{
+            			arPalabrasNew[numPalabraHTTP] = arPalabrasNew[numPalabraHTTP] + palabra + '';
+            			bnGuardarPalabra=false;
+            		}
+            		else
+            		{
+
+            			bnUnirSiguientesPalabrasPorHTTP=false;
+            		}
+            	}
+            	else
+            	{
+	            	//	Habilita filtro para las siguientes palabras
+	            	if(palabra=='http' || palabra=='https')
+	            	{
+	            		numPalabraHTTP=count;
+	            		bnUnirSiguientesPalabrasPorHTTP=true;
+	            	}
+	            }
+
+	            if(bnGuardarPalabra)
+	            {
+	            	arPalabrasNew[countPalabras] = palabra;
+	            	countPalabras=countPalabras+1;
+	            }
+
+	            if(bnUnirSiguientesPalabrasPorHTTP)
+	            {
+					bnGuardarPalabra=true;
+            		if(palabra===' ')
+            		{
+            			bnGuardarPalabra=true;
+            		}
+	            }
+            }
+            arPalabras = arPalabrasNew;
+
+            //	Pasa por cada palabra y las filtra
+            for(var count=0;count<arPalabras.length;count++)
+            {
+            	var palabra = arPalabras[count];
+            	var palabraOrg = palabra;
+
+            	valor=_EduIntBasic._remplaceAll('  ',' ',valor);
+
+
+            	if(palabra.indexOf('https://www.youtube.com')===0)
+            	{
+            		var arValoresGet = palabra.split('?')[1].split('&');
+            		for(var countValoresGet=0;countValoresGet<arValoresGet.length;countValoresGet++)
+            		{
+            			var arValorGet = arValoresGet[countValoresGet].split('=');
+            			var nombreGet= arValorGet[0];
+            			var valorGet = arValorGet[1];
+
+            			if(nombreGet=='v')
+            			{
+            				palabra='<div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://www.youtube.com/embed/'+valorGet+'?ecver=2" width="640" height="360" frameborder="0" style="position:absolute;width:100%;height:100%;left:0" allowfullscreen></iframe></div>';
+            			}
+            		}
+            	}
+
+            	arPalabras[count] = palabra;
+            }
+
+            valor = arPalabras.join('');
+            while(valor.indexOf('  ')!=-1) { valor=valor.replace('  ',' ') }
+
+
+            return valor;
 		}
 	},
-	Chat: function(machineName, infoJSON)
-	{
-		this.machineName=machineName;
-		this.infoJSON=infoJSON;
-
-		this.container = document.createElement('div');
-		this.container.style.display = 'inline-block';
-		this.container.style.height = '300px';
-		this.container.style.marginTop = '-300px';
-		this.container.className='eduintgd-chat';
-			this.header = document.createElement('header');
-			this.header.className='header';
-			this.container.appendChild(this.header);
-				this.title = document.createElement('div');
-				this.title.className='title';
-				this.title.innerHTML='<div class="profilephoto"><img width="50" height="50" src="'+infoJSON.profilePhotoUrl+'" alt="Photo of '+infoJSON.name+' '+infoJSON.lastname+'" /></div><div class="profilepname">'+infoJSON.name+' '+infoJSON.lastname+'</div>';
-				this.header.appendChild(this.title);
-				this.options = document.createElement('div');
-				this.options.className='options';
-				this.header.appendChild(this.options);
-					this.close = document.createElement('div');
-					this.close.className='close';
-					this.close.innerHTML='X';
-					this.close.container=this.container;
-					this.close.machineName=this.machineName;
-					this.close.onclick = function()
-					{
-						this.container.style.display='none';
-						this.container.parentNode.removeChild(this.container);
-						EduIntGD_WorkTogether._arChats.splice(EduIntGD_WorkTogether._arChats[this.machineName],1);
-					}
-					this.options.appendChild(this.close);
-					this.minimize = document.createElement('div');
-					this.minimize.className='minimize';
-					this.minimize.innerHTML='_';
-					this.options.appendChild(this.minimize);
-					this.moreoptions = document.createElement('div');
-					this.moreoptions.className='moreoptions';
-					this.moreoptions.innerHTML='+';
-					this.options.appendChild(this.moreoptions);
-
-			this.content = document.createElement('div');
-			this.content.className='content';
-			this.container.appendChild(this.content);
-				this.messages = document.createElement('div');
-				this.messages.className='messages';
-				this.messages.style.overflow='auto';
-				this.content.appendChild(this.messages);
-				this.write = document.createElement('div');
-				this.write.className='write';
-				this.content.appendChild(this.write);
-					this.input = document.createElement('textarea');
-					this.input.className='input';
-					this.write.appendChild(this.input);
-					this.send = document.createElement('div');
-					this.send.className='send';
-					this.send.style.display='table';
-					this.write.appendChild(this.send);
-						this.sub_send = document.createElement('div');
-						this.sub_send.className='sub-send';
-						this.sub_send.innerHTML='>';
-						this.sub_send.input = this.input;
-						this.sub_send.style.display='table-cell';
-						this.sub_send.style.verticalAlign='middle';
-						this.sub_send.style.textAlign='center';
-						this.sub_send.onclick=function(){
-							if(this.input.value!=='')
-							{
-							//	firebase.database().ref('chat/'+user.username+'/jdgp77').push({ username: user.username, valor: this.input.value });
-								this.input.value='';
-							}
-						};
-						this.send.appendChild(this.sub_send);
-
-		EduIntGD_WorkTogether.footer_tooles.appendChild(this.container);
-
-		
-		this.arMessages=[];
-		this.accAddMessage = function(value,infoJson)
+	Filtros: {
+		mensaje: function(valor)
 		{
-			var message = document.createElement('div');
-			message.className = 'message '+(infoJson.bnOther?'other':'mine');
-			this.arMessages[this.arMessages-length] = message;
-			if(infoJson.bnOther)
-			{ message.innerHTML = '<div class="photo"><img src="" alt="" /></div><div class="message_text"><div class="name">'+infoJson.name+':</div><div class="message-sent">'+value+'</div></div>'; }
-			else
-			{ message.innerHTML = '<div class="message_text"><div class="name">'+infoJson.name+':</div><div class="message-sent">'+value+'</div></div>'; }
-			this.messages.appendChild(message);
-			this.messages.scrollTop=9999;
+			//  Cambia los espacios por un caracter que entiende html, y se aplica para todo el valor
+			valor =_EduIntBasic._remplaceAll('<','&#60',valor);
+            valor =_EduIntBasic._remplaceAll('>','&#62',valor);
+
+            return valor;
 		}
-		
 	}
 };
-
-user = {
-	uid: 1,
-	username: 'Julian Guerrero',
-};
-/*
-var starCountRef = firebase.database().ref('chat/'+user.username+'/jdgp77');
-starCountRef.on('child_added', function(snapshot) {
-  Chat = EduIntGD_WorkTogether._arChats["Chat con Julian Guerrero"]
-  //Chat.accAddMessage(snapshot.val().valor,{ bnOther: (snapshot.username===user.username?true:false), name: snapshot.val().username });
-});
-*/
-
-//	Comentario borrame

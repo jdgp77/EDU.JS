@@ -740,8 +740,6 @@ _EduInt = {
                 {
                     this._Board._bnIsMouseOver = true;
                 },
-                this._oDiv.onmouseout = function(){
-                    this._Board._bnIsMouseOver = false;
                 }
 
                 //  DivThings

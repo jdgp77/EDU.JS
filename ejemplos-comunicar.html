@@ -20,35 +20,22 @@
 	<script src="https://www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
 	<script src="create-complement/talk-tools/chat_secret.js" charset="UTF-8" ></script>
 	<script src="create-complement/talk-tools/js/socket.io.min.js" charset="UTF-8" ></script>
+	<script src="create-complement/talk-tools/js/html2canvas.min.js" charset="UTF-8" ></script>
+	<script src="create-complement/talk-tools/js/dropzone.js" charset="UTF-8" ></script>
 	<script src="create-complement/talk-tools/chat.js" charset="UTF-8" ></script>
 	<link rel="stylesheet" href="create-complement/talk-tools/css/talk-tools.css">
 	<script>
 		//	Activa e modo debug
 		EduInt.accEnDebugMode();
-		/*
-		User = {
-			uid: 1,
-			username: 'amigo'+EduInt.Basic.randomInt(1,10000000),
-			name: 'Julian David',
-			lastname: 'Guerrero Pinilla',
-			profilePhotoUrl: 'http://www.consejostic.com/sites/default/files/styles/informacion_en_bloque_300_x_300_/public/2016-11/UsuarioDestacado.png',
-		};
-		var ListaDeUsuarios = EduIntGD_WorkTogether.createListOfUsers({
-			title: 'Personas Conectadas',
-			user: User,
-		});
-		ListaDeUsuarios.accAddUsers(User);
-	//	firebase.database().ref('users').push(User);
-		
-	//	workToquetherEIGD.initFirebase();
-		WorkToqueder_GD.init({
-			project: 'Clases-Drupal8-Du45Y5h34457613da'
-		});
-		*/
-		//	Crea el MyChat, con todas las herramientas de este proyecto
-		GDPlataform.create('Clases-Drupal8-Du45Y5h34457613da');
+		AyudanteGD.create('Clases-Drupal8-01');
 	</script>
 	<button onclick="workToquetherEIGD.signIn();" >Login</button>
+	<form action="/file-upload" class="dropzone">
+	  <div id="file" class="fallback">
+	    <input name="file" type="file" multiple />
+	  </div>
+	</form>
+	<div id="drfile" ></div>
 	<button onclick="workToquetherEIGD.signOut();" >Logout</button>
 </body>
 </html>

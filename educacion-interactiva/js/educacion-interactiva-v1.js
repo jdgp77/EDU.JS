@@ -3271,10 +3271,10 @@ _EduInt = {
 
                         this._putThisElementInDivOfBoard(this._element);
 
-                        //  Añade todas las funciones de texto necesarias
-                        _EduInt._Thing._Type._TextFunctions(this);
                         //  Añade todas las funciones de HTML necesarias
                         _EduInt._Thing._Type._DisplayBlockFunctions(this);
+                        //  Añade todas las funciones de texto necesarias
+                        _EduInt._Thing._Type._TextFunctions(this);
                         //  Añade las funciones del elemento
                         _EduInt._Thing._Type._ElementsFunctions(this);
 //  WARN
@@ -3293,10 +3293,10 @@ _EduInt = {
 
                         this._putThisElementInDivOfBoard(this._element);
 
-                        //  Añade todas las funciones de input necesarias
-                        _EduInt._Thing._Type._InputFunctions(this);
                         //  Añade todas las funciones de HTML necesarias
                         _EduInt._Thing._Type._DisplayBlockFunctions(this);
+                        //  Añade todas las funciones de input necesarias
+                        _EduInt._Thing._Type._InputFunctions(this);
                         //  Añade las funciones del elemento
                         _EduInt._Thing._Type._ElementsFunctions(this);
 
@@ -3675,10 +3675,17 @@ _EduInt = {
             this.setPosition = function(posInX,posInY) { return this._setPosition(posInX,posInY); };
             this._setPosition = function(posInX,posInY)
             {
-                this._bnSetRightButtom=false;
-                this._setPosInX(posInX,false);
-                this._setPosInY(posInY,false);
-                this._draw();
+                if(posInY!==undefined)
+                {
+                    this._bnSetRightButtom=false;
+                    this._setPosInX(posInX,false);
+                    this._setPosInY(posInY,false);
+                    this._draw();
+                }
+                else
+                {
+                    
+                }
                 return this;
             }
             //  (Thing)
@@ -4241,6 +4248,193 @@ _EduInt = {
 
                     return this;
                 }
+
+                Thing.setAlignContent=function(value){ return this._setAlignContent(value); }; Thing._setAlignContent=function(value){ this._element.style.alignContent=value; return this; };
+                Thing.setAlignItems=function(value){ return this._setAlignItems(value); }; Thing._setAlignItems=function(value){ this._element.style.alignItems=value; return this; };
+                Thing.setAlignSelf=function(value){ return this._setAlignSelf(value); }; Thing._setAlignSelf=function(value){ this._element.style.alignSelf=value; return this; };
+                Thing.setAnimation=function(value){ return this._setAnimation(value); }; Thing._setAnimation=function(value){ this._element.style.animation=value; return this; };
+                Thing.setAnimationDelay=function(value){ return this._setAnimationDelay(value); }; Thing._setAnimationDelay=function(value){ this._element.style.animationDelay=value; return this; };
+                Thing.setAnimationDirection=function(value){ return this._setAnimationDirection(value); }; Thing._setAnimationDirection=function(value){ this._element.style.animationDirection=value; return this; };
+                Thing.setAnimationDuration=function(value){ return this._setAnimationDuration(value); }; Thing._setAnimationDuration=function(value){ this._element.style.animationDuration=value; return this; };
+                Thing.setAnimationFillMode=function(value){ return this._setAnimationFillMode(value); }; Thing._setAnimationFillMode=function(value){ this._element.style.animationFillMode=value; return this; };
+                Thing.setAnimationIterationCount=function(value){ return this._setAnimationIterationCount(value); }; Thing._setAnimationIterationCount=function(value){ this._element.style.animationIterationCount=value; return this; };
+                Thing.setAnimationName=function(value){ return this._setAnimationName(value); }; Thing._setAnimationName=function(value){ this._element.style.animationName=value; return this; };
+                Thing.setAnimationTimingFunction=function(value){ return this._setAnimationTimingFunction(value); }; Thing._setAnimationTimingFunction=function(value){ this._element.style.animationTimingFunction=value; return this; };
+                Thing.setAnimationPlayState=function(value){ return this._setAnimationPlayState(value); }; Thing._setAnimationPlayState=function(value){ this._element.style.animationPlayState=value; return this; };
+                Thing.setBackground=function(value){ return this._setBackground(value); }; Thing._setBackground=function(value){ this._element.style.background=value; return this; };
+                Thing.setBackgroundAttachment=function(value){ return this._setBackgroundAttachment(value); }; Thing._setBackgroundAttachment=function(value){ this._element.style.backgroundAttachment=value; return this; };
+                Thing.setBackgroundColor=function(value){ return this._setBackgroundColor(value); }; Thing._setBackgroundColor=function(value){ this._element.style.backgroundColor=value; return this; };
+                //Thing.setBackgroundImage=function(value){ return this._setBackgroundImage(value); }; Thing._setBackgroundImage=function(value){ this._element.style.backgroundImage=value; return this; };
+                Thing.setBackgroundPosition=function(value){ return this._setBackgroundPosition(value); }; Thing._setBackgroundPosition=function(value){ this._element.style.backgroundPosition=value; return this; };
+                Thing.setBackgroundRepeat=function(value){ return this._setBackgroundRepeat(value); }; Thing._setBackgroundRepeat=function(value){ this._element.style.backgroundRepeat=value; return this; };
+                Thing.setBackgroundClip=function(value){ return this._setBackgroundClip(value); }; Thing._setBackgroundClip=function(value){ this._element.style.backgroundClip=value; return this; };
+                Thing.setBackgroundOrigin=function(value){ return this._setBackgroundOrigin(value); }; Thing._setBackgroundOrigin=function(value){ this._element.style.backgroundOrigin=value; return this; };
+                Thing.setBackgroundSize=function(value){ return this._setBackgroundSize(value); }; Thing._setBackgroundSize=function(value){ this._element.style.backgroundSize=value; return this; };
+                Thing.setBackfaceVisibility=function(value){ return this._setBackfaceVisibility(value); }; Thing._setBackfaceVisibility=function(value){ this._element.style.backfaceVisibility=value; return this; };
+                Thing.setBorder=function(value){ return this._setBorder(value); }; Thing._setBorder=function(value){ this._element.style.border=value; return this; };
+                Thing.setBorderBottom=function(value){ return this._setBorderBottom(value); }; Thing._setBorderBottom=function(value){ this._element.style.borderBottom=_EduInt._Basic.measure(value); return this; };
+                Thing.setBorderBottomColor=function(value){ return this._setBorderBottomColor(value); }; Thing._setBorderBottomColor=function(value){ this._element.style.borderBottomColor=value; return this; };
+                Thing.setBorderBottomLeftRadius=function(value){ return this._setBorderBottomLeftRadius(value); }; Thing._setBorderBottomLeftRadius=function(value){ this._element.style.borderBottomLeftRadius=value; return this; };
+                Thing.setBorderBottomRightRadius=function(value){ return this._setBorderBottomRightRadius(value); }; Thing._setBorderBottomRightRadius=function(value){ this._element.style.borderBottomRightRadius=value; return this; };
+                Thing.setBorderBottomStyle=function(value){ return this._setBorderBottomStyle(value); }; Thing._setBorderBottomStyle=function(value){ this._element.style.borderBottomStyle=value; return this; };
+                Thing.setBorderBottomWidth=function(value){ return this._setBorderBottomWidth(value); }; Thing._setBorderBottomWidth=function(value){ this._element.style.borderBottomWidth=value; return this; };
+                Thing.setBorderCollapse=function(value){ return this._setBorderCollapse(value); }; Thing._setBorderCollapse=function(value){ this._element.style.borderCollapse=value; return this; };
+                Thing.setBorderColor=function(value){ return this._setBorderColor(value); }; Thing._setBorderColor=function(value){ this._element.style.borderColor=value; return this; };
+                //Thing.setBorderImage=function(value){ return this._setBorderImage(value); }; Thing._setBorderImage=function(value){ this._element.style.borderImage=value; return this; };
+                Thing.setBorderImageOutset=function(value){ return this._setBorderImageOutset(value); }; Thing._setBorderImageOutset=function(value){ this._element.style.borderImageOutset=value; return this; };
+                Thing.setBorderImageRepeat=function(value){ return this._setBorderImageRepeat(value); }; Thing._setBorderImageRepeat=function(value){ this._element.style.borderImageRepeat=value; return this; };
+                Thing.setBorderImageSlice=function(value){ return this._setBorderImageSlice(value); }; Thing._setBorderImageSlice=function(value){ this._element.style.borderImageSlice=value; return this; };
+                Thing.setBorderImageSource=function(value){ return this._setBorderImageSource(value); }; Thing._setBorderImageSource=function(value){ this._element.style.borderImageSource=value; return this; };
+                Thing.setBorderImageWidth=function(value){ return this._setBorderImageWidth(value); }; Thing._setBorderImageWidth=function(value){ this._element.style.borderImageWidth=value; return this; };
+                Thing.setBorderLeft=function(value){ return this._setBorderLeft(value); }; Thing._setBorderLeft=function(value){ this._element.style.borderLeft=_EduInt._Basic.measure(value); return this; };
+                Thing.setBorderLeftColor=function(value){ return this._setBorderLeftColor(value); }; Thing._setBorderLeftColor=function(value){ this._element.style.borderLeftColor=value; return this; };
+                Thing.setBorderLeftStyle=function(value){ return this._setBorderLeftStyle(value); }; Thing._setBorderLeftStyle=function(value){ this._element.style.borderLeftStyle=value; return this; };
+                Thing.setBorderLeftWidth=function(value){ return this._setBorderLeftWidth(value); }; Thing._setBorderLeftWidth=function(value){ this._element.style.borderLeftWidth=value; return this; };
+                Thing.setBorderRadius=function(value){ return this._setBorderRadius(value); }; Thing._setBorderRadius=function(value){ this._element.style.borderRadius=value; return this; };
+                Thing.setBorderRight=function(value){ return this._setBorderRight(value); }; Thing._setBorderRight=function(value){ this._element.style.borderRight=_EduInt._Basic.measure(value); return this; };
+                Thing.setBorderRightColor=function(value){ return this._setBorderRightColor(value); }; Thing._setBorderRightColor=function(value){ this._element.style.borderRightColor=value; return this; };
+                Thing.setBorderRightStyle=function(value){ return this._setBorderRightStyle(value); }; Thing._setBorderRightStyle=function(value){ this._element.style.borderRightStyle=value; return this; };
+                Thing.setBorderRightWidth=function(value){ return this._setBorderRightWidth(value); }; Thing._setBorderRightWidth=function(value){ this._element.style.borderRightWidth=value; return this; };
+                Thing.setBorderSpacing=function(value){ return this._setBorderSpacing(value); }; Thing._setBorderSpacing=function(value){ this._element.style.borderSpacing=value; return this; };
+                Thing.setBorderStyle=function(value){ return this._setBorderStyle(value); }; Thing._setBorderStyle=function(value){ this._element.style.borderStyle=value; return this; };
+                Thing.setBorderTop=function(value){ return this._setBorderTop(value); }; Thing._setBorderTop=function(value){ this._element.style.borderTop=_EduInt._Basic.measure(value); return this; };
+                Thing.setBorderTopColor=function(value){ return this._setBorderTopColor(value); }; Thing._setBorderTopColor=function(value){ this._element.style.borderTopColor=value; return this; };
+                Thing.setBorderTopLeftRadius=function(value){ return this._setBorderTopLeftRadius(value); }; Thing._setBorderTopLeftRadius=function(value){ this._element.style.borderTopLeftRadius=value; return this; };
+                Thing.setBorderTopRightRadius=function(value){ return this._setBorderTopRightRadius(value); }; Thing._setBorderTopRightRadius=function(value){ this._element.style.borderTopRightRadius=value; return this; };
+                Thing.setBorderTopStyle=function(value){ return this._setBorderTopStyle(value); }; Thing._setBorderTopStyle=function(value){ this._element.style.borderTopStyle=value; return this; };
+                Thing.setBorderTopWidth=function(value){ return this._setBorderTopWidth(value); }; Thing._setBorderTopWidth=function(value){ this._element.style.borderTopWidth=value; return this; };
+                Thing.setBorderWidth=function(value){ return this._setBorderWidth(value); }; Thing._setBorderWidth=function(value){ this._element.style.borderWidth=value; return this; };
+                //Thing.setBottom=function(value){ return this._setBottom(value); }; Thing._setBottom=function(value){ this._element.style.bottom=value; return this; };
+                Thing.setBoxDecorationBreak=function(value){ return this._setBoxDecorationBreak(value); }; Thing._setBoxDecorationBreak=function(value){ this._element.style.boxDecorationBreak=value; return this; };
+                Thing.setBoxShadow=function(value){ return this._setBoxShadow(value); }; Thing._setBoxShadow=function(value){ this._element.style.boxShadow=value; return this; };
+                Thing.setBoxSizing=function(value){ return this._setBoxSizing(value); }; Thing._setBoxSizing=function(value){ this._element.style.boxSizing=value; return this; };
+                Thing.setCaptionSide=function(value){ return this._setCaptionSide(value); }; Thing._setCaptionSide=function(value){ this._element.style.captionSide=value; return this; };
+                Thing.setClear=function(value){ return this._setClear(value); }; Thing._setClear=function(value){ this._element.style.clear=value; return this; };
+                Thing.setClip=function(value){ return this._setClip(value); }; Thing._setClip=function(value){ this._element.style.clip=value; return this; };
+                Thing.setColor=function(value){ return this._setColor(value); }; Thing._setColor=function(value){ this._element.style.color=value; return this; };
+                Thing.setColumnCount=function(value){ return this._setColumnCount(value); }; Thing._setColumnCount=function(value){ this._element.style.columnCount=value; return this; };
+                Thing.setColumnFill=function(value){ return this._setColumnFill(value); }; Thing._setColumnFill=function(value){ this._element.style.columnFill=value; return this; };
+                Thing.setColumnGap=function(value){ return this._setColumnGap(value); }; Thing._setColumnGap=function(value){ this._element.style.columnGap=value; return this; };
+                Thing.setColumnRule=function(value){ return this._setColumnRule(value); }; Thing._setColumnRule=function(value){ this._element.style.columnRule=value; return this; };
+                Thing.setColumnRuleColor=function(value){ return this._setColumnRuleColor(value); }; Thing._setColumnRuleColor=function(value){ this._element.style.columnRuleColor=value; return this; };
+                Thing.setColumnRuleStyle=function(value){ return this._setColumnRuleStyle(value); }; Thing._setColumnRuleStyle=function(value){ this._element.style.columnRuleStyle=value; return this; };
+                Thing.setColumnRuleWidth=function(value){ return this._setColumnRuleWidth(value); }; Thing._setColumnRuleWidth=function(value){ this._element.style.columnRuleWidth=value; return this; };
+                Thing.setColumns=function(value){ return this._setColumns(value); }; Thing._setColumns=function(value){ this._element.style.columns=value; return this; };
+                Thing.setColumnSpan=function(value){ return this._setColumnSpan(value); }; Thing._setColumnSpan=function(value){ this._element.style.columnSpan=value; return this; };
+                Thing.setColumnWidth=function(value){ return this._setColumnWidth(value); }; Thing._setColumnWidth=function(value){ this._element.style.columnWidth=value; return this; };
+                Thing.setContent=function(value){ return this._setContent(value); }; Thing._setContent=function(value){ this._element.style.content=value; return this; };
+                Thing.setCounterIncrement=function(value){ return this._setCounterIncrement(value); }; Thing._setCounterIncrement=function(value){ this._element.style.counterIncrement=value; return this; };
+                Thing.setCounterReset=function(value){ return this._setCounterReset(value); }; Thing._setCounterReset=function(value){ this._element.style.counterReset=value; return this; };
+                Thing.setCursor=function(value){ return this._setCursor(value); }; Thing._setCursor=function(value){ this._element.style.cursor=value; return this; };
+                Thing.setDirection=function(value){ return this._setDirection(value); }; Thing._setDirection=function(value){ this._element.style.direction=value; return this; };
+                Thing.setDisplay=function(value){ return this._setDisplay(value); }; Thing._setDisplay=function(value){ this._element.style.display=value; return this; };
+                Thing.setEmptyCells=function(value){ return this._setEmptyCells(value); }; Thing._setEmptyCells=function(value){ this._element.style.emptyCells=value; return this; };
+                Thing.setFilter=function(value){ return this._setFilter(value); }; Thing._setFilter=function(value){ this._element.style.filter=value; return this; };
+                Thing.setFlex=function(value){ return this._setFlex(value); }; Thing._setFlex=function(value){ this._element.style.flex=value; return this; };
+                Thing.setFlexBasis=function(value){ return this._setFlexBasis(value); }; Thing._setFlexBasis=function(value){ this._element.style.flexBasis=value; return this; };
+                Thing.setFlexDirection=function(value){ return this._setFlexDirection(value); }; Thing._setFlexDirection=function(value){ this._element.style.flexDirection=value; return this; };
+                Thing.setFlexFlow=function(value){ return this._setFlexFlow(value); }; Thing._setFlexFlow=function(value){ this._element.style.flexFlow=value; return this; };
+                Thing.setFlexGrow=function(value){ return this._setFlexGrow(value); }; Thing._setFlexGrow=function(value){ this._element.style.flexGrow=value; return this; };
+                Thing.setFlexShrink=function(value){ return this._setFlexShrink(value); }; Thing._setFlexShrink=function(value){ this._element.style.flexShrink=value; return this; };
+                Thing.setFlexWrap=function(value){ return this._setFlexWrap(value); }; Thing._setFlexWrap=function(value){ this._element.style.flexWrap=value; return this; };
+                Thing.setCssFloat=function(value){ return this._setCssFloat(value); }; Thing._setCssFloat=function(value){ this._element.style.cssFloat=value; return this; };
+                Thing.setFont=function(value){ return this._setFont(value); }; Thing._setFont=function(value){ this._element.style.font=value; return this; };
+                Thing.setFontFamily=function(value){ return this._setFontFamily(value); }; Thing._setFontFamily=function(value){ this._element.style.fontFamily=value; return this; };
+                Thing.setFontSize=function(value){ return this._setFontSize(value); }; Thing._setFontSize=function(value){ this._element.style.fontSize=_EduInt._Basic.measure(value); return this; };
+                Thing.setFontStyle=function(value){ return this._setFontStyle(value); }; Thing._setFontStyle=function(value){ this._element.style.fontStyle=value; return this; };
+                Thing.setFontVariant=function(value){ return this._setFontVariant(value); }; Thing._setFontVariant=function(value){ this._element.style.fontVariant=value; return this; };
+                Thing.setFontWeight=function(value){ return this._setFontWeight(value); }; Thing._setFontWeight=function(value){ this._element.style.fontWeight=value; return this; };
+                Thing.setFontSizeAdjust=function(value){ return this._setFontSizeAdjust(value); }; Thing._setFontSizeAdjust=function(value){ this._element.style.fontSizeAdjust=value; return this; };
+                Thing.setFontStretch=function(value){ return this._setFontStretch(value); }; Thing._setFontStretch=function(value){ this._element.style.fontStretch=value; return this; };
+                Thing.setHangingPunctuation=function(value){ return this._setHangingPunctuation(value); }; Thing._setHangingPunctuation=function(value){ this._element.style.hangingPunctuation=value; return this; };
+                //Thing.setHeight=function(value){ return this._setHeight(value); }; Thing._setHeight=function(value){ this._element.style.height=value; return this; };
+                Thing.setHyphens=function(value){ return this._setHyphens(value); }; Thing._setHyphens=function(value){ this._element.style.hyphens=value; return this; };
+                Thing.setIcon=function(value){ return this._setIcon(value); }; Thing._setIcon=function(value){ this._element.style.icon=value; return this; };
+                Thing.setImageOrientation=function(value){ return this._setImageOrientation(value); }; Thing._setImageOrientation=function(value){ this._element.style.imageOrientation=value; return this; };
+                Thing.setJustifyContent=function(value){ return this._setJustifyContent(value); }; Thing._setJustifyContent=function(value){ this._element.style.justifyContent=value; return this; };
+                //Thing.setLeft=function(value){ return this._setLeft(value); }; Thing._setLeft=function(value){ this._element.style.left=value; return this; };
+                Thing.setLetterSpacing=function(value){ return this._setLetterSpacing(value); }; Thing._setLetterSpacing=function(value){ this._element.style.letterSpacing=value; return this; };
+                Thing.setLineHeight=function(value){ return this._setLineHeight(value); }; Thing._setLineHeight=function(value){ this._element.style.lineHeight=_EduInt._Basic.measure(value); return this; };
+                Thing.setListStyle=function(value){ return this._setListStyle(value); }; Thing._setListStyle=function(value){ this._element.style.listStyle=value; return this; };
+                Thing.setListStyleImage=function(value){ return this._setListStyleImage(value); }; Thing._setListStyleImage=function(value){ this._element.style.listStyleImage=value; return this; };
+                Thing.setListStylePosition=function(value){ return this._setListStylePosition(value); }; Thing._setListStylePosition=function(value){ this._element.style.listStylePosition=value; return this; };
+                Thing.setListStyleType=function(value){ return this._setListStyleType(value); }; Thing._setListStyleType=function(value){ this._element.style.listStyleType=value; return this; };
+                Thing.setMargin=function(value){ return this._setMargin(value); }; Thing._setMargin=function(value){ this._element.style.margin=_EduInt._Basic.measure(value); return this; };
+                Thing.setMarginBottom=function(value){ return this._setMarginBottom(value); }; Thing._setMarginBottom=function(value){ this._element.style.marginBottom=_EduInt._Basic.measure(value); return this; };
+                Thing.setMarginLeft=function(value){ return this._setMarginLeft(value); }; Thing._setMarginLeft=function(value){ this._element.style.marginLeft=_EduInt._Basic.measure(value); return this; };
+                Thing.setMarginRight=function(value){ return this._setMarginRight(value); }; Thing._setMarginRight=function(value){ this._element.style.marginRight=_EduInt._Basic.measure(value); return this; };
+                Thing.setMarginTop=function(value){ return this._setMarginTop(value); }; Thing._setMarginTop=function(value){ this._element.style.marginTop=_EduInt._Basic.measure(value); return this; };
+                //  Estan sin habilitar, debido a que no se como utilizarlos aun
+                //Thing.setMaxHeight=function(value){ return this._setMaxHeight(value); }; Thing._setMaxHeight=function(value){ this._element.style.maxHeight=value; return this; };
+                //Thing.setMaxWidth=function(value){ return this._setMaxWidth(value); }; Thing._setMaxWidth=function(value){ this._element.style.maxWidth=value; return this; };
+                //Thing.setMinHeight=function(value){ return this._setMinHeight(value); }; Thing._setMinHeight=function(value){ this._element.style.minHeight=value; return this; };
+                //Thing.setMinWidth=function(value){ return this._setMinWidth(value); }; Thing._setMinWidth=function(value){ this._element.style.minWidth=value; return this; };
+                Thing.setNavDown=function(value){ return this._setNavDown(value); }; Thing._setNavDown=function(value){ this._element.style.navDown=value; return this; };
+                Thing.setNavIndex=function(value){ return this._setNavIndex(value); }; Thing._setNavIndex=function(value){ this._element.style.navIndex=value; return this; };
+                Thing.setNavLeft=function(value){ return this._setNavLeft(value); }; Thing._setNavLeft=function(value){ this._element.style.navLeft=value; return this; };
+                Thing.setNavRight=function(value){ return this._setNavRight(value); }; Thing._setNavRight=function(value){ this._element.style.navRight=value; return this; };
+                Thing.setNavUp=function(value){ return this._setNavUp(value); }; Thing._setNavUp=function(value){ this._element.style.navUp=value; return this; };
+                Thing.setOpacity=function(value){ return this._setOpacity(value); }; Thing._setOpacity=function(value){ this._element.style.opacity=value; return this; };
+                Thing.setOrder=function(value){ return this._setOrder(value); }; Thing._setOrder=function(value){ this._element.style.order=value; return this; };
+                Thing.setOrphans=function(value){ return this._setOrphans(value); }; Thing._setOrphans=function(value){ this._element.style.orphans=value; return this; };
+                Thing.setOutline=function(value){ return this._setOutline(value); }; Thing._setOutline=function(value){ this._element.style.outline=value; return this; };
+                Thing.setOutlineColor=function(value){ return this._setOutlineColor(value); }; Thing._setOutlineColor=function(value){ this._element.style.outlineColor=value; return this; };
+                Thing.setOutlineOffset=function(value){ return this._setOutlineOffset(value); }; Thing._setOutlineOffset=function(value){ this._element.style.outlineOffset=value; return this; };
+                Thing.setOutlineStyle=function(value){ return this._setOutlineStyle(value); }; Thing._setOutlineStyle=function(value){ this._element.style.outlineStyle=value; return this; };
+                Thing.setOutlineWidth=function(value){ return this._setOutlineWidth(value); }; Thing._setOutlineWidth=function(value){ this._element.style.outlineWidth=value; return this; };
+                Thing.setOverflow=function(value){ return this._setOverflow(value); }; Thing._setOverflow=function(value){ this._element.style.overflow=value; return this; };
+                Thing.setOverflowX=function(value){ return this._setOverflowX(value); }; Thing._setOverflowX=function(value){ this._element.style.overflowX=value; return this; };
+                Thing.setOverflowY=function(value){ return this._setOverflowY(value); }; Thing._setOverflowY=function(value){ this._element.style.overflowY=value; return this; };
+                Thing.setPadding=function(value){ return this._setPadding(value); }; Thing._setPadding=function(value){ this._element.style.padding=value; return this; };
+                Thing.setPaddingBottom=function(value){ return this._setPaddingBottom(value); }; Thing._setPaddingBottom=function(value){ this._element.style.paddingBottom=value; return this; };
+                Thing.setPaddingLeft=function(value){ return this._setPaddingLeft(value); }; Thing._setPaddingLeft=function(value){ this._element.style.paddingLeft=value; return this; };
+                Thing.setPaddingRight=function(value){ return this._setPaddingRight(value); }; Thing._setPaddingRight=function(value){ this._element.style.paddingRight=value; return this; };
+                Thing.setPaddingTop=function(value){ return this._setPaddingTop(value); }; Thing._setPaddingTop=function(value){ this._element.style.paddingTop=value; return this; };
+                Thing.setPageBreakAfter=function(value){ return this._setPageBreakAfter(value); }; Thing._setPageBreakAfter=function(value){ this._element.style.pageBreakAfter=value; return this; };
+                Thing.setPageBreakBefore=function(value){ return this._setPageBreakBefore(value); }; Thing._setPageBreakBefore=function(value){ this._element.style.pageBreakBefore=value; return this; };
+                Thing.setPageBreakInside=function(value){ return this._setPageBreakInside(value); }; Thing._setPageBreakInside=function(value){ this._element.style.pageBreakInside=value; return this; };
+                Thing.setPerspective=function(value){ return this._setPerspective(value); }; Thing._setPerspective=function(value){ this._element.style.perspective=value; return this; };
+                Thing.setPerspectiveOrigin=function(value){ return this._setPerspectiveOrigin(value); }; Thing._setPerspectiveOrigin=function(value){ this._element.style.perspectiveOrigin=value; return this; };
+//  ALERTA utilice el position, y es propiamente una propiedad
+                //Thing.setPosition=function(value){ return this._setPosition(value); }; Thing._setPosition=function(value){ this._element.style.position=value; return this; };
+                Thing.setQuotes=function(value){ return this._setQuotes(value); }; Thing._setQuotes=function(value){ this._element.style.quotes=value; return this; };
+                Thing.setResize=function(value){ return this._setResize(value); }; Thing._setResize=function(value){ this._element.style.resize=value; return this; };
+                //Thing.setRigh=function(value){ return this._setRigh(value); }; Thing._setRigh=function(value){ this._element.style.righ=value; return this; };
+                Thing.setTableLayout=function(value){ return this._setTableLayout(value); }; Thing._setTableLayout=function(value){ this._element.style.tableLayout=value; return this; };
+                Thing.setTabSize=function(value){ return this._setTabSize(value); }; Thing._setTabSize=function(value){ this._element.style.tabSize=value; return this; };
+                Thing.setTextAlign=function(value){ return this._setTextAlign(value); }; Thing._setTextAlign=function(value){ this._element.style.textAlign=value; return this; };
+                Thing.setTextAlignLast=function(value){ return this._setTextAlignLast(value); }; Thing._setTextAlignLast=function(value){ this._element.style.textAlignLast=value; return this; };
+                Thing.setTextDecoration=function(value){ return this._setTextDecoration(value); }; Thing._setTextDecoration=function(value){ this._element.style.textDecoration=value; return this; };
+                Thing.setTextDecorationColor=function(value){ return this._setTextDecorationColor(value); }; Thing._setTextDecorationColor=function(value){ this._element.style.textDecorationColor=value; return this; };
+                Thing.setTextDecorationLine=function(value){ return this._setTextDecorationLine(value); }; Thing._setTextDecorationLine=function(value){ this._element.style.textDecorationLine=value; return this; };
+                Thing.setTextDecorationStyle=function(value){ return this._setTextDecorationStyle(value); }; Thing._setTextDecorationStyle=function(value){ this._element.style.textDecorationStyle=value; return this; };
+                Thing.setTextIndent=function(value){ return this._setTextIndent(value); }; Thing._setTextIndent=function(value){ this._element.style.textIndent=value; return this; };
+                Thing.setTextJustify=function(value){ return this._setTextJustify(value); }; Thing._setTextJustify=function(value){ this._element.style.textJustify=value; return this; };
+                Thing.setTextOverflow=function(value){ return this._setTextOverflow(value); }; Thing._setTextOverflow=function(value){ this._element.style.textOverflow=value; return this; };
+                Thing.setTextShadow=function(value){ return this._setTextShadow(value); }; Thing._setTextShadow=function(value){ this._element.style.textShadow=value; return this; };
+                Thing.setTextTransform=function(value){ return this._setTextTransform(value); }; Thing._setTextTransform=function(value){ this._element.style.textTransform=value; return this; };
+                //Thing.setTop=function(value){ return this._setTop(value); }; Thing._setTop=function(value){ this._element.style.top=value; return this; };
+                Thing.setTransform=function(value){ return this._setTransform(value); }; Thing._setTransform=function(value){ this._element.style.transform=value; return this; };
+                Thing.setTransformOrigin=function(value){ return this._setTransformOrigin(value); }; Thing._setTransformOrigin=function(value){ this._element.style.transformOrigin=value; return this; };
+                Thing.setTransformStyle=function(value){ return this._setTransformStyle(value); }; Thing._setTransformStyle=function(value){ this._element.style.transformStyle=value; return this; };
+                Thing.setTransition=function(value){ return this._setTransition(value); }; Thing._setTransition=function(value){ this._element.style.transition=value; return this; };
+                Thing.setTransitionProperty=function(value){ return this._setTransitionProperty(value); }; Thing._setTransitionProperty=function(value){ this._element.style.transitionProperty=value; return this; };
+                Thing.setTransitionDuration=function(value){ return this._setTransitionDuration(value); }; Thing._setTransitionDuration=function(value){ this._element.style.transitionDuration=value; return this; };
+                Thing.setTransitionTimingFunction=function(value){ return this._setTransitionTimingFunction(value); }; Thing._setTransitionTimingFunction=function(value){ this._element.style.transitionTimingFunction=value; return this; };
+                Thing.setTransitionDelay=function(value){ return this._setTransitionDelay(value); }; Thing._setTransitionDelay=function(value){ this._element.style.transitionDelay=value; return this; };
+                Thing.setUnicodeBidi=function(value){ return this._setUnicodeBidi(value); }; Thing._setUnicodeBidi=function(value){ this._element.style.unicodeBidi=value; return this; };
+                Thing.setUserSelect=function(value){ return this._setUserSelect(value); }; Thing._setUserSelect=function(value){ this._element.style.userSelect=value; return this; };
+                Thing.setVerticalAlign=function(value){ return this._setVerticalAlign(value); }; Thing._setVerticalAlign=function(value){ this._element.style.verticalAlign=value; return this; };
+                Thing.setVisibility=function(value){ return this._setVisibility(value); }; Thing._setVisibility=function(value){ this._element.style.visibility=value; return this; };
+                Thing.setWhiteSpace=function(value){ return this._setWhiteSpace(value); }; Thing._setWhiteSpace=function(value){ this._element.style.whiteSpace=value; return this; };
+                //Thing.setWidth=function(value){ return this._setWidth(value); }; Thing._setWidth=function(value){ this._element.style.width=value; return this; };
+                Thing.setWordBreak=function(value){ return this._setWordBreak(value); }; Thing._setWordBreak=function(value){ this._element.style.wordBreak=value; return this; };
+                Thing.setWordSpacing=function(value){ return this._setWordSpacing(value); }; Thing._setWordSpacing=function(value){ this._element.style.wordSpacing=value; return this; };
+                Thing.setWordWrap=function(value){ return this._setWordWrap(value); }; Thing._setWordWrap=function(value){ this._element.style.wordWrap=value; return this; };
+                Thing.setWidows=function(value){ return this._setWidows(value); }; Thing._setWidows=function(value){ this._element.style.widows=value; return this; };
+                //Thing.setZIndex=function(value){ return this._setZIndex(value); }; Thing._setZIndex=function(value){ this._element.style.zIndex=value; return this; };
+
+
                 Thing.setBackgroundImage = function(urlImage,bnDefaultPath) { return this._setBackgroundImage(urlImage,bnDefaultPath); };
                 Thing._setBackgroundImage = function(urlImage,bnDefaultPath)
                 {
@@ -4260,34 +4454,6 @@ _EduInt = {
                 Thing.setBackgroundAplpha = function() { return this._setBackgroundAplpha(); };
                 Thing._setBackgroundAplpha = function()
                 { this._setBackgroundColor('transparent'); return this; }
-                Thing.setBackgroundPosition = function(backgroundPosition) { return this._setBackgroundPosition(backgroundPosition); };
-                Thing._setBackgroundPosition = function(backgroundPosition)
-                { this._element.style.backgroundPosition = backgroundPosition; return this; }
-                Thing.setBoxshadow = function(boxShadow) { return this._setBoxshadow(boxShadow); };
-                Thing._setBoxshadow = function(boxShadow)
-                { this._element.style.boxShadow = boxShadow; return this; }
-                Thing.setOverflow = function(overflow) { return this._setOverflow(overflow); };
-                Thing._setOverflow = function(overflow)
-                { this._element.style.overflow = overflow; return this; }
-                Thing.setVisibility = function(visibility) { return this._setVisibility(visibility); };
-                Thing._setVisibility = function(visibility)
-                { this._element.style.visibility = visibility; return this; }
-                //  Margen
-                Thing.setMargin = function(margin) { return this._setMargin(margin); };
-                Thing._setMargin = function(margin)
-                { this._element.style.margin = _EduInt._Basic.measure(margin); return this; }
-                Thing.setPadding = function(value) { return this._setPadding(value); };
-                Thing._setPadding = function(value)
-                { this._element.style.padding = _EduInt._Basic.measure(value); return this; }
-                Thing.setBorderRadius = function(value) { return this._setBorderRadius(value); };
-                Thing._setBorderRadius = function(value)
-                { this._element.style.borderRadius = _EduInt._Basic.measure(value); return this; }
-                Thing.setCursor = function(value) { return this._setCursor(value); };
-                Thing._setCursor = function(value)
-                { this._element.style.cursor = value; return this; }
-                Thing.setBorder = function(value) { return this._setBorder(value); };
-                Thing._setBorder = function(value)
-                { this._element.style.border = _EduInt._Basic.measure(value); return this; }
 
                 //  ID
                 Thing.setId = function(id) { return this._setId(id); };
