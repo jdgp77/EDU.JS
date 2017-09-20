@@ -2,7 +2,12 @@ Framework para crear juegos educativos faciles y rapidos.
 
 ```js
 // Crearlo es muy facil:
-var miTablero = EduInt.createBoardIn('#id_del_elemento','Nombre de mi hermoso tablero',300,300);
+var miTablero = EduInt.createBoard({
+  object: '#id_del_elemento',
+  name: 'Nombre de mi hermoso tablero',
+  width: 300,
+  height: 300
+});
 
 //  Lugar donde crearemos nuestros objetos iniciales
 miTablero.start(function(){
