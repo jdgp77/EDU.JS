@@ -1889,9 +1889,17 @@ _EduInt = {
         createSimpleIn: function(object,nameBoard,width,height) { return _EduInt._Board._createSimpleIn(object,nameBoard,width,height); },
         _createSimpleIn: function(object,nameBoard,width,height)
         {
+            if(typeof object == 'string') {
+                object = document.querySelector(object);
+            }
+
             var Board = _EduInt._Board._createSimple(nameBoard,width,height);
             object.appendChild(Board._oDiv);
             return Board;
+        },
+        create: function(infoJSON) { return _EduInt._Board._create(infoJSON); },
+        _create: function(infoJSON) {
+            return _EduInt._Board._createSimpleIn(infoJSON.object,infoJSON.name,infoJSON.width,infoJSON.height);
         },
         //  Board
         //  ======
@@ -4857,6 +4865,7 @@ _EduInt7=_EduInt;
 EduInt=_EduInt7;
 b = _EduInt._Board._Board;
 _EduInt.createBoardIn=_EduInt._Board._createSimpleIn;
+_EduInt.createBoard=_EduInt._Board._create;
 _EduInt.createBoardInBody=_EduInt._Board._createSimpleInBody;
 
 //  Deprecate
