@@ -858,7 +858,7 @@ _EduInt = {
     //  ===================
     //  En caso de ser true, muestra alugnos logs extra para poder probar
     //  EduInt.accEnDebugMode(); // Para activar el modo debug
-    _bnDebug: false,
+    _bnDebug: true,
 
     accEnDebugMode: function() { this._accEnDebugMode(); },
     _accEnDebugMode: function() { this._bnDebug=true; },
@@ -2548,7 +2548,7 @@ _EduInt = {
             // (Board)
     //  ALERT - Comentar
             //  Es como inicia una animación, este se puede omitir, pero si se usa se puede reinicar la animación
-            this.start = function(functionToStart) { this._start(functionToStart); };
+            this.start = function(functionToStart) { return this._start(functionToStart); };
             this._start = function(functionToStart)
             {
                 //  Evita que algo sea dibujado
@@ -2562,6 +2562,8 @@ _EduInt = {
 
                 //  Informa que salio de modo start
                 this._bnIsInStart=false;
+
+                return this;
             };
             //  (Board)
     //  ALERT - Comentar
@@ -4855,6 +4857,7 @@ catch(err)
 //  ================================
 //  ================================
 _EduInt7=_EduInt;
+_EduIntRC1=_EduInt;
 EduInt=_EduInt7;
 b = _EduInt._Board._Board;
 _EduInt.createBoardIn=_EduInt._Board._createSimpleIn;
