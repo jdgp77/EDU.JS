@@ -109,7 +109,7 @@ var ei_standOut = {
 		});
 
 		this.board.createAnimation(function(){
-			this.t('casaaa').setType('form','stand-out').setPosition(198,0);
+			this.t('casaaa').setType('form','stand-out').setPosInXY(198,0);
 
 		}).startAnimation();
 	},

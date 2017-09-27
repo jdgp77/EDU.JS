@@ -78,11 +78,11 @@
 			objetosAlIniciar: function(){
 				this.t('iniciar').setType('text').setTextAlign('center').setText('Iniciar el Juego').setWidth(this.Board.getWidth()).setTop(40).setFontFamily('Open Sans, Arial').setFontSize(44);
 				this.t('quien-quiere').setType('text').setTextAlign('center').setText('--- ¿Quien quiere ser Drupalero? ---').setWidth(this.Board.getWidth()).setTop(100).setFontFamily('Open Sans, Arial').setFontSize(17.4);
-				//this.t('Nombre').setType('input').setDimensions(400,40).setBorder('1px solid #CCC').setPosition(100,170).setPlaceholder('Nombre').setFilter('name').setPadding(10);
-				//this.t('Correo Electrónico').setType('input').setDimensions(400,40).setBorder('1px solid #CCC').setPosition(100,230).setPlaceholder('Correo').setFilter('lowercase').setPadding(10);
+				//this.t('Nombre').setType('input').setDimensions(400,40).setBorder('1px solid #CCC').setPosInXY(100,170).setPlaceholder('Nombre').setFilter('name').setPadding(10);
+				//this.t('Correo Electrónico').setType('input').setDimensions(400,40).setBorder('1px solid #CCC').setPosInXY(100,230).setPlaceholder('Correo').setFilter('lowercase').setPadding(10);
 				
 
-				this.t('Boton Continuar').setPosition(150,280).setDimensions(300,60).setOnClick(function(){
+				this.t('Boton Continuar').setPosInXY(150,280).setDimensions(300,60).setOnClick(function(){
 					this.Board.accMoverIzquierdaInicio();
 				});
 				this.t('Boton Continuar')._setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/BotonInicio.png').setCursor('pointer');

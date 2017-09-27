@@ -29,15 +29,15 @@ EduInt.Thing.setCustom('paco--boca',function(){
 	{ this.setBackgroundPosition('-21px 0'); }
 });
 EduInt.Thing.setCustom('paco',function(){
-	this.t('ala-oculta').setBackgroundImageInAlpha('create-complement/paco/images/Paco/AlaIzquierdaOculta.png').setDimensions(64,51).setPosition(0,24);
-	this.t('pierna-oculto').getCustom('paco--pierna').setPosition(28,72);
-	this.t('cuerpo').setBackgroundImageInAlpha('create-complement/paco/images/Paco/Cuerpo.png').setDimensions(75,84).setPosition(8,0);
-	this.t('ojo-oculto').getCustom('paco--ojooculto').setPosition(78,10);
-	this.t('pico').setBackgroundImageInAlpha('create-complement/paco/images/Paco/Pico.png').setDimensions(38,36).setPosition(64,12);
-	this.t('boca').getCustom('paco--boca').setPosition(73,31).setBackgroundPosition('-21px 0');
-	this.t('ala-vista').setBackgroundImageInAlpha('create-complement/paco/images/Paco/AlaDerechaVista.png').setDimensions(64,51).setPosition(0,26);
-	this.t('ojo-vista').getCustom('paco--ojovista').setPosition(62,10);
-	this.t('pierna-vista').getCustom('paco--pierna').setPosition(22,77);
+	this.t('ala-oculta').setBackgroundImageInAlpha('create-complement/paco/images/Paco/AlaIzquierdaOculta.png').setDimensions(64,51).setPosInXY(0,24);
+	this.t('pierna-oculto').getCustom('paco--pierna').setPosInXY(28,72);
+	this.t('cuerpo').setBackgroundImageInAlpha('create-complement/paco/images/Paco/Cuerpo.png').setDimensions(75,84).setPosInXY(8,0);
+	this.t('ojo-oculto').getCustom('paco--ojooculto').setPosInXY(78,10);
+	this.t('pico').setBackgroundImageInAlpha('create-complement/paco/images/Paco/Pico.png').setDimensions(38,36).setPosInXY(64,12);
+	this.t('boca').getCustom('paco--boca').setPosInXY(73,31).setBackgroundPosition('-21px 0');
+	this.t('ala-vista').setBackgroundImageInAlpha('create-complement/paco/images/Paco/AlaDerechaVista.png').setDimensions(64,51).setPosInXY(0,26);
+	this.t('ojo-vista').getCustom('paco--ojovista').setPosInXY(62,10);
+	this.t('pierna-vista').getCustom('paco--pierna').setPosInXY(22,77);
 
 	this.bnMoverBoca=false;
 	this.bnBocaAbierta=false;
@@ -195,7 +195,7 @@ paco = {
 		this.board.start(function(){
 			this.setCustom('nube',function(info){
 				this.setDimensions(132,75).setBackgroundImageInAlpha('/create-complement/paco/images/Escenario/Nube.png');
-				this.setPosition(EduInt.Basic.randomInt(-100,1440+132),EduInt.Basic.randomInt(355-30));
+				this.setPosInXY(EduInt.Basic.randomInt(-100,1440+132),EduInt.Basic.randomInt(355-30));
 				this.velocidad=EduInt.Basic.random(0,5)*(-1);
 				this.getVelocidad=function()
 				{ return this.velocidad; }
@@ -204,7 +204,7 @@ paco = {
 			});
 			this.setCustom('misil',function(){
 				this.setDimensions(112,62).setBackgroundImageInAlpha('create-complement/paco/images/Juego/Misil.png');
-				this.setPosition(1440,300);
+				this.setPosInXY(1440,300);
 				this.velocidad=12;
 				this.accCreateAnimateFunctionInShadow(function(info,optionJson){
 					this.accMoveInX(-this.velocidad);
@@ -219,9 +219,9 @@ paco = {
 			{
 				this.t('nube-'+countNubes).getCustom('nube');
 			}
-			this.t('PisoPuerto').setDimensions(1440,90).setBackgroundImageInAlpha('create-complement/paco/images/Escenario/SueloTablasMuelle.png').setPosition(0,365);
+			this.t('PisoPuerto').setDimensions(1440,90).setBackgroundImageInAlpha('create-complement/paco/images/Escenario/SueloTablasMuelle.png').setPosInXY(0,365);
 
-			this.g('Paco').getCustom('paco').setPosition(100,276);
+			this.g('Paco').getCustom('paco').setPosInXY(100,276);
 			this.g('Paco').setOnClick(function(){
 				this.accSaltar()
 			});

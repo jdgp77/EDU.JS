@@ -259,7 +259,7 @@ AppSopaDeLetras = function()
 
                     this.t('cuadro_'+countInX+'_'+countInY).setType('text').setText(letra);
                     this.t('cuadro_'+countInX+'_'+countInY).setTextAlign('center').setLineHeight(29);
-                    this.t('cuadro_'+countInX+'_'+countInY).setPosition(countInX*30,countInY*30).setDimensions(29,29);
+                    this.t('cuadro_'+countInX+'_'+countInY).setPosInXY(countInX*30,countInY*30).setDimensions(29,29);
                     this.t('cuadro_'+countInX+'_'+countInY).addClass('c_sopadeletras_letra');
                     this.t('cuadro_'+countInX+'_'+countInY).my.sopadeletrasPosInX=countInX;
                     this.t('cuadro_'+countInX+'_'+countInY).my.sopadeletrasPosInY=countInY;

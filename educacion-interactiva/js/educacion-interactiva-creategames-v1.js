@@ -26,7 +26,7 @@ var IDE_Game = {
                 title: 'Posición en Y',
                 description: '',
             },{
-                word: 'setPosition',
+                word: 'setPosInXY',
                 title: 'Posición en X ý Y',
                 description: '',
             },{

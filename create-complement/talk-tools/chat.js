@@ -7,7 +7,7 @@ EduInt.Thing.setCustom('tipo-contenido',function(informacion){
 
 			this.t('letrero').setDimentions(41,41).setPostionRightBottom(2,2).setBackgroundImageInAlpha('create-complement/talk-tools/images/LogoOpenClose.png');
 		});
-		this.t('base-info').setDimentions(45,1).setPostionRightBottom(40*3 + 45,50).setId(informacion.text+'-'+'base-info').setOverflow('hidden').setVisibility('hidden').setBackgroundColor('transparent');
+		this.t('base-info').setDimentions(45,1).setPostionRightBottom(40*3 + 45,50).setId(informacion.text+'-'+'base-info').setOverflow('hidden').setVisibility('hidden').setBackgroundColor('transparent').setHeight('1px');
 
 		for(var countCuadradosExtra=0;countCuadradosExtra<informacion.cuadrados.length;countCuadradosExtra++)
 		{
@@ -157,7 +157,7 @@ EduInt.Thing.setCustom('ayudante',function(){
 				color: 'amarillo'
 			}]
 		}).setCustom(function(){
-			//this.g('lista-chats').setPosition(5,90).setDimentions(34,50000).setBoxSizing('border-box');
+			//this.g('lista-chats').setPosInXY(5,90).setDimentions(34,50000).setBoxSizing('border-box');
 			this.arChats=[];
 			this.accAccAnadirImagenChat = function(name){
 				this.g('lista-chats').t(name).setBackgroundColor('#FFF').setBackgroundImageInAlpha('casa.png');
@@ -434,9 +434,32 @@ EduInt.Thing.setCustom('ayudante',function(){
 												height: '36px',
 												float: 'left',
 												marginRight: '2px',
-												display: 'none',
+												cursor: 'pointer'
 											},
-											html: '_'
+											html: '_',
+											EduIntGDInfo: {
+												Board: this.Board,
+												name: name,
+												selectorTextArea: 'chat-main-messagesend-text-input',
+												selectorChat: AyudanteGD.Chats.chatIdByName(name),
+												bnVisible: true
+											},
+											onclick: function(){
+												if(this.EduIntGDInfo.bnVisible)
+												{
+													document.querySelector('#'+this.EduIntGDInfo.selectorChat+' .chat-top-button').style.display='none';
+													document.querySelector('#'+this.EduIntGDInfo.selectorChat+' .chat-main').style.display='none';
+
+													this.EduIntGDInfo.bnVisible=false;
+												}
+												else
+												{
+													document.querySelector('#'+this.EduIntGDInfo.selectorChat+' .chat-top-button').style.display='block';
+													document.querySelector('#'+this.EduIntGDInfo.selectorChat+' .chat-main').style.display='block';
+
+													this.EduIntGDInfo.bnVisible=true;
+												}
+											},
 										},
 										{
 											element: 'div',
@@ -630,7 +653,7 @@ EduInt.Thing.setCustom('ayudante',function(){
 			this.Board = AyudanteGD.Board;
 			//	Guardamos el nombre del chat creado
 			this.name = name;
-			var info = this.Board.g('dashBoard-init').g('chat').accAnadirChat(this.name);
+			var info = this.Board.g('dashBoard-init').setPosition('fixed').g('chat').accAnadirChat(this.name);
 			this._element = info.chat;
 			this.myDropzone = info.myDropzone;
 
@@ -946,7 +969,7 @@ var AyudanteGD = {
 			this.accScrollDown = function()
 			{
 				var messageArea = document.querySelector('#'+AyudanteGD.Chats.chatIdByName(this.name)+' .chat-main-message');
-				messageArea.scrollTop = messageArea.scrollHeight;
+				messageArea.scrollTop = messageArea.scrollHeight*4;
 			};
 			//	
 			this.init();
