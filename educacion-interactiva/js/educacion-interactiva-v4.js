@@ -221,7 +221,7 @@ function ei_thing()
 	this.accMoverEnY=function(movInY){ return this.accMoveInY(movInY); }
 	//	Colocar la posicion
 	this.setPos=function(posInX,posInY) { this.posInX=posInX; this.posInY=posInY; return this; }
-	this.setPosition=function(posInX,posInY) { this.setPos(posInX,posInY); }
+	this.setPosInXY=function(posInX,posInY) { this.setPos(posInX,posInY); }
 	this.accMove=function(movInX,movInY){ this.movInX=movInX; this.movInY=movInY; return this; }
 	
 	//	Ancho

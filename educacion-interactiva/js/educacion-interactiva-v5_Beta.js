@@ -2093,7 +2093,7 @@ var EduInt = {
 			this.Container.setContainerIn(object);
 		}
 		//	(thing)
-		this.setPosition = function(posInX,posInY){
+		this.setPosInXY = function(posInX,posInY){
 			this.setPosInX(posInX,false);
 			this.setPosInY(posInY,false);
 			this.draw();

@@ -61,13 +61,13 @@ var EI_ArrastarPalabras = function()
                 this.t('ap_texto').setText(textoPalabras);
                 this.t('ap_texto').setLineHeight(50);
                 this.t('ap_texto').setPosInY(yPosTexto+80);
-                this.t('ap_texto').setPosition(0,yPosTexto+80);
+                this.t('ap_texto').setPosInXY(0,yPosTexto+80);
 
                 // Colocamos objetos en cada una e las posicicones en blanco
                 for(var countBlacks = 1;countBlacks <= this.my.numEspaciosEnBlanco; countBlacks++)
                 {
                     var blackElement = document.getElementById('id_text_pos_'+countBlacks);
-                    this.t('ap_black_texto_'+countBlacks).setType('element','div').addClass('c_blackword').setPosition(this.getPosInXOfAnElment(blackElement),this.getPosInYOfAnElment(blackElement)).setDimensions(anchoPalabra,altoPalabra).setBackgroundColor('transparent');
+                    this.t('ap_black_texto_'+countBlacks).setType('element','div').addClass('c_blackword').setPosInXY(this.getPosInXOfAnElment(blackElement),this.getPosInYOfAnElment(blackElement)).setDimensions(anchoPalabra,altoPalabra).setBackgroundColor('transparent');
                 }
 
                 //  Crea cada una de las palabras a arrastrar
@@ -88,7 +88,7 @@ var EI_ArrastarPalabras = function()
                     var anchoTablero = this.getWidth();
                     if((xPosTexto+_ancho_palabra)<anchoTablero)
                     {
-                        this.t('ap_palabras_'+contPalabras).setPosition(xPosTexto,yPosTexto);
+                        this.t('ap_palabras_'+contPalabras).setPosInXY(xPosTexto,yPosTexto);
                         this.t('ap_palabras_'+contPalabras).my.posOrgInX = xPosTexto;
                         this.t('ap_palabras_'+contPalabras).my.posOrgInY = yPosTexto;
                         xPosTexto = xPosTexto + _ancho_palabra +espacioEntrePalabras;
@@ -141,11 +141,11 @@ var EI_ArrastarPalabras = function()
                                 if(this.my.arInBlack['ap_black_texto_'+countBlacks]!='ap_palabras_'+contPalabras)
                                 {
                                     var palabraActualEnBlack = this.t(this.my.arInBlack['ap_black_texto_'+countBlacks]);
-                                    palabraActualEnBlack.setPosition(palabraActualEnBlack.my.posOrgInX,palabraActualEnBlack.my.posOrgInY);
+                                    palabraActualEnBlack.setPosInXY(palabraActualEnBlack.my.posOrgInX,palabraActualEnBlack.my.posOrgInY);
                                 }
                             }
 
-                            this.t('ap_palabras_'+contPalabras).setPosition(this.t('ap_black_texto_'+countBlacks).getPosInX(),this.t('ap_black_texto_'+countBlacks).getPosInY());
+                            this.t('ap_palabras_'+contPalabras).setPosInXY(this.t('ap_black_texto_'+countBlacks).getPosInX(),this.t('ap_black_texto_'+countBlacks).getPosInY());
                             //  Guarda el thing(palabra) que esta sobre este black
                             this.my.arInBlack['ap_black_texto_'+countBlacks] = 'ap_palabras_'+contPalabras;
                             this.my.arBnEnInBlack['ap_black_texto_'+countBlacks] = true;

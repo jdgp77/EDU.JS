@@ -2,7 +2,7 @@ var EduJS_Memoria = {
 	_arBoards: [],
 	addBoardFunctions: function(board){
 		board.setCustom('boton-de-memoria', function(jsonInfo){
-			this.setType('text').setText(jsonInfo.texto).setPosition(jsonInfo.posInX,310).setDimensions(70,60).setBackgroundColor(jsonInfo.backgroundColor).setFontSize(11).setFontFamily('Open Sans, Arial').setColor('#FFF').setBorderRadius(5).setPadding(10).setCursor('pointer');
+			this.setType('text').setText(jsonInfo.texto).setPosInXY(jsonInfo.posInX,310).setDimensions(70,60).setBackgroundColor(jsonInfo.backgroundColor).setFontSize(11).setFontFamily('Open Sans, Arial').setColor('#FFF').setBorderRadius(5).setPadding(10).setCursor('pointer');
 		});
 		
 		board.t('Boton-1').getCustom('boton-de-memoria', {
@@ -31,13 +31,13 @@ var EduJS_Memoria = {
 			backgroundColor: '#777',
 		});
 
-		board.t('¿Lo recuerdas?').setType('text').setText('¿Que tanto lo recuerdas?').setFontSize(15).setFontFamily('Open Sans, Arial').setWidth(490).setPosition(10,280).setTextAlign('center');
+		board.t('¿Lo recuerdas?').setType('text').setText('¿Que tanto lo recuerdas?').setFontSize(15).setFontFamily('Open Sans, Arial').setWidth(490).setPosInXY(10,280).setTextAlign('center');
 
 		var altoCuadroRecuerdo=100;
 		var espacioEntreElementos=20;
-		board.t('Respuesta-1').setDimensions(490,altoCuadroRecuerdo).setPosition(10,10).setBorder('1px solid #EEE').setBackgroundColor('transparent');
-		board.t('Boton mostrar respuesta').setType('text').setText('-- Mostrar Respuesta --').setFontSize(15).setFontFamily('Open Sans, Arial').setWidth(200).setPosition(152,altoCuadroRecuerdo+espacioEntreElementos).setTextAlign('center').setDimensions(200,20).setCursor('pointer').setBorder('1px solid #333').setBorderRadius(5);
-		board.t('Respuesta-2').setDimensions(490,altoCuadroRecuerdo).setPosition(10,altoCuadroRecuerdo+espacioEntreElementos*3).setBorder('1px solid #EEE').setBackgroundColor('transparent');
+		board.t('Respuesta-1').setDimensions(490,altoCuadroRecuerdo).setPosInXY(10,10).setBorder('1px solid #EEE').setBackgroundColor('transparent');
+		board.t('Boton mostrar respuesta').setType('text').setText('-- Mostrar Respuesta --').setFontSize(15).setFontFamily('Open Sans, Arial').setWidth(200).setPosInXY(152,altoCuadroRecuerdo+espacioEntreElementos).setTextAlign('center').setDimensions(200,20).setCursor('pointer').setBorder('1px solid #333').setBorderRadius(5);
+		board.t('Respuesta-2').setDimensions(490,altoCuadroRecuerdo).setPosInXY(10,altoCuadroRecuerdo+espacioEntreElementos*3).setBorder('1px solid #EEE').setBackgroundColor('transparent');
 
 		return board;
 	},

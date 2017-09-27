@@ -115,7 +115,7 @@ boardColoniaHormigas.start(function(){
         this.board.t(nombreHormiga).my.arHistorialDeDireccion=arNuevoHistorialDeDireccion;
     }
 
-    this.t('colonia').setPosition(this.my.posInXForNumber(this.my.coloniaPosX-1)-10,this.my.posInYForNumber(this.my.coloniaPosY-1)-10).setDimensions(30,30).setBackgroundColor('rgba(255,100,0,0.1)');
+    this.t('colonia').setPosInXY(this.my.posInXForNumber(this.my.coloniaPosX-1)-10,this.my.posInYForNumber(this.my.coloniaPosY-1)-10).setDimensions(30,30).setBackgroundColor('rgba(255,100,0,0.1)');
 
     this.my.lugaresEnX=12;
     this.my.lugaresEnY=12;
@@ -156,7 +156,7 @@ boardColoniaHormigas.start(function(){
             var nombreLugar='lugar_'+(countLugaresEnX+1)+'_'+(countLugaresEnY+1);
             var posicionLugarEnX=posIniInX+distLugarEnX*countLugaresEnX;
             var posicionLugarEnY=posIniInY+distLugarEnY*countLugaresEnY;
-            this.t(nombreLugar).setPosition(posicionLugarEnX,posicionLugarEnY);
+            this.t(nombreLugar).setPosInXY(posicionLugarEnX,posicionLugarEnY);
             this.t(nombreLugar).setBackgroundColor(colorLugar);
 
             //    myconsole('posicionLugar: '+posicionLugarEnX+','+posicionLugarEnY);
@@ -182,7 +182,7 @@ boardColoniaHormigas.start(function(){
                 posComidaEnX=this.board.my.posInXForNumber(posComidaEnX-1);
                 var posComidaEnY=parseInt(Math.random(lugaresEnY)*(12)+1);
                 posComidaEnY=this.board.my.posInYForNumber(posComidaEnY-1);
-                this.board.t(nombreComida).setPosition(posComidaEnX,posComidaEnY);
+                this.board.t(nombreComida).setPosInXY(posComidaEnX,posComidaEnY);
 
                 this.board.t(nombreComida).my.pedasos=this.numPedasos;
                 this.board.t(nombreComida).my.board=this.board;
@@ -397,12 +397,12 @@ boardColoniaHormigas.start(function(){
 
                 if(direncionEn==='X')
                 {
-                    this.board.t(nombreMarca).setDimensions(this.board.my.distLugarEnX-10,10).setPosition(posMinXInPx+10,posAnteriorInYInPx).setBackgroundColor(this.getColor(valorAsignado));
+                    this.board.t(nombreMarca).setDimensions(this.board.my.distLugarEnX-10,10).setPosInXY(posMinXInPx+10,posAnteriorInYInPx).setBackgroundColor(this.getColor(valorAsignado));
                 }
                 //  Si el movimiento es en Y
                 else if(direncionEn==='Y')
                 {
-                    this.board.t(nombreMarca).setDimensions(10,this.board.my.distLugarEnY-10).setPosition(posAnteriorInXInPx,posMinYInPx+10).setBackgroundColor(this.getColor(valorAsignado));
+                    this.board.t(nombreMarca).setDimensions(10,this.board.my.distLugarEnY-10).setPosInXY(posAnteriorInXInPx,posMinYInPx+10).setBackgroundColor(this.getColor(valorAsignado));
                 }
 
                 this.valorPorNumMarca[this.numMarcas]=valorAsignado;
@@ -481,7 +481,7 @@ boardColoniaHormigas.createAnimation(function(info){
         if(info.timeInSeconds%this.my.addNumHormigasIn_seconds==0 || info.numFrame==1)
         {
             var nombreHormiga=this.my.nombreHormiga(this.my.numHormigas+1);
-            this.t(nombreHormiga).setPosition(this.my.posInXForNumber(this.my.coloniaPosX-1),this.my.posInYForNumber(this.my.coloniaPosY-1));
+            this.t(nombreHormiga).setPosInXY(this.my.posInXForNumber(this.my.coloniaPosX-1),this.my.posInYForNumber(this.my.coloniaPosY-1));
             this.t(nombreHormiga).my.posInX=this.my.coloniaPosX-1;
             this.t(nombreHormiga).my.posInY=this.my.coloniaPosY-1;
             this.t(nombreHormiga).my.arHistorialDeDireccion=[];

@@ -65,7 +65,7 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 
 				this.setDimentions(tableroAncho,tableroAlto);
 				this.setBackgroundColor('rgba(255,255,255,0.9)');
-				this.setPosition(0,0);
+				this.setPosInXY(0,0);
 				this.setZIndex(999);
 				this.bnMoverIzquierda=false;
 				this.accMoverIzquierda=function(){
@@ -96,8 +96,8 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 			//	===========
 			this.setCustom('presentador', function(){
 				this.t('imagen-persentador').setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/presentador.png').setDimentions(350,179);
-				this.t('voz').setType('text').setDimentions(193,100).setTextAlign('center').setFontFamily('Open Sans, Aria').setFontSize(13).setLineHeight(15).setPosition(0,5);
-				this.t('boca').setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/presentador-boca.png').setDimentions(14,6).setPosition(238,58);
+				this.t('voz').setType('text').setDimentions(193,100).setTextAlign('center').setFontFamily('Open Sans, Aria').setFontSize(13).setLineHeight(15).setPosInXY(0,5);
+				this.t('boca').setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/presentador-boca.png').setDimentions(14,6).setPosInXY(238,58);
 				this.bnTextoVisible=false;
 				this.setText=function(texto,numFramesVisible){
 					this.t('voz').setText(texto);
@@ -151,7 +151,7 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 					}
 				});
 			});
-			this.g('presentador').getCustom('presentador',{ }).setPosition(200,10);
+			this.g('presentador').getCustom('presentador',{ }).setPosInXY(200,10);
 			this.accPresentadorDice=function(texto,numFramesVisible)
 			{
 				this.g('presentador').setText(texto,numFramesVisible);
@@ -167,12 +167,12 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 					var puntaje = jsonInfo.puntajes[count];
 					this.t('pos'+count).setType('text').setText(puntaje+' '+jsonInfo.prefijo).setTop(jsonInfo.espacioEntrePuntajes*count).setWidth(70).setFontSize(10).setTextAlign('right');
 				};
-				this.t('posicion-actual').setDimentions(75,5).setPosition(0,jsonInfo.espacioEntrePuntajes*0+3)._setBackgroundColor('rgba(255,255,0,0.5)');
+				this.t('posicion-actual').setDimentions(75,5).setPosInXY(0,jsonInfo.espacioEntrePuntajes*0+3)._setBackgroundColor('rgba(255,255,0,0.5)');
 				this.t('posicion-actual').posicion=0;
 				this.accNextPosition = function()
 				{
 					this.t('posicion-actual').posicion++;
-					this.t('posicion-actual').setPosition(0,jsonInfo.espacioEntrePuntajes*this.t('posicion-actual').posicion+3);
+					this.t('posicion-actual').setPosInXY(0,jsonInfo.espacioEntrePuntajes*this.t('posicion-actual').posicion+3);
 
 					return this;
 				};
@@ -200,7 +200,7 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 					this.t('ganado').setType('text').setTextAlign('center').setText('Haz Ganado').setWidth(this.Board.getWidth()).setTop(120).setFontFamily('Open Sans, Arial').setFontSize(44);
 					this.t('sub-ganado').setType('text').setTextAlign('center').setText(qqsmInfo.mensajeGanador).setWidth(this.Board.getWidth()).setTop(180).setFontFamily('Open Sans, Arial').setFontSize(17.4);
 
-					this.t('globo').setDimentions(90,197).setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/Globo.png').setPosition(370,500);
+					this.t('globo').setDimentions(90,197).setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/Globo.png').setPosInXY(370,500);
 
 					this.t('globo').accCreateAnimateFunctionInShadow(function(info,optionJson){
 						if(0<this.getPosInY())
@@ -221,14 +221,14 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 				this.bnSelectRight=true;
 			}
 
-			this.g('group-pregunta').setPosition(96,220);
+			this.g('group-pregunta').setPosInXY(96,220);
 			this.g('group-pregunta').t('pregunta-fondo').setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/pregunta.png').setDimentions(410,45);
-			this.g('group-pregunta').t('pregunta').setType('text').setColor('#FFF').setText('Pregunta').setPosition(32,10).setWidth(350).setFontFamily('Open Sans').setFontSize(12).setTextAlign('center');
+			this.g('group-pregunta').t('pregunta').setType('text').setColor('#FFF').setText('Pregunta').setPosInXY(32,10).setWidth(350).setFontFamily('Open Sans').setFontSize(12).setTextAlign('center');
 
 			this.setCustom('respuesta',function(infoJSON){
 				this.t(this.getName()+'-fondo').setBackgroundImageInAlpha('create-complement/nuevosjuegos/quienquieresermillonario/images/opcion.png').setDimentions(197,45);
-				this.t(this.getName()+'-texto').setType('text').setColor('#FFF').setPosition(43,12).setWidth(140).setFontFamily('Open Sans, Aria').setFontSize(10);
-				this.t(this.getName()+'-numero').setType('text').setColor('#ffef40').setText(infoJSON.texto_opcion).setPosition(21,12);
+				this.t(this.getName()+'-texto').setType('text').setColor('#FFF').setPosInXY(43,12).setWidth(140).setFontFamily('Open Sans, Aria').setFontSize(10);
+				this.t(this.getName()+'-numero').setType('text').setColor('#ffef40').setText(infoJSON.texto_opcion).setPosInXY(21,12);
 				this.t(this.getName()+'-boton').setBackgroundColor('rgba(255,255,255,0.1)').setDimentions(197,45);
 				this.t(this.getName()+'-boton').setBackgroundColor('rgba(255,255,255,0.1)').setDimentions(197,45);
 
@@ -296,10 +296,10 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 				this.setHeight(7).setBackgroundColor('#c7c7c7');
 			});
 
-			this.g('respuesta1').setPosition( 97,171+100).getCustom('respuesta', { texto_opcion: 'A:', numRespuesta: 1 });
-			this.g('respuesta2').setPosition(309,172+100).getCustom('respuesta', { texto_opcion: 'B:', numRespuesta: 2 });
-			this.g('respuesta3').setPosition( 97,234-5+100).getCustom('respuesta', { texto_opcion: 'C:', numRespuesta: 3 });
-			this.g('respuesta4').setPosition(309,234-5+100).getCustom('respuesta', { texto_opcion: 'D:', numRespuesta: 4 });
+			this.g('respuesta1').setPosInXY( 97,171+100).getCustom('respuesta', { texto_opcion: 'A:', numRespuesta: 1 });
+			this.g('respuesta2').setPosInXY(309,172+100).getCustom('respuesta', { texto_opcion: 'B:', numRespuesta: 2 });
+			this.g('respuesta3').setPosInXY( 97,234-5+100).getCustom('respuesta', { texto_opcion: 'C:', numRespuesta: 3 });
+			this.g('respuesta4').setPosInXY(309,234-5+100).getCustom('respuesta', { texto_opcion: 'D:', numRespuesta: 4 });
 
 			this.accDisableSelect = function(){
 				this.g('respuesta1').accDisableSelect();
@@ -320,20 +320,20 @@ var AppQuienQuiereSerExpertoDrupal = function(){
 				this.g('respuesta4').accUnSelect();
 			}
 
-			this.t('linea-pregunta-izq').getCustom('linea').setPosition(0,220+19).setWidth(96);
-			this.t('linea-pregunta-der').getCustom('linea').setPosition(96+410,220+19).setWidth(94);
+			this.t('linea-pregunta-izq').getCustom('linea').setPosInXY(0,220+19).setWidth(96);
+			this.t('linea-pregunta-der').getCustom('linea').setPosInXY(96+410,220+19).setWidth(94);
 
-			this.t('linea-respuesta1-izq').getCustom('linea').setPosition(0,191+100).setWidth(97);
-			this.t('linea-respuesta1-der').getCustom('linea').setPosition(97+197,191+100).setWidth(8);
+			this.t('linea-respuesta1-izq').getCustom('linea').setPosInXY(0,191+100).setWidth(97);
+			this.t('linea-respuesta1-der').getCustom('linea').setPosInXY(97+197,191+100).setWidth(8);
 
-			this.t('linea-respuesta2-izq').getCustom('linea').setPosition(97+197+8,191+100).setWidth(7);
-			this.t('linea-respuesta2-der').getCustom('linea').setPosition(97+197+8+7+197,191+100).setWidth(94);
+			this.t('linea-respuesta2-izq').getCustom('linea').setPosInXY(97+197+8,191+100).setWidth(7);
+			this.t('linea-respuesta2-der').getCustom('linea').setPosInXY(97+197+8+7+197,191+100).setWidth(94);
 
-			this.t('linea-respuesta3-izq').getCustom('linea').setPosition(0,248+100).setWidth(97);
-			this.t('linea-respuesta3-der').getCustom('linea').setPosition(97+197,248+100).setWidth(8);
+			this.t('linea-respuesta3-izq').getCustom('linea').setPosInXY(0,248+100).setWidth(97);
+			this.t('linea-respuesta3-der').getCustom('linea').setPosInXY(97+197,248+100).setWidth(8);
 
-			this.t('linea-respuesta4-izq').getCustom('linea').setPosition(97+197+8,248+100).setWidth(7);
-			this.t('linea-respuesta4-der').getCustom('linea').setPosition(97+197+8+7+197,248+100).setWidth(94);
+			this.t('linea-respuesta4-izq').getCustom('linea').setPosInXY(97+197+8,248+100).setWidth(7);
+			this.t('linea-respuesta4-der').getCustom('linea').setPosInXY(97+197+8+7+197,248+100).setWidth(94);
 
 			this.setQuestion = function(text){ this.g('group-pregunta').t('pregunta').setText(text); };
 			this.setAnswer1  = function(text){ this.g('respuesta1').setAnswer(text); };

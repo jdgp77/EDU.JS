@@ -425,7 +425,7 @@ _EduIntBasic = {
                 if(document.getElementById('eigdi-code-autocompletar'))
                 {
                     this.palabraCambiada;
-                    var select = _EduInt._Input.Plugins.Select.create({ options: ['setPosition','setPosInX','setPosInY']});
+                    var select = _EduInt._Input.Plugins.Select.create({ options: ['setPosInXY','setPosInX','setPosInY']});
                     select.element.style.position='absolute';
                     select.element.style.top='10px';
                     select.element.style.left='0px';
@@ -2789,10 +2789,10 @@ _EduInt = {
             this._accAddKeyboard = {
                 _Board: this,
                 arrows: function(){
-                    this._Board._g('__KeyBoard')._t('__KeyboardArrow-up')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosition(60,0);
-                    this._Board._g('__KeyBoard')._t('__KeyboardArrow-right')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosition(120,60)._setBackgroundPosition('-60px 0');
-                    this._Board._g('__KeyBoard')._t('__KeyboardArrow-bottom')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosition(60,60)._setBackgroundPosition('-120px 0');
-                    this._Board._g('__KeyBoard')._t('__KeyboardArrow-left')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosition(0,60)._setBackgroundPosition('-180px 0');
+                    this._Board._g('__KeyBoard')._t('__KeyboardArrow-up')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosInXY(60,0);
+                    this._Board._g('__KeyBoard')._t('__KeyboardArrow-right')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosInXY(120,60)._setBackgroundPosition('-60px 0');
+                    this._Board._g('__KeyBoard')._t('__KeyboardArrow-bottom')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosInXY(60,60)._setBackgroundPosition('-120px 0');
+                    this._Board._g('__KeyBoard')._t('__KeyboardArrow-left')._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/keyboard-arrows.png',false)._setDimentions(60,60)._setPosInXY(0,60)._setBackgroundPosition('-180px 0');
 
 
                 },
@@ -2807,7 +2807,7 @@ _EduInt = {
                     {
                         this._Board._setCustom('__MessageGood',function()
                         {
-                            this._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/good-and-wrong.png',false)._setDimentions(80,70)._setPosition(20,100);
+                            this._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/good-and-wrong.png',false)._setDimentions(80,70)._setPosInXY(20,100);
                         });
                     }
                     this._goodOrWrong('good');
@@ -2817,7 +2817,7 @@ _EduInt = {
                     {
                         this._Board._setCustom('__MessageWrong',function()
                         {
-                            this._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/good-and-wrong.png',false)._setBackgroundPosition('right 0')._setDimentions(70,70)._setPosition(20,100);
+                            this._setType('element','div')._setBackgroundImageInAlpha('https://storage.googleapis.com/datos-educacion-interactiva/imagenes/basic/good-and-wrong.png',false)._setBackgroundPosition('right 0')._setDimentions(70,70)._setPosInXY(20,100);
                         });
                     }
                     this._goodOrWrong('wrong');
@@ -3672,8 +3672,8 @@ _EduInt = {
                 this._Container._setContainerIn(object);
             }
             //  (Thing)
-            this.setPosition = function(posInX,posInY) { return this._setPosition(posInX,posInY); };
-            this._setPosition = function(posInX,posInY)
+            this.setPosInXY = function(posInX,posInY) { return this._setPosInXY(posInX,posInY); };
+            this._setPosInXY = function(posInX,posInY)
             {
                 if(posInY!==undefined)
                 {
@@ -3684,7 +3684,7 @@ _EduInt = {
                 }
                 else
                 {
-                    
+
                 }
                 return this;
             }
@@ -4396,7 +4396,7 @@ _EduInt = {
                 Thing.setPerspective=function(value){ return this._setPerspective(value); }; Thing._setPerspective=function(value){ this._element.style.perspective=value; return this; };
                 Thing.setPerspectiveOrigin=function(value){ return this._setPerspectiveOrigin(value); }; Thing._setPerspectiveOrigin=function(value){ this._element.style.perspectiveOrigin=value; return this; };
 //  ALERTA utilice el position, y es propiamente una propiedad
-                //Thing.setPosition=function(value){ return this._setPosition(value); }; Thing._setPosition=function(value){ this._element.style.position=value; return this; };
+                Thing.setPosition=function(value){ return this._setPosition(value); }; Thing._setPosition=function(value){ this._element.style.position=value; return this; };
                 Thing.setQuotes=function(value){ return this._setQuotes(value); }; Thing._setQuotes=function(value){ this._element.style.quotes=value; return this; };
                 Thing.setResize=function(value){ return this._setResize(value); }; Thing._setResize=function(value){ this._element.style.resize=value; return this; };
                 //Thing.setRigh=function(value){ return this._setRigh(value); }; Thing._setRigh=function(value){ this._element.style.righ=value; return this; };

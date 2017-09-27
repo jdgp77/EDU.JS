@@ -57,24 +57,24 @@ BoardMemConc.start(function(info){
         };
         this.setGameControlPosition=function(originInX,originInY)
         {
-            //  this.setPosition();
+            //  this.setPosInXY();
             switch(this.direction)
             {
                 case '1':
                 case 'arriba':
-                    this.setPosition(originInX+this.FlechaArriba.alto-this.cercaniaFlecha,originInY);
+                    this.setPosInXY(originInX+this.FlechaArriba.alto-this.cercaniaFlecha,originInY);
                     break;
                 case '2':
                 case 'derecha':
-                    this.setPosition(originInX+this.FlechaArriba.alto+this.FlechaArriba.ancho-this.cercaniaFlecha*2,originInY+this.FlechaArriba.alto-this.cercaniaFlecha);
+                    this.setPosInXY(originInX+this.FlechaArriba.alto+this.FlechaArriba.ancho-this.cercaniaFlecha*2,originInY+this.FlechaArriba.alto-this.cercaniaFlecha);
                     break;
                 case '3':
                 case 'abajo':
-                    this.setPosition(originInX+this.FlechaArriba.alto-this.cercaniaFlecha,originInY+this.FlechaArriba.alto+this.FlechaArriba.ancho-this.cercaniaFlecha*2);
+                    this.setPosInXY(originInX+this.FlechaArriba.alto-this.cercaniaFlecha,originInY+this.FlechaArriba.alto+this.FlechaArriba.ancho-this.cercaniaFlecha*2);
                     break;
                 case '4':
                 case 'izquierda':
-                    this.setPosition(originInX,originInY+this.FlechaArriba.alto-this.cercaniaFlecha);
+                    this.setPosInXY(originInX,originInY+this.FlechaArriba.alto-this.cercaniaFlecha);
                     break;
             }
             return this;
@@ -130,10 +130,10 @@ BoardMemConc.start(function(info){
     });
 
     this.setCustom('_MessageGood',function(){
-        this.setPosition(250,200);
+        this.setPosInXY(250,200);
     });
     this.setCustom('_MessageWrong',function(){
-        this.setPosition(80,200);
+        this.setPosInXY(80,200);
     });
 
     //  Things por defecto
@@ -143,8 +143,8 @@ BoardMemConc.start(function(info){
     this.t('flecha-abajo').getCustom('flecha').setDirection('abajo').setGameControlPosition(125,40);
     this.t('flecha-izquierda').getCustom('flecha').setDirection('izquierda').setGameControlPosition(125,40);
 
-    this.t('puntos-correctos').setType('text').setValue(0).setPosition(0,0);
-    this.t('puntos-total').setType('text').setValue(0).setPosition(0,20);
+    this.t('puntos-correctos').setType('text').setValue(0).setPosInXY(0,0);
+    this.t('puntos-total').setType('text').setValue(0).setPosInXY(0,20);
 
     //  Funciones
     //  =========
@@ -203,7 +203,7 @@ BoardMemConc.start(function(info){
 
     this.selectNewDirection=true;
 
-    this.g('__KeyBoard').setPosition(110,250)
+    this.g('__KeyBoard').setPosInXY(110,250)
 });
 
 BoardMemConc.createAnimation(function(info){

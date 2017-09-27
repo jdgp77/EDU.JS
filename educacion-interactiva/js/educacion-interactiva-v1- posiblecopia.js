@@ -1901,8 +1901,8 @@ _EduInt = {
                 this._Container._setContainerIn(object);
             }
             //  (Thing)
-            this.setPosition = function(posInX,posInY) { return this._setPosition(posInX,posInY); };
-            this._setPosition = function(posInX,posInY)
+            this.setPosInXY = function(posInX,posInY) { return this._setPosInXY(posInX,posInY); };
+            this._setPosInXY = function(posInX,posInY)
             {
                 this._setPosInX(posInX,false);
                 this._setPosInY(posInY,false);
