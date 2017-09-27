@@ -1783,7 +1783,7 @@ _EduInt = {
         getBoardForName: function(nameBoard){ return this._getBoardForName(nameBoard); },
         _getBoardForName: function(nameBoard){ return this._getBoard(this._arForNames[nameBoard]); },
         //  Retorna el número de tableros que existen
-        _getNumBoards: function(){ return this.ar.length; },
+        _getNumBoards: function(){ return this._ar.length; },
         //  Obrener el id del tablero por el nombre
         getIdBoardForName_only: function(nameBoard){ return this._arForNames[nameBoard]; },
         //  Existe un tablero por su id, normalmente se usa por el nombre, es
@@ -1874,17 +1874,10 @@ _EduInt = {
         createSimple: function(nameBoard,width,height) { return _EduInt._Board._createSimple(nameBoard,width,height); },
         _createSimple: function(nameBoard,width,height) {
             //  Si el nombre del tablero no esta definido, lo pide
-            if(nameBoard===undefined)
-            { _EduInt._Log.error('The nameBoard is mandatory'); }
-            else
-            {
-                var myNewBoard = new _EduInt._Board._Board(nameBoard).setDimensions(width,height).create();
-                _EduInt._Board._arForNames[nameBoard]=_EduInt._Board._ar.length;
-                _EduInt._Board._ar[_EduInt._Board._ar.length]=myNewBoard;
-                return myNewBoard;
-            }
-            //  Si no retorno el tablero existe un error
-            return false;
+            var myNewBoard = new _EduInt._Board._Board(nameBoard,width,height).create();
+            _EduInt._Board._arForNames[nameBoard]=_EduInt._Board._ar.length;
+            _EduInt._Board._ar[_EduInt._Board._ar.length]=myNewBoard;
+            return myNewBoard;
         },
         createSimpleIn: function(object,nameBoard,width,height) { return _EduInt._Board._createSimpleIn(object,nameBoard,width,height); },
         _createSimpleIn: function(object,nameBoard,width,height)
