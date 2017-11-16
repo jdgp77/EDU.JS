@@ -235,11 +235,8 @@ paco = {
 			}
 
 			this.numMisiles=3;
-			console.log('casa');
 			for(var countMisiles=1;countMisiles<=this.numMisiles;countMisiles++)
 			{
-				console.log('casa');
-				console.log(countMisiles*1440/this.numMisiles);
 				this.t('misil_'+countMisiles).getCustom('misil').setPosInX(countMisiles*1440/this.numMisiles);
 			}
 		});

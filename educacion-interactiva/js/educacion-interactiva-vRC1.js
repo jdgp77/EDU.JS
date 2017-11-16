@@ -20,10 +20,24 @@ _EduIntBasic = {
         return parseInt(Math.random()*(value2-value1+1)+value1);
     },
 
-    removeAccents: function(valor) { var acentos = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç"; var original = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc"; for (var i=0; i<acentos.length; i++) { valor = valor.replace(acentos.charAt(i), original.charAt(i)); }; return valor; },
+    removeAccents: function(valor) { return this._removeAccents(valor); },
+    _removeAccents: function(valor) { var acentos = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç"; var original = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc"; for (var i=0; i<acentos.length; i++) { valor = valor.replace(acentos.charAt(i), original.charAt(i)); }; return valor; },
     //  Retorna un nombre de maquina, sin tildes ni espacios ni caracteres raros
-    machineName: function(valor) {
+    machineName: function(valor) { return this._machineName(valor); },
+    _machineName: function(valor) {
         return this.removeAccents(valor.toLowerCase().replace(/\s/g,"_"));
+    },
+
+    //  Carga un string como template y unas variables y las une
+    renderTemplate(template, variables) { this._renderTemplate(template, variables); },
+    _renderTemplate(template, variables) {
+        template = this._replaceAll('{{    ', '{{', template);
+        template = this._replaceAll('{{  '  , '{{', template);
+        template = this._replaceAll('{{ '   , '{{', template);
+        template = this._replaceAll('    }}', '}}', template);
+        template = this._replaceAll('  }}'  , '}}', template);
+        template = this._replaceAll(' }}'   , '}}', template);
+        for(nameVariable in variables) { template = this._replaceAll('{{'+nameVariable+'}}', variables[nameVariable], template); }
     },
 
     //  Une dos diferentes json para añadir las opciones por defecto
@@ -78,7 +92,7 @@ _EduIntBasic = {
         return curtop;
     },
 
-    //  Es el filtro basico de mediads, en caso de no existir, coloca pixeles
+    //  Es el filtro basico de mediadas, en caso de no existir, coloca pixeles
     //  '12px' <= measure(12);
     //  '12%' <= measure('12%'');
     measure: function(measure) { return this._measure(measure); },
@@ -115,8 +129,8 @@ _EduIntBasic = {
         { valor_MyR=valor_MyR.replace('¬',aColocar); }
         return valor_MyR;
     },
-
-    _trim(valor_MyR)
+    trim: function(valor_MyR) { return this._trim(valor_MyR); },
+    _trim: function(valor_MyR)
     {
         while(0<=valor_MyR.indexOf("  "))
         {
@@ -133,7 +147,8 @@ _EduIntBasic = {
         }
         return valor_MyR;
     },
-    _accNameFormat(nombre_MyR)
+    accNameFormat: function(nombre_MyR) { return this._accNameFormat(nombre_MyR); },
+    _accNameFormat: function(nombre_MyR)
     {
         nombre_MyR=_EduIntBasic._trim(nombre_MyR);
         var arNombre_MyR=nombre_MyR.split(" ");
@@ -151,13 +166,14 @@ _EduIntBasic = {
         }
         return arNombre_MyR.join(" ");
     },
+    accNumberFormat: function(numero_MyR,decimales_MyR,decPunto,sepMiles) { return this._accNumberFormat(numero_MyR,decimales_MyR,decPunto,sepMiles); },
     _accNumberFormat: function(numero_MyR,decimales_MyR,decPunto,sepMiles)
     {
         if(decimales_MyR==undefined) { decimales_MyR = 2; }
         if(decPunto==undefined)      { decPunto = ","; }
         if(sepMiles==undefined)      { sepMiles = "."; }
-        //  Redondear
-        numero_MyR = _EduIntBasic._redondear(numero_MyR,decimales_MyR);
+        //  roundOut
+        numero_MyR = _EduIntBasic._roundOut(numero_MyR,decimales_MyR);
         //  pasa a string
         var stNumero_MyR=numero_MyR.toString();
         //  Divide la parte entera de la decimal
@@ -198,7 +214,8 @@ _EduIntBasic = {
         //  
         return valorEnteroTemp_MyR+numeroEntero_MyR+(decimales_MyR!==0?decPunto+valDecimal_MyR:'');
     },
-    _redondear: function(valor_MyR,decimales_MyR)
+    roundOut: function(valor_MyR,decimales_MyR) { return this._roundOut(valor_MyR,decimales_MyR); },
+    _roundOut: function(valor_MyR,decimales_MyR)
     {
         myDecimales_MyR = Math.pow(10,decimales_MyR);
         return Math.round(valor_MyR*myDecimales_MyR)/myDecimales_MyR;
@@ -227,7 +244,8 @@ _EduIntBasic = {
         <div class="casa2"></div>
     </div>
     */
-    crearElementos: function(jsonBloqueInfo,parent)
+    crearElementos: function(jsonBloqueInfo,parent) { return this._crearElementos(jsonBloqueInfo,parent); },
+    _crearElementos: function(jsonBloqueInfo,parent)
     {
         var elementBase=document.createElement(jsonBloqueInfo.element);
         for(keyJsonBloqueInfo in jsonBloqueInfo)
@@ -262,7 +280,7 @@ _EduIntBasic = {
         {
             for(var countChildren=0;countChildren<jsonBloqueInfo.children.length;countChildren++)
             {
-                elementBase.appendChild(this.crearElementos(jsonBloqueInfo.children[countChildren]));
+                elementBase.appendChild(this._crearElementos(jsonBloqueInfo.children[countChildren]));
             }
         }
         return elementBase;
@@ -841,7 +859,7 @@ _EduIntBasic.Filters = _EduIntBasic._Filters;
 _EduIntBasic.Masks = _EduIntBasic._Masks;
 _EduIntBasic.Validations = _EduIntBasic._Validations;
 
-
+EduIntBasic=_EduIntBasic;
 
 //  Framework _EduInt
 //  ================
@@ -1752,18 +1770,23 @@ _EduInt = {
         _error: function(message){
             console.log(message);
         },
+        arIssetDeprecated: [],
         deprecated: function(value1,value2){ _EduInt._Log._deprecated(value1,value2); },
         _deprecated: function(value1,value2){
-            var message = '';
-            if(value2!=undefined)
-            {
-                var lastValue=value1;
-                var newValue=value2;
-                message='"'+lastValue+'" was Deprecated, please change for "'+value2+'"';
+            if(!_EduInt._Log.arIssetDeprecated[value1+'-_-'+value2]) {
+                var message = '';
+                if(value2!=undefined)
+                {
+                    var lastValue=value1;
+                    var newValue=value2;
+                    message='"'+lastValue+'" was Deprecated, please change for "'+value2+'"';
+                }
+                else
+                { message=value1; }
+                this.warning(message);
+
+                _EduInt._Log.arIssetDeprecated[value1+'-_-'+value2] = true;
             }
-            else
-            { message=value1; }
-            this.warning(message);
         }
     },
     Log: this._Log,
@@ -1964,6 +1987,74 @@ _EduInt = {
                         this._bnHaveFunction = true;
                     });
                 },
+            };
+            //  Eventos en el Thing
+            this._Events = {
+                _Board: this,
+                setEvent: function(myEvent,myFunction)
+                {
+                    switch(myEvent)
+                    {
+                        case 'nombreevento':
+                            break;
+                        default:
+                            break;
+                    }
+                    this._Board._element.addEventListener(myEvent,myFunction);
+                },
+                arEvents: [],
+                arEventsByName: [],
+                _Event: function(eventName)
+                {
+                    this.arFunctions = [];
+                    this.accAddFunction = function(myFunction)
+                    {
+                        this.arFunctions[this.arFunctions.length]=myFunction;
+                    };
+                    this.accExecuteFunctions = function(evn)
+                    {
+                        var Evento =this._Board.event(evn.type);
+                        for(var countFunction=0;countFunction<Evento.arFunctions.length;countFunction++)
+                        {
+                            this._Board._myFunction_ = Evento.arFunctions[countFunction];
+                            this._Board._myFunction_(evn);
+                        }
+                    };
+                },
+            };
+            //  (Board)
+            this.event = function(nombreEvento) { return this._event(nombreEvento); };
+            this._event = function(nombreEvento)
+            {
+                if(this._Events.arEventsByName[nombreEvento]===undefined)
+                {
+                    var evento = new this._Events._Event(nombreEvento);
+                    this._oDiv.addEventListener(nombreEvento,evento.accExecuteFunctions);
+                    this._Events.arEvents[this._Events.arEvents.length]=evento;
+                    this._Events.arEventsByName[nombreEvento]=evento;
+                    return evento;
+                }
+                else
+                {
+                    return this._Events.arEventsByName[nombreEvento];
+                }
+            };
+            //  (Board)
+            this.setOnClick = function(myFunction) { return this._setOnClick(myFunction); };
+            this._setOnClick = function(myFunction)
+            {
+                this._event('click').accAddFunction(myFunction);
+                return this;
+            };
+            this.setOnMouseover = function(myFunction) { return this._setOnMouseover(myFunction); };
+            this._setOnMouseover = function(myFunction) {
+                this._event('mouseover').accAddFunction(myFunction);
+                return this;
+            };
+            this.setOnMouseout = function(myFunction) { return this._setOnMouseout(myFunction); };
+            this._setOnMouseout = function(myFunction) {
+                this._event('mouseout').accAddFunction(myFunction);
+                return this;
             };
             // (Board)
             //  Funciones publicas
@@ -3040,6 +3131,16 @@ _EduInt = {
                 this._event('click').accAddFunction(myFunction);
                 return this;
             };
+            this.setOnMouseover = function(myFunction) { return this._setOnMouseover(myFunction); };
+            this._setOnMouseover = function(myFunction) {
+                this._event('mouseover').accAddFunction(myFunction);
+                return this;
+            };
+            this.setOnMouseout = function(myFunction) { return this._setOnMouseout(myFunction); };
+            this._setOnMouseout = function(myFunction) {
+                this._event('mouseout').accAddFunction(myFunction);
+                return this;
+            };
             this.getName = function() { return this._getName(); };
             this._getName = function()
             {
@@ -3223,6 +3324,7 @@ _EduInt = {
                         case 'element':
                         case 'html':
                         case 'input':
+                        case 'svg':
                         //  case 'group':
                             this._Container._divContainer.removeChild(this._element);
                             break;
@@ -3313,7 +3415,7 @@ _EduInt = {
                         this._element = document.createElement('div');
                         //  Para poder acceder a las opciones del Thing, desde el objeto
                         this.setHTML = function(myHTML) { this._setHTML(myHTML); }
-                        this._setHTML = function(myHTML){
+                        this._setHTML = function(myHTML) {
                             this._element.innerHTML = myHTML;
                         }
 
@@ -3382,7 +3484,25 @@ _EduInt = {
                         bnThingCreated = true;
                         break;
                     case 'svg':
+                        this._element = document.createElement('div');
+                        this.addClass('eduintgd-svg');
 
+                        //  Para poder acceder a las opciones del Thing, desde el objeto
+                        this._element._Thing = this;
+                        //  Añade todas las funciones de HTML necesarias
+                        _EduInt._Thing._Type._DisplayBlockFunctions(this);
+                        //  Añade las funciones del elemento
+                        _EduInt._Thing._Type._ElementsFunctions(this);
+                        //  Añade las funciones de grupo
+                        _EduInt._Thing._Type._SVGFunctions(this);
+
+                        //  Ingresamos el nuevo objeto
+                        this._putThisElementInDivOfBoard(this._element);
+                        //  Inicia el movimiento del mouse
+                        _EduInt._Cursor._enMovementDetect();
+
+                        //  Informa que el objeto fue creado
+                        bnThingCreated = true;
                         break;
                     case 'form':
                         //  Que tipo de forma es
@@ -3600,6 +3720,20 @@ _EduInt = {
                                     this._bnActionToDraw=[];
                                     break;
                             }
+                            break;
+                        //  Si se trata de una forma
+                        case 'svg':
+                            //  Realiza solo los cambios asignados
+                            for(var countChanges=0;countChanges<this._bnActionToDraw.length;countChanges++)
+                            {
+                                if(this._bnActionToDraw[countChanges]=='width')
+                                { this._element.style.width = this._width + 'px'; }
+                                if(this._bnActionToDraw[countChanges]=='height')
+                                { this._element.style.height = this._height + 'px'; }
+                            }
+                            //  Reinicia los cambios asignados
+                            //  Reinicia los cambios asignados
+                            this._bnActionToDraw=[];
                             break;
                         //  Si se trata de una forma
                         case 'form':
@@ -3906,16 +4040,32 @@ _EduInt = {
                 this._bnChangeType = false;
             },
             //  (Thing)
+            this._qstnHaveMonitorOnClick=false;
             this.qstnClick = function() { return this._qstnClick(); };
             this._qstnClick = function()
             {
+                if(!this._qstnHaveMonitorOnClick) {
+                    this._event('click').accAddFunction(function(evn) {
+                        this._Events.onclick = true;
+                    });
+                    this._qstnHaveMonitorOnClick=true;
+                }
                 return this._Events.onclick;
             },
             //  (Thing)
+            this._qstnHaveMonitorOnMouseover=false;
             this.qstnMouseOver = function() { return this._qstnMouseOver(); };
             this._qstnMouseOver = function()
             {
-
+                if(!this._qstnHaveMonitorOnMouseover) {
+                    this._event('mouseover').accAddFunction(function(evn) {
+                        this._Events.onmouseover = true;
+                    });
+                    this._event('mouseout').accAddFunction(function(evn) {
+                        this._Events.onmouseover = false;
+                    });
+                    this._qstnHaveMonitorOnMouseover=true;
+                }
                 return this._Events.onmouseover;
             },
             this.setZIndex = function(value) { this._setZIndex(value); };
@@ -4173,41 +4323,46 @@ _EduInt = {
             },
 
             _DisplayBlockFunctions: function(Thing) {
-                Thing._element.onmouseover = function()
-                {
-                    this._Thing._Events.onmouseover=true;
-                }
-                Thing._element.onmouseout = function()
-                {
-                    this._Thing._Events.onmouseover=false;
-                }
-                Thing._element.ontouchstart = function(event) { this._Thing._oncursordown(event); }
-                Thing._element.onmousedown = function(event)
-                { this._Thing._oncursordown(event); }
-                Thing.oncursordown = function(event) { this._oncursordown(event); };
-                Thing._oncursordown = function(event)
-                {
-                    this._Events.bnCursorDown=true;
-                    //  Carga la posición relativa del mouse con el Thing
-                    this._loadPosDelta(event);
+                Thing._arEvents = [];
+                Thing._myFunctionEvent = [];
 
-                    //  console.info('oncursordown');
-                }
+                //  (Thing)
+                Thing._qstnHaveMonitorOnCursorover=false;
+                Thing.oncursordown = function(event) { this._oncursordown(event); };
+                Thing._oncursordown = function() {
+                    _EduInt._Log._deprecated('oncursordown','qstnCursorOver');
+                    return this._qstnCursorOver();
+                };
+                Thing.qstnCursorOver = function() { return this._qstnCursorOver(); };
+                Thing._qstnCursorOver = function()
+                {
+                    console.log('Entro a qstnCursorOver');
+                    if(!this._qstnHaveMonitorOnCursorover) {
+                        this._event('touchstart').accAddFunction(function(evn) {
+                            this._oncursordown(evn);
+                        });
+                        this._event('mousedown').accAddFunction(function(evn) {
+                            this._oncursordown(evn);
+                        });
+                        this._event('touchend').accAddFunction(function(evn) {
+                            this._Events.bnCursorDown = false;
+                            console.log('bnCursorDown = false');
+                        });
+                        this._event('mouseup').accAddFunction(function(evn) {
+                            this._Events.bnCursorDown = false;
+                            console.log('bnCursorDown = false');
+                        });
+                        this._qstnHaveMonitorOnCursorover=true;
+                    }
+                    return this._Events.bnCursorDown;
+                },
                 Thing.qstnIsCursorDown = function() { return this._qstnIsCursorDown(); };
                 Thing._qstnIsCursorDown = function()
-                { return this._Events.bnCursorDown; }
-                //  Cuando el cursor deja de estar oprimido
-                //  ---------------------------------------
-                Thing._element.ontouchend = function()
-                { this._Thing._oncursorup(); }
-                Thing._element.onmouseup = function()
-                { this._Thing._oncursorup(); }
-                Thing.oncursorup = function() { this._oncursorup(); };
-                Thing._oncursorup = function()
                 {
-                    this._Events.bnCursorDown=false;
-                    //  console.info('oncursorup');
+                    _EduInt._Log._deprecated('qstnIsCursorDown','qstnCursorOver');
+                    return this._Events.bnCursorDown;
                 }
+
                 Thing.loadPosDelta = function(event) { this._loadPosDelta(event); };
                 Thing._loadPosDelta = function(event)
                 {
@@ -4549,6 +4704,60 @@ _EduInt = {
                     group._thingParent = this;
                     return group;
                 };
+            },
+            _SVGFunctions: function(Thing)
+            {
+                Thing.loadForURL = function(url, functionOnLoad) { this._loadForURL(url, functionOnLoad); };
+                Thing._loadForURL = function(url, functionOnLoad)
+                {
+                    var myThing = this;
+                    var myUrl = url;
+                    var myFunctionOnLoad = functionOnLoad;
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                           // Typical action to be performed when the document is ready:
+                           myThing._element.innerHTML = xhttp.responseText;
+                           var elementSVG = myThing._element.querySelector('svg');
+                           elementSVG.style.width='100%';
+                           elementSVG.style.height='auto';
+
+                           myThing._myFunctionOnLoad = myFunctionOnLoad;
+                           myThing._myFunctionOnLoad(elementSVG);
+                        }
+                    };
+                    this._rotateValue='';
+                    this._scaleValue='';
+                    xhttp.open("GET",url,true);
+                    // Following line is just to be on the safe side;
+                    // not needed if your server delivers SVG with correct MIME type
+                    xhttp.overrideMimeType("image/svg+xml");
+                    xhttp.send();
+                };
+                Thing.ourRotateDeg = '0';
+                Thing.ourScale = '1';
+                Thing.ourDefaultTransform = 'rotate({rotateDeg}) scale({scaleValue}, {scaleValue})';
+                Thing.accOurTransform = function(options) {
+                    options = EduIntBasic.defaultJson(options, {
+                        rotateDeg: this.ourRotateDeg,
+                        scaleValue: this.ourScale
+                    });
+                    this.ourRotateDeg = options.rotateDeg;
+                    this.ourScale = options.scaleValue;
+                    var valTransform = this.ourDefaultTransform;
+                    valTransform = _EduIntBasic._replaceAll('{rotateDeg}',options.rotateDeg,valTransform);
+                    valTransform = _EduIntBasic._replaceAll('{scaleValue}',options.scaleValue,valTransform);
+
+                    this._element.style.transform = valTransform;
+                }
+                Thing.accRotate = function(value) {
+                    this._rotateValue=value;
+                    this.accOurTransform({ rotateDeg: value });
+                }
+                Thing.accScale = function(value) {
+                    this._scaleValue=value;
+                    this.accOurTransform({ scaleValue: value });
+                }
             },
 
             _DefaultFunctions: function(Thing)
