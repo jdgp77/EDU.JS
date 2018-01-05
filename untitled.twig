@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Hola Mundo Edu.js</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="educacion-interactiva/js/jquery-1.9.1.js"></script>
+	<script src="educacion-interactiva/js/educacion-interactiva-vRC1.js" charset="UTF-8" ></script>
+</head>
+<body>
+	<div id="idelementoholaedujs"></div>
+	<script type="text/javascript" charset="UTF-8" >
+		// Crearlo es muy facil:
+		$('#idelementoholaedujs').createBoard()
+			.start(function(){
+				//	Colocamos los objetos iniciales
+				//	===============================
+
+				this.i=0;
+				this.j=0;
+				this.bnLosCuadradosSeTocaron=false;
+				this.t('Pedro').setBackgroundColor('red').setPosInXY(20,20);
+
+				this.t('Juan').setBackgroundColor('blue').setPosInXY(60,70);
+
+			}).createAnimation(function(){
+				//	Colocamos la animación
+				//	======================
+
+				this.t('Pedro').setPosInX(this.i);
+				this.t('Juan').setPosInY(70-this.i);
+				this.i=this.i+1;
+
+				if(this.t('Pedro').qstnIsThisThingOver(this.t('Juan'))) {
+					this.bnLosCuadradosSeTocaron=true;
+				}
+
+				if(this.bnLosCuadradosSeTocaron) {
+					this.j=this.j+1;
+					this.t('Oto').setPosInX(this.j);
+				}
+			}).startAnimation();
+	</script>
+</body>
+</html>

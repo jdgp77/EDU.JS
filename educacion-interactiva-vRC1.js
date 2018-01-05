@@ -54,8 +54,8 @@ _EduIntBasic = {
     },
 
     //  Calcula la posicion en X de un elemento
-    posInX: function(object, toParentElement) { return this._posInX(object, toParentElement); },
-    _posInX: function(object, toParentElement)
+    posInX: function(object) { return this._posInX(); },
+    _posInX: function(object)
     {
         var curleft = 0;
         if(object.offsetParent)
@@ -63,7 +63,7 @@ _EduIntBasic = {
             while(1)
             {
                 curleft += object.offsetLeft;
-                if(!object.offsetParent || toParentElement == object.offsetParent) { break; }
+                if(!object.offsetParent) { break; }
                 object = object.offsetParent;
             }
         }
@@ -74,33 +74,9 @@ _EduIntBasic = {
         }
         return curleft;
     },
-
-    //  Añade las clases
-    addClass: function(clase, lastClases) { this._addClass(clase, lastClases); },
-    _addClass: function(clase, lastClases) {
-        var claseActual = lastClases;
-        var bnYaExisteLaClase = false;
-        claseActual = this.trim(claseActual);
-        arClasesActuales = claseActual.split(' ');
-        var arNuevasClases = [];
-        for(var countClasesActuales=0;countClasesActuales<arClasesActuales.length;countClasesActuales++) {
-            var claseActual = arClasesActuales[countClasesActuales];
-            if(claseActual!='') {
-                arNuevasClases[arNuevasClases.length] = claseActual;
-                if(claseActual==clase) {
-                    bnYaExisteLaClase = true;
-                }
-            }
-        }
-        if(!bnYaExisteLaClase) {
-            arNuevasClases[arNuevasClases.length] = clase;
-        }
-        return arNuevasClases.join(' ');
-    },
-
     //  Calcula la posicion en Y de un elemento
-    posInY: function(object, toParentElement) { return this._posInY(object, toParentElement); },
-    _posInY: function(object, toParentElement)
+    posInX: function(object) { return this._posInY(); },
+    _posInY: function(object)
     {
         var curtop = 0;
         if(object.offsetParent)
@@ -108,7 +84,8 @@ _EduIntBasic = {
             while(1)
             {
                 curtop += object.offsetTop;
-                if(!object.offsetParent || toParentElement == object.offsetParent) { break; }
+                if(!object.offsetParent)
+                    break;
                 object = object.offsetParent;
             }
         }
@@ -907,7 +884,7 @@ _EduInt = {
     _accEnDebugMode: function() { this._bnDebug=true; },
     
     accDisDebugMode: function() { this._accDisDebugMode(); },
-    _accDisDebugMode: function() { this._bnDebug=false; },
+    _accDisDebugMode: function() { this._bnDebug=true; },
 
     qstnIsInDebugMode: function() { return this._qstnIsInDebugMode(); },
     _qstnIsInDebugMode: function() { return this._bnDebug; },
@@ -2081,21 +2058,6 @@ _EduInt = {
                 this._event('mouseout').accAddFunction(myFunction);
                 return this;
             };
-            this.setOnMousedown = function(myFunction) { return this._setOnMousedown(myFunction); };
-            this._setOnMousedown = function(myFunction) {
-                this._event('mousedown').accAddFunction(myFunction);
-                return this;
-            };
-            this.setOnMouseup = function(myFunction) { return this._setOnMouseup(myFunction); };
-            this._setOnMouseup = function(myFunction) {
-                this._event('mouseup').accAddFunction(myFunction);
-                return this;
-            };
-            this.setOnMousemove = function(myFunction) { return this._setOnMousemove(myFunction); };
-            this._setOnMousemove = function(myFunction) {
-                this._event('mousemove').accAddFunction(myFunction);
-                return this;
-            };
             // (Board)
             //  Funciones publicas
             //  ------------------
@@ -3181,16 +3143,6 @@ _EduInt = {
                 this._event('mouseout').accAddFunction(myFunction);
                 return this;
             };
-            this.setOnMousedown = function(myFunction) { return this._setOnMousedown(myFunction); };
-            this._setOnMousedown = function(myFunction) {
-                this._event('mousedown').accAddFunction(myFunction);
-                return this;
-            };
-            this.setOnMouseup = function(myFunction) { return this._setOnMouseup(myFunction); };
-            this._setOnMouseup = function(myFunction) {
-                this._event('mouseup').accAddFunction(myFunction);
-                return this;
-            };
             this.getName = function() { return this._getName(); };
             this._getName = function()
             {
@@ -3403,7 +3355,7 @@ _EduInt = {
                 //  Crea el elemento en el contenedor correspondiente
                 this._Container._divContainer.appendChild(element);
                 //  Si esta en modo debug, el le coloca la clase con el nombre
-                if(_EduInt.qstnIsInDebugMode()){ if(!this._Container._divContainer.className) { this._Container._divContainer.className='name-||-'+element._Thing._nameThing; } else { this._Container._divContainer.className+=' name-||-'+element._Thing._nameThing; } }
+                if(_EduInt.qstnIsInDebugMode()){ this._Container._divContainer.className='name-||-'+element._Thing._nameThing; }
                 //  Informa que fue creado
                 this._bnWasCreated = true;
             }
@@ -3916,9 +3868,6 @@ _EduInt = {
             this.getPosInX = function() { return this._getPosInX(); };
             this._getPosInX = function()
             {
-                if(this._posInX === undefined) {
-                    return _EduIntBasic._posInX(this._element, this._Board._oDiv);
-                }
                 return this._posInX;
             }
             //  (Thing)
@@ -3935,9 +3884,6 @@ _EduInt = {
             this.getPosInY = function() { return this._getPosInY(); };
             this._getPosInY = function()
             {
-                if(this._posInY === undefined) {
-                    return _EduIntBasic._posInY(this._element, this._Board._oDiv);
-                }
                 return this._posInY;
             }
             //  (Thing)
@@ -4419,69 +4365,46 @@ _EduInt = {
                     return this._Events.bnCursorDown;
                 }
 
-                Thing._bnDragAndDrop = false;
-                Thing.enDragAndDrop = function(options) { return this._enDragAndDrop(options); };
-                Thing._enDragAndDrop = function(options)
+                Thing.loadPosDelta = function(event) { this._loadPosDelta(event); };
+                Thing._loadPosDelta = function(event)
                 {
-                    if(options !== undefined) {
-                        if(options.filterFunction!==undefined) { this._filterFunction = options.filterFunction; }
-                        if(options.completeFunction!==undefined) { this._completeFunction = options.completeFunction; }
+                    if(event===undefined)
+                    {
+                        var posMouseInX = this._Board._getMousePosInX();
+                        var posMouseInY = this._Board._getMousePosInY();
                     }
+                    else
+                    {
+                        var boardPosInX = this._Board._getPosInX();
+                        var boardPosInY = this._Board._getPosInY();
+                        var posMouseInX = _EduInt._Basic.getPosInXCursorForEvent(event)-boardPosInX;
+                        var posMouseInY = _EduInt._Basic.getPosInYCursorForEvent(event)-boardPosInY;
+                    }
+                    var posInX = this._getPosInX();
+                    var posInY = this._getPosInY();
+                    this._posDeltaInX = posInX-posMouseInX;
+                    this._posDeltaInY = posInY-posMouseInY;
+                }
+                Thing._bnDragAndDrop = false;
+                Thing.enDragAndDrop = function() { return this._enDragAndDrop(); };
+                Thing._enDragAndDrop = function()
+                {
                     this._bnDragAndDrop = true;
                     this._addClass('c_DragAndDrop');
-                    this._bnSeguirMouse = false;
-                    this._setOnClick(function(event) {
-                        this._Board._posMouseInX = event.clientX;
-                        this._Board._posMouseInY = event.clientY;
-
-                        var posInX = this._getPosInX();
-                        var posInY = this._getPosInY();
-                        this._Board._posDeltaInX = posInX-this._Board._posMouseInX;
-                        this._Board._posDeltaInY = posInY-this._Board._posMouseInY;
-
-                        if(this._bnSeguirMouse) { this._bnSeguirMouse=false; } else { this._bnSeguirMouse=true; }
-                    });
-                    //this._setOnMousedown(function() {
-                    //    this._bnSeguirMouse = true;
-                    //    console.log('OnMousedown');
-                    //});
-                    this._setOnMouseup(function() {
-                        //console.log('OnMouseup');
-                    });
-                    this._Board._setOnMousemove(function(event) {
-                        this._posMouseInX = event.clientX;
-                        this._posMouseInY = event.clientY;
-                        //console.log('OnMousemove', this.posMouseInX+' - '+this.posMouseInY);
-                    });
                     this._Board._addFunctionAnimatedInShadowSimple(function(mioptions){
-                        //  mioptions.Thing.accMoveInY();
-                        if(this._bnSeguirMouse) {
-                            var newPosInX = this._Board._posMouseInX+this._Board._posDeltaInX;
-                            var newPosInY = this._Board._posMouseInY+this._Board._posDeltaInY;
-                            //console.log(' this._Board._posMouseInX: '+this._Board._posMouseInX+' this._Board._posMouseInY: '+this._Board._posMouseInY+' this._Board._posDeltaInX: '+this._Board._posDeltaInX+', this._Board._posDeltaInY: '+this._Board._posDeltaInY+' newPosInX: '+newPosInX+', newPosInY: '+newPosInY);
+                        if(this._qstnIsCursorDown())
+                        {
+                            if(this._Board._qstnIsMouseHover())
+                            {
+                                var posMouseInX = this._Board._getMousePosInX();
+                                var posMouseInY = this._Board._getMousePosInY();
 
-                            if(this._filterFunction!==undefined) { var options = this._filterFunction({
-                                    newPosInX: newPosInX,
-                                    newPosInY: newPosInY,
-                                    Thing: this,
-                                    Board: this._Board,
-                                });
-                                newPosInX = options.newPosInX;
-                                newPosInY = options.newPosInY;
-                            }
-
-                            this._setPosInX(newPosInX);
-                            this._setPosInY(newPosInY);
-
-                            if(this._completeFunction!==undefined) { this._completeFunction({
-                                    newPosInX: newPosInX,
-                                    newPosInY: newPosInY,
-                                    Thing: this,
-                                    Board: this._Board,
-                                });
+                                this._setPosInX(posMouseInX+this._posDeltaInX);
+                                this._setPosInY(posMouseInY+this._posDeltaInY);
                             }
                         }
-                    },{  }, this);
+                        //  mioptions.Thing.accMoveInY();
+                    },{  }, this );
 
                     return this;
                 }
@@ -4736,17 +4659,11 @@ _EduInt = {
                 //  Ancho
                 Thing.getWidth = function() { return this._getWidth(); };
                 Thing._getWidth = function()
-                {
-                    if(this._width) { return this._width; }
-                    else { return this._element.offsetWidth; }
-                }
+                { return this._element.offsetWidth; }
                 //  Ancho
                 Thing.getHeight = function() { return this._getHeight(); };
                 Thing._getHeight = function()
-                {
-                    if(this._height) { return this._height; }
-                    else { return this._element.offsetHeight; }
-                }
+                { return this._element.offsetHeight; }
                 //  Pregunta si un objeto esta sobre de este
                 Thing.qstnIsThisThingOver = function(other_Thing) { return this._qstnIsThisThingOver(other_Thing); };
                 Thing._qstnIsThisThingOver = function(other_Thing)
